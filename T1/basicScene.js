@@ -30,8 +30,15 @@ scene.add(plane);
 // create a cube
 let cubeGeometry = new THREE.BoxGeometry(4, 4, 4);
 let cube = new THREE.Mesh(cubeGeometry, material);
+let cube2 = new THREE.Mesh(cubeGeometry, material);
+
+cube2.position.set(10.0, 2.0, 0.0);
+scene.add(cube2);
+
 // position the cube
 cube.position.set(0.0, 2.0, 0.0);
+cube.lookAt(10.0, 2.0, 0.0);
+cube.translateZ(5.0);
 // add the cube to the scene
 scene.add(cube);
 
