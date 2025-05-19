@@ -48,10 +48,8 @@ class BulletPool {
     atirar(posicao, alvo) {
         let bullet = this.getBullet();
 
-        if (bullet) {
-            bullet.mesh.position.copy(posicao);
-            bullet.setDirecao(alvo);
-            this.bulletsInUse.push(bullet);
-        }
+        bullet.atirar(posicao, alvo);
+        
+        this.bulletsInUse.push(bullet);
     }
 }
