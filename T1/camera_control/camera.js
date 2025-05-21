@@ -1,9 +1,11 @@
 import * as THREE from "three";
 import { PointerLockControls } from "../../build/jsm/controls/PointerLockControls.js";
-import { initRenderer, initDefaultBasicLight, onWindowResize } from "../../libs/util/util.js";
+import { initRenderer, initDefaultBasicLight, onWindowResize, setDefaultMaterial } from "../../libs/util/util.js";
+
+const material = setDefaultMaterial();
 
 class PlayerController {
-	constructor(scene, renderer, groundTexturePath = "../../assets/textures/wood.png") {
+	constructor(scene, groundTexturePath = "../../assets/textures/wood.png") {
 		// inicializa o renderizador com um rosa muito massa
 		this.renderer = initRenderer("rgb(235, 130, 216)");
 
@@ -34,7 +36,7 @@ class PlayerController {
 		const planeMaterial = new THREE.MeshLambertMaterial({
 			map: groundTexture,
 		});
-		this.ground = new THREE.Mesh(planeGeometry, planeMaterial);
+		this.ground = new THREE.Mesh(planeGeometry, material);
 		this.ground.position.set(0, 0, 0); // posiciona o chão no centro da cena
 		this.ground.rotation.x = -0.5 * Math.PI; // rotaciona para ficar horizontal
 		this.scene.add(this.ground);
