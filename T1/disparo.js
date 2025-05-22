@@ -4,6 +4,10 @@ const geometria = new THREE.SphereGeometry(0.5, 16, 16);
 const material = new THREE.MeshBasicMaterial({ color: 'rgb(241, 6, 6)' });
 
 const posInicial = new THREE.Vector3(0, -10, 0);
+const teto = 30;
+const chao = -5;
+const limiteLateral = 250;
+const limiteLateralNegativo = -250;
 
 class Bullet {
     constructor(posicao, pool) {
@@ -13,6 +17,13 @@ class Bullet {
         this.movendo = false;
         this.mesh.visible = false;
         this.pool = pool;
+
+        this.bb = new THREE.Box3().setFromObject(this.mesh);
+
+        //Só pra visualizar a bounding box
+        this.bbHelper = new THREE.Box3Helper(this.bb, 'yellow');
+        this.bbHelper.visible = false;
+        this.mesh.add(this.bbHelper);
     }
 
     // Método chamado quando vamos atirar a bala
@@ -28,6 +39,16 @@ class Bullet {
         if (!this.movendo) return;
 
         this.mesh.translateZ(this.velocidade);
+
+        if (this.mesh.position.y > teto || this.mesh.position.y < chao) {
+            this.reset();
+        } //Daqui pra frente, não sei se é bom continuar, mas por enquanto, vou deixar assim
+        else if (this.mesh.position.x > limiteLateral || this.mesh.position.x < limiteLateralNegativo) {
+            this.reset();
+        }
+        else if (this.mesh.position.z > limiteLateral || this.mesh.position.z < limiteLateralNegativo) {
+            this.reset();
+        }
     }
 
     // Método chamado quando a bala deve ser destruída/resetada (por exemplo, quando sai da tela ou atinge um alvo)
