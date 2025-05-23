@@ -10,20 +10,15 @@ const limiteLateral = 250;
 const limiteLateralNegativo = -250;
 
 class Bullet {
-    constructor(posicao, pool) {
+    constructor(posicao, pool, scene) {
         this.mesh = new THREE.Mesh(geometria, material);
         this.mesh.position.copy(posicao);
-        this.velocidade = 10;
+        this.velocidade = 0.5;
         this.movendo = false;
         this.mesh.visible = false;
         this.pool = pool;
 
-        this.bb = new THREE.Box3().setFromObject(this.mesh);
-
-        //Só pra visualizar a bounding box
-        this.bbHelper = new THREE.Box3Helper(this.bb, 'yellow');
-        this.bbHelper.visible = false;
-        this.mesh.add(this.bbHelper);
+        scene.add(this.mesh);
     }
 
     // Método chamado quando vamos atirar a bala
@@ -32,10 +27,11 @@ class Bullet {
         this.mesh.lookAt(alvo);
         this.movendo = true;
         this.mesh.visible = true;
+        this.render();
     }
 
     //Método chamado a cada frame
-    update() {
+    render() {
         if (!this.movendo) return;
 
         this.mesh.translateZ(this.velocidade);
@@ -49,6 +45,8 @@ class Bullet {
         else if (this.mesh.position.z > limiteLateral || this.mesh.position.z < limiteLateralNegativo) {
             this.reset();
         }
+
+        requestAnimationFrame(() => this.render());
     }
 
     // Método chamado quando a bala deve ser destruída/resetada (por exemplo, quando sai da tela ou atinge um alvo)
@@ -61,13 +59,15 @@ class Bullet {
 }
 
 class BulletPool {
-    constructor() {
+    constructor(scene) {
         this.bullets = [];
         this.bulletsInUse = [];
         this.poolSize = 10;
 
+        this.scene = scene;
+
         for (let i = 0; i < this.poolSize; i++) {
-            this.bullets.push(new Bullet(posInicial), this);
+            this.bullets.push(new Bullet(posInicial, this, this.scene));
         }
     }
 
@@ -75,7 +75,7 @@ class BulletPool {
         if (this.bullets.length > 0) {
             return this.bullets.pop();
         } else {
-            return new Bullet(posInicial);
+            return new Bullet(posInicial, this, this.scene);
         }
     }
 
@@ -92,3 +92,5 @@ class BulletPool {
         this.bulletsInUse.splice(this.bulletsInUse.indexOf(bullet), 1);
     }
 }
+
+export { BulletPool };
