@@ -18,6 +18,9 @@ class Bullet {
         this.mesh.visible = false;
         this.pool = pool;
 
+        this.clock = new THREE.Clock();
+        this.clock.stopped = true;
+
         scene.add(this.mesh);
     }
 
@@ -28,6 +31,7 @@ class Bullet {
         this.movendo = true;
         this.mesh.visible = true;
         this.render();
+        //this.clock.start();
     }
 
     //Método chamado a cada frame

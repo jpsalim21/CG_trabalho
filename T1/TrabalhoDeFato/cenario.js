@@ -1,7 +1,9 @@
 import * as THREE from "three";
 
 const material = new THREE.MeshBasicMaterial({ color: 'rgb(37, 72, 45)' });
-const planeGeometry = new THREE.PlaneGeometry(50, 50, 5); 
+const material2 = new THREE.MeshBasicMaterial({ color: 'rgb(0, 106, 255)' });
+const planeGeometry = new THREE.PlaneGeometry(500, 500, 5); 
+const cubeGeometry = new THREE.BoxGeometry(10, 5, 10); // geometria do cubo
 
 let chao = []; // array para armazenar os objetos do chão
 let paredes = []; // array para armazenar as paredes
@@ -20,7 +22,13 @@ function inicializaCenario(scene) {
     let ground = new THREE.Mesh(planeGeometry, material);
     ground.position.set(0, 0, 0); // posiciona o chão no centro da cena
     ground.rotation.x = -0.5 * Math.PI; // rotaciona para ficar horizontal
+
+    let cubo1 = new THREE.Mesh(cubeGeometry, material2);
+    cubo1.position.set(10, 2.5, 0);
+
+
     scene.add(ground);
+    scene.add(cubo1);
 }
 
 function getParedes() {
