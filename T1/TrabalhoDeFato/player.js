@@ -3,6 +3,7 @@ import { PointerLockControls } from "../../build/jsm/controls/PointerLockControl
 import { setDefaultMaterial } from "../../libs/util/util.js";
 import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
+import { getChao, getParedes } from "./cenario.js";
 
 const armaMaterial = new THREE.MeshBasicMaterial({ color: "rgb(108, 108, 108)" }); // material para a arma
 
