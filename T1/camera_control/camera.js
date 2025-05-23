@@ -127,8 +127,18 @@ class PlayerController {
 		// delta = é o tempo decorrido desde o último frame
 		const moveDistance = this.speed * delta; // distância de movimento proporcional ao tempo para manter a velocidade constante e suave
 
+		const quaternion = this.camera.quaternion.clone(); // extrai uma cópia de rotação da câmera (quaternion)
+		const euler = new THREE.Euler().setFromQuaternion(quaternion, "YXZ"); // a ordem tá YXZ para priorizar yaw (rotação horizontal)
+
+		//mantém apenas a rotação horizontal (yaw)
+		euler.x = 0; // remove a inclinação (pitch)
+		euler.z = 0; // remove a rotação lateral (roll)
+
+		// cria um novo quaternion apenas com a rotação em Y (yaw)
+		const yawQuaternion = new THREE.Quaternion().setFromEuler(euler);
+
 		// da matriz que representa a transformacao global (rotacao, translacao e escala) da camera, vamos extrair o componente de rotação
-		const rotationMatrix = new THREE.Matrix4().extractRotation(this.camera.matrixWorld);
+		const rotationMatrix = new THREE.Matrix4().makeRotationFromQuaternion(yawQuaternion);
 
 		// vetores base transformados pela rotação da câmera
 		const forwardVector = new THREE.Vector3(0, 0, -1).applyMatrix4(rotationMatrix);
@@ -138,7 +148,7 @@ class PlayerController {
 		const rightVector = new THREE.Vector3(1, 0, 0).applyMatrix4(rotationMatrix);
 		// o vetor para a direita é o vetor +X
 		// direcao perpendicular ao vetor para frente no plano horizontal
-		const upVector = new THREE.Vector3(0, 1, 0).applyMatrix4(rotationMatrix);
+		const upVector = new THREE.Vector3(0, 1, 0); // apertar espaço/shift (movimento vertical) não será afetado pela rotação da câmera
 		// o vetor para cima é o vetor +Y
 		// mantemos o vetor para cima na direção Y, pois não queremos que a câmera gire para cima ou para baixo
 
