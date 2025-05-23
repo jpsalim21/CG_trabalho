@@ -1,6 +1,6 @@
 import * as THREE from  'three';
 
-const geometria = new THREE.SphereGeometry(0.5, 16, 16);
+const geometria = new THREE.SphereGeometry(0.2, 16, 16);
 const material = new THREE.MeshBasicMaterial({ color: 'rgb(241, 6, 6)' });
 
 const posInicial = new THREE.Vector3(0, -10, 0);
@@ -65,6 +65,7 @@ class BulletPool {
         this.poolSize = 10;
 
         this.scene = scene;
+        this.clock = new THREE.Clock();
 
         for (let i = 0; i < this.poolSize; i++) {
             this.bullets.push(new Bullet(posInicial, this, this.scene));
@@ -80,12 +81,19 @@ class BulletPool {
     }
 
     atirar(posicao, alvo) {
+        let delta = this.clock.getElapsedTime();
+        if(delta < 0.2) return;
+
         let bullet = this.getBullet();
 
         bullet.atirar(posicao, alvo);
         
         this.bulletsInUse.push(bullet);
+
+        this.clock.start();
     }
+
+
 
     resetBullet(bullet) {
         this.bullets.push(bullet);

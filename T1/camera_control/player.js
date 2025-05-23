@@ -4,7 +4,7 @@ import { setDefaultMaterial } from "../../libs/util/util.js";
 import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
 
-const material = setDefaultMaterial(); // material padrão para o chão
+const armaMaterial = new THREE.MeshBasicMaterial({ color: "rgb(108, 108, 108)" }); // material para a arma
 
 class PlayerController {
     constructor(scene, groundTexturePath = "../../assets/textures/wood.png") {
@@ -23,6 +23,12 @@ class PlayerController {
         );
         this.camera.position.set(0, 2, 5); // posiciona a camera na altura (estimada) de um ser humano
         this.camera.lookAt(new THREE.Vector3(4, 1, 2)); // começa olhando pra frente
+
+        let cilindroGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1, 16); // geometria do cilindro
+        let cilindro = new THREE.Mesh(cilindroGeometry, armaMaterial); // mesh do cilindro
+        this.camera.add(cilindro); // adiciona o cilindro na câmera
+        cilindro.position.set(0, -1, -2); // posiciona o cilindro na frente da câmera
+        cilindro.rotation.x = -Math.PI / 2; // rotaciona o cilindro para ficar na horizontal
 
         // cria os controles de ponteiro
         this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
@@ -61,6 +67,7 @@ class PlayerController {
         this.moveDown = false;
 
         this.arma = new BulletPool(this.scene); // cria a pool de balas
+        this.atirar = false;
 
         // relógio para calcular delta time
         this.clock = new THREE.Clock();
@@ -104,12 +111,8 @@ class PlayerController {
             case "Shift":
                 this.moveDown = value;
                 break;
-            case "f": // tecla para atirar
-                let direcao = new THREE.Vector3();
-                this.camera.getWorldDirection(direcao);
-                let alvo = this.camera.position.clone().add(direcao.multiplyScalar(10));
-
-                this.arma.atirar(this.camera.position, alvo);
+            case "f":
+                this.atirar = value;
                 break;
         }
     }
@@ -158,8 +161,23 @@ class PlayerController {
         // aqui somamos o vetor de movimento à posição atual da câmera
         this.camera.position.add(movementVector);
 
+        if(this.atirar){
+            let direcao = new THREE.Vector3();
+            this.camera.getWorldDirection(direcao);
+            direcao = direcao.normalize(); // normaliza o vetor de direção para que tenha comprimento 1
+
+            let alvo = this.camera.position.clone().add(direcao.multiplyScalar(10));
+
+            let origem = this.camera.position.clone();
+            origem.y -= 1;
+            origem = origem.clone().add(direcao.multiplyScalar(0.25));
+
+            this.arma.atirar(origem, alvo);
+        }
+
         // aqui atualizamos a matriz de transformação da câmera para efetuar as mudanças na posição
         this.camera.updateMatrixWorld();
+
     }
 
     // Função para atualizar a renderização
