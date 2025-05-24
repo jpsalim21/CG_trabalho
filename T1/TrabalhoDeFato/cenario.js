@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 const material = new THREE.MeshBasicMaterial({ color: 'rgb(37, 72, 45)' });
 const material2 = new THREE.MeshBasicMaterial({ color: 'rgb(0, 106, 255)' });
-const planeGeometry = new THREE.PlaneGeometry(500, 500, 5); 
+const planeGeometry = new THREE.PlaneGeometry(100, 100, 5); 
 const cubeGeometry = new THREE.BoxGeometry(10, 5, 10); // geometria do cubo
 
 let chao = []; // array para armazenar os objetos do chão

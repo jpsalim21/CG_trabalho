@@ -9,6 +9,7 @@ import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "./cenario.js";
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
+const eulerMesh = new Euler( 0, 0, 0, 'YXZ' );
 const _vector = new Vector3();
 
 const _changeEvent = { type: 'change' };
@@ -194,14 +195,18 @@ function onMouseMove( event ) {
 	const movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
 	const camera = this.camera;
+    const mesh = this.cameraHolder;
 	_euler.setFromQuaternion( camera.quaternion );
 
-	//_euler.y -= movementX * 0.002 * this.pointerSpeed;
+    eulerMesh.setFromQuaternion( mesh.quaternion );
+
+	eulerMesh.y -= movementX * 0.002 * this.pointerSpeed;
 	_euler.x -= movementY * 0.002 * this.pointerSpeed;
 
 	_euler.x = Math.max( _PI_2 - this.maxPolarAngle, Math.min( _PI_2 - this.minPolarAngle, _euler.x ) );
 
 	camera.quaternion.setFromEuler( _euler );
+    mesh.quaternion.setFromEuler( eulerMesh );
 
 	this.dispatchEvent( _changeEvent );
 }
