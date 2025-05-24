@@ -37,9 +37,7 @@ class Bullet {
     //Método chamado a cada frame
     render() {
         if (!this.movendo) return;
-
         this.mesh.translateZ(this.velocidade);
-
         if (this.mesh.position.y > teto || this.mesh.position.y < chao) {
             this.reset();
         } //Daqui pra frente, não sei se é bom continuar, mas por enquanto, vou deixar assim
@@ -49,7 +47,6 @@ class Bullet {
         else if (this.mesh.position.z > limiteLateral || this.mesh.position.z < limiteLateralNegativo) {
             this.reset();
         }
-
         requestAnimationFrame(() => this.render());
     }
 
@@ -58,7 +55,7 @@ class Bullet {
         this.movendo = false;
         this.mesh.position.copy(posInicial);
         this.mesh.visible = false;
-        this.pool.resetBullet(this); // Talvez tenha um jeito melhor de fazer isso, mas por enquanto é assim
+        this.pool.resetBullet(this);
     }
 }
 
@@ -76,6 +73,7 @@ class BulletPool {
         }
     }
 
+    // Um método para pegar uma bala da pool ou criar uma nova se não houver nenhuma disponível
     getBullet() {
         if (this.bullets.length > 0) {
             return this.bullets.pop();
@@ -84,21 +82,17 @@ class BulletPool {
         }
     }
 
+    // Método chamado quando o jogador atira
     atirar(posicao, alvo) {
         let delta = this.clock.getElapsedTime();
         if(delta < 0.2) return;
-
         let bullet = this.getBullet();
-
         bullet.atirar(posicao, alvo);
-        
         this.bulletsInUse.push(bullet);
-
         this.clock.start();
     }
 
-
-
+    // Método que a bala chama quando ela precisa ser resetada
     resetBullet(bullet) {
         this.bullets.push(bullet);
         this.bulletsInUse.splice(this.bulletsInUse.indexOf(bullet), 1);

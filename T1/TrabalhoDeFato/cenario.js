@@ -19,22 +19,29 @@ function inicializaCenario(scene) {
     groundTexture.repeat.set(15, 15); // muito chão
     */
 
+    // Cria o chão
     let ground = new THREE.Mesh(planeGeometry, material);
     ground.position.set(0, 0, 0); // posiciona o chão no centro da cena
     ground.rotation.x = -0.5 * Math.PI; // rotaciona para ficar horizontal
+    chao.push(ground);
 
+    // Cubo provisório
     let cubo1 = new THREE.Mesh(cubeGeometry, material2);
     cubo1.position.set(10, 2.5, 0);
+    paredes.push(cubo1);
+    chao.push(cubo1);
 
-
+    //Adiciona os objetos na cena
     scene.add(ground);
     scene.add(cubo1);
 }
 
+//Só pra gente puxar os objetos para a colisão
 function getParedes() {
     return paredes;
 }
 
+//Só pra gente puxar os objetos para a colisão
 function getChao() {
     return chao;
 }
