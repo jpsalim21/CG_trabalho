@@ -25,11 +25,11 @@ class PlayerController {
         this.camera.position.set(0, 2, 5); // posiciona a camera na altura (estimada) de um ser humano
         this.camera.lookAt(new THREE.Vector3(4, 1, 2)); // começa olhando pra frente
 
-        let cilindroGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1, 16); // geometria do cilindro
-        let cilindro = new THREE.Mesh(cilindroGeometry, armaMaterial); // mesh do cilindro
-        this.camera.add(cilindro); // adiciona o cilindro na câmera
-        cilindro.position.set(0, -1, -2); // posiciona o cilindro na frente da câmera
-        cilindro.rotation.x = -Math.PI / 2; // rotaciona o cilindro para ficar na horizontal
+        let cilindroGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1, 16);
+        let cilindro = new THREE.Mesh(cilindroGeometry, armaMaterial); 
+        this.camera.add(cilindro); 
+        cilindro.position.set(0, -1, -2); 
+        cilindro.rotation.x = -Math.PI / 2;
 
         // cria os controles de ponteiro
         this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
@@ -70,6 +70,11 @@ class PlayerController {
         this.arma = new BulletPool(this.scene); // cria a pool de balas
         this.atirar = false;
 
+        this.raycastChao = new THREE.Raycaster(); // cria um raycastChaoer para detectar colisões
+        this.raycastChao.far = 3;
+        this.raycastChao.near = 0.1;
+        this.raycastChao.set(this.camera.position, new THREE.Vector3(0, -1, 0)); 
+
         // relógio para calcular delta time
         this.clock = new THREE.Clock();
 
@@ -93,6 +98,7 @@ class PlayerController {
             case "w":
             case "ArrowUp":
                 this.moveForward = value;
+                console.log("moveForward: " + value);
                 break;
             case "s":
             case "ArrowDown":
@@ -186,6 +192,9 @@ class PlayerController {
         if (this.controls.isLocked) {
             this.moveAnimate(this.clock.getDelta());
         }
+        
+        this.isOnGround();
+
         this.renderer.render(this.scene, this.camera);
         requestAnimationFrame(() => this.render());
     }
@@ -201,6 +210,18 @@ class PlayerController {
 
     getGround() {
         return this.ground;
+    }
+
+    isOnGround(){
+        this.raycastChao.set(this.camera.position, new THREE.Vector3(0, -1, 0)); 
+        let chao = getChao();
+
+        let intersects = this.raycastChao.intersectObjects(chao);
+
+        if (intersects.length > 0){
+            //console.log("Colidiu com o chão");
+        }
+
     }
 }
 
