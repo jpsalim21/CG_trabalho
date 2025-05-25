@@ -100,8 +100,12 @@ class PlayerController extends EventDispatcher {
 
         this.speed = 30;
         this.pulo = 10;
-        this.velocity = new THREE.Vector2(0, 0);
         this.velVertical = 0;
+        this.rayGround = new THREE.Raycaster(); // cria um raycaster para detectar colisões com o chão
+        this.rayGround.far = 0.1;
+        this.rayGround.near = 0.05;
+
+        this.velocity = new THREE.Vector2(0, 0);
 
         this.teclas = [false, false, false, false];
 
@@ -135,12 +139,11 @@ class PlayerController extends EventDispatcher {
             case "ArrowRight":
                 this.teclas[3] = isPressed;
                 break;
-            case "m":
+            case " ":
                 //TODO: Colocar aqui a lógica de pulo, mas tá mto errada por agora
                 if(isPressed){
                     this.velVertical = this.pulo;
                     this.cameraHolder.position.y += 0.1;
-                    console.log("pulou");
                 }
                 break;
             case "f": // atira
@@ -174,14 +177,11 @@ class PlayerController extends EventDispatcher {
         this.cameraHolder.translateX(direcao.x * moveDistance);
         this.cameraHolder.translateZ(direcao.y * moveDistance);
 
-        console.log("Sofreu gravidade", this.velVertical);
-        if(this.cameraHolder.position.y > 0){
-            this.cameraHolder.translateY(this.velVertical * delta);
-            this.velVertical -= GRAVIDADE * delta;
-        } else if(this.cameraHolder.position.y < 0){
-            this.cameraHolder.position.y = 0;
+        if(this.isOnGround()){
             this.velVertical = 0;
-            console.log("Caiu no chão");
+        } else {
+            this.velVertical -= GRAVIDADE * delta;
+            this.cameraHolder.translateY(this.velVertical * delta);
         }
     }
     render() {
@@ -196,6 +196,16 @@ class PlayerController extends EventDispatcher {
     }
     start() {
         this.render();
+    }
+
+    isOnGround(){
+        this.rayGround.set(this.cameraHolder.position, new THREE.Vector3(0, -1, 0)); 
+        let chao = getChao();
+
+        const intersects = this.rayGround.intersectObjects(chao);
+        console.log(intersects.length);
+
+        return intersects.length > 0 || this.cameraHolder.position.y <= 0.1;
     }
     //#endregion
 
