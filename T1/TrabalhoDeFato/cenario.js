@@ -34,6 +34,7 @@ function inicializaCenario(scene) {
     let cubo2 = new THREE.Mesh(cubeGeometry, material2);
     cubo2.position.set(-6.75, -0.3, -20);
     cubo2.rotation.z = Math.PI / 4;
+    chao.push(cubo2);
 
 
     //Adiciona os objetos na cena

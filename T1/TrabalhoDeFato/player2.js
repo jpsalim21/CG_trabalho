@@ -98,12 +98,13 @@ class PlayerController extends EventDispatcher {
         this.minPolarAngle = 0;
 		this.maxPolarAngle = Math.PI; 
 
-        this.speed = 30;
+        this.speed = 15;
         this.pulo = 10;
         this.velVertical = 0;
+        this.alturaChao = 0.1;
         this.rayGround = new THREE.Raycaster(); // cria um raycaster para detectar colisões com o chão
-        this.rayGround.far = 0.1;
-        this.rayGround.near = 0.05;
+        this.rayGround.far = 5.0;
+        this.rayGround.near = 0.1;
 
         this.velocity = new THREE.Vector2(0, 0);
 
@@ -169,6 +170,12 @@ class PlayerController extends EventDispatcher {
 
     }
     update(delta){
+        if(this.isOnGround()){
+            this.velVertical = 0;
+        } else {
+            this.velVertical -= GRAVIDADE * delta;
+            this.cameraHolder.translateY(this.velVertical * delta);
+        }
         const moveDistance = this.speed * delta;
 
         let direcao = this.velocity.clone();    
@@ -176,20 +183,11 @@ class PlayerController extends EventDispatcher {
 
         this.cameraHolder.translateX(direcao.x * moveDistance);
         this.cameraHolder.translateZ(direcao.y * moveDistance);
-
-        if(this.isOnGround()){
-            this.velVertical = 0;
-        } else {
-            this.velVertical -= GRAVIDADE * delta;
-            this.cameraHolder.translateY(this.velVertical * delta);
-        }
     }
     render() {
         if (this.isLocked) {
             this.update(this.clock.getDelta());
         }
-        
-        //this.isOnGround();
 
         this.renderer.render(this.scene, this.camera);
         requestAnimationFrame(() => this.render());
@@ -199,13 +197,23 @@ class PlayerController extends EventDispatcher {
     }
 
     isOnGround(){
-        this.rayGround.set(this.cameraHolder.position, new THREE.Vector3(0, -1, 0)); 
-        let chao = getChao();
+        const position = this.cameraHolder.position.clone();
+        position.y += 2.0; // levanta um pouco a posição da câmera para evitar que ela fique presa no chão
+        this.rayGround.set(position, new THREE.Vector3(0, -1, 0)); 
+        const chao = getChao();
 
+        console.log(this.alturaChao);
+        
         const intersects = this.rayGround.intersectObjects(chao);
-        console.log(intersects.length);
+        
+        this.alturaChao = intersects.length > 0 ? intersects[0].point.y + 0.1 : 0.1;
+        
+        let isGround = this.cameraHolder.position.y <= this.alturaChao;
+        if (isGround) {
+            this.cameraHolder.position.y = this.alturaChao;
+        }
 
-        return intersects.length > 0 || this.cameraHolder.position.y <= 0.1;
+        return isGround;
     }
     //#endregion
 
