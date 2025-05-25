@@ -27,13 +27,19 @@ function inicializaCenario(scene) {
 
     // Cubo provisório
     let cubo1 = new THREE.Mesh(cubeGeometry, material2);
-    cubo1.position.set(10, 2.5, 0);
+    cubo1.position.set(0, 2.5, -20);
     paredes.push(cubo1);
     chao.push(cubo1);
+
+    let cubo2 = new THREE.Mesh(cubeGeometry, material2);
+    cubo2.position.set(-6.75, -0.3, -20);
+    cubo2.rotation.z = Math.PI / 4;
+
 
     //Adiciona os objetos na cena
     scene.add(ground);
     scene.add(cubo1);
+    scene.add(cubo2);
 }
 
 //Só pra gente puxar os objetos para a colisão
