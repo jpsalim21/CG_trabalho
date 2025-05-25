@@ -12,6 +12,8 @@ const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerMesh = new Euler( 0, 0, 0, 'YXZ' );
 const _vector = new Vector3();
 
+const GRAVIDADE = 9.8 * 2;
+
 const _changeEvent = { type: 'change' };
 const _lockEvent = { type: 'lock' };
 const _unlockEvent = { type: 'unlock' };
@@ -133,10 +135,12 @@ class PlayerController extends EventDispatcher {
             case "ArrowRight":
                 this.teclas[3] = isPressed;
                 break;
-            case " ":
+            case "m":
                 //TODO: Colocar aqui a lógica de pulo, mas tá mto errada por agora
                 if(isPressed){
                     this.velVertical = this.pulo;
+                    this.cameraHolder.position.y += 0.1;
+                    console.log("pulou");
                 }
                 break;
             case "f": // atira
@@ -166,10 +170,19 @@ class PlayerController extends EventDispatcher {
 
         let direcao = this.velocity.clone();    
         direcao = direcao.normalize();
-        console.log(direcao.x, direcao.y);
 
         this.cameraHolder.translateX(direcao.x * moveDistance);
         this.cameraHolder.translateZ(direcao.y * moveDistance);
+
+        console.log("Sofreu gravidade", this.velVertical);
+        if(this.cameraHolder.position.y > 0){
+            this.cameraHolder.translateY(this.velVertical * delta);
+            this.velVertical -= GRAVIDADE * delta;
+        } else if(this.cameraHolder.position.y < 0){
+            this.cameraHolder.position.y = 0;
+            this.velVertical = 0;
+            console.log("Caiu no chão");
+        }
     }
     render() {
         if (this.isLocked) {
