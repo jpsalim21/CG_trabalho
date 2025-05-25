@@ -1,18 +1,16 @@
 import {
 	Euler,
 	EventDispatcher,
-	Vector3
 } from 'three';
-import { initRenderer, onWindowResize } from "../../libs/util/util.js";
+import { onWindowResize } from "../../libs/util/util.js";
 import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "./cenario.js";
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerMesh = new Euler( 0, 0, 0, 'YXZ' );
-const _vector = new Vector3();
 
-const GRAVIDADE = 9.8 * 2;
+const GRAVIDADE = 9.8 * 10;
 
 const _changeEvent = { type: 'change' };
 const _lockEvent = { type: 'lock' };
@@ -99,7 +97,7 @@ class PlayerController extends EventDispatcher {
 		this.maxPolarAngle = Math.PI; 
 
         this.speed = 15;
-        this.pulo = 10;
+        this.pulo = 30;
         this.velVertical = 0;
         this.alturaChao = 0.1;
         this.rayGround = new THREE.Raycaster(); // cria um raycaster para detectar colisões com o chão
