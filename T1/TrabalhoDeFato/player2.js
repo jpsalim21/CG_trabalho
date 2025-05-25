@@ -101,6 +101,8 @@ class PlayerController extends EventDispatcher {
         this.velocity = new THREE.Vector2(0, 0);
         this.velVertical = 0;
 
+        this.teclas = [false, false, false, false];
+
         this.clock = new THREE.Clock();
         //#endregion
 
@@ -117,22 +119,22 @@ class PlayerController extends EventDispatcher {
         switch (key) {
             case "w":
             case "ArrowUp":
-                this.velocity.y = -isPressed;
+                this.teclas[0] = isPressed;
                 break;
             case "s":
             case "ArrowDown":
-                this.velocity.y = isPressed;
+                this.teclas[1] = isPressed;
                 break;
             case "a":
             case "ArrowLeft":
-                this.velocity.x = -isPressed;
+                this.teclas[2] = isPressed;
                 break;
             case "d":
             case "ArrowRight":
-                this.velocity.x = isPressed;
+                this.teclas[3] = isPressed;
                 break;
             case " ":
-                // Colocar aqui a lógica de pulo, mas tá mto errada por agora
+                //TODO: Colocar aqui a lógica de pulo, mas tá mto errada por agora
                 if(isPressed){
                     this.velVertical = this.pulo;
                 }
@@ -141,6 +143,23 @@ class PlayerController extends EventDispatcher {
                 this.atirar = isPressed;
                 break;
         }
+
+        // TODO: Aqui, uma direção é privilegiada, ou seja, se apertar w e a, o w tem prioridade. ARRUMAR ISSO!!!!
+        if (this.teclas[0]) {
+            this.velocity.y = -1;
+        } else if (this.teclas[1]) {
+            this.velocity.y = 1;
+        } else {
+            this.velocity.y = 0;
+        }
+        if( this.teclas[2]) {
+            this.velocity.x = -1;
+        } else if (this.teclas[3]) {
+            this.velocity.x = 1;
+        } else {
+            this.velocity.x = 0;
+        }
+
     }
     update(delta){
         const moveDistance = this.speed * delta;
@@ -165,6 +184,7 @@ class PlayerController extends EventDispatcher {
     start() {
         this.render();
     }
+    //#endregion
 
     //#region Funções de eventos
     connect() {
