@@ -45,10 +45,10 @@ class PlayerController extends EventDispatcher {
         
         // Cria a arma
         let cilindroGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1, 16);
-        let cilindro = new THREE.Mesh(cilindroGeometry, armaMaterial); 
-        this.camera.add(cilindro); 
-        cilindro.position.set(0, -1, -2); 
-        cilindro.rotation.x = -Math.PI / 2;
+        this.cilindro = new THREE.Mesh(cilindroGeometry, armaMaterial); 
+        this.camera.add(this.cilindro); 
+        this.cilindro.position.set(0, -1, -2); 
+        this.cilindro.rotation.x = -Math.PI / 2;
         
         scene.add(this.cameraHolder);
         //#endregion
@@ -102,7 +102,7 @@ class PlayerController extends EventDispatcher {
         this.alturaChao = 0.1;
         this.rayGround = new THREE.Raycaster(); // cria um raycaster para detectar colisões com o chão
         this.rayGround.far = 5.0;
-        this.rayGround.near = 0.1;
+        this.rayGround.near = 1.0;
 
         this.velocity = new THREE.Vector2(0, 0);
 
@@ -120,7 +120,9 @@ class PlayerController extends EventDispatcher {
     }
 
     //#region Funções de movimento
+    // Função de captura de teclas
     movementControls(key, isPressed) {
+        console.log("key: " + key);
         switch (key) {
             case "w":
             case "ArrowUp":
@@ -167,6 +169,7 @@ class PlayerController extends EventDispatcher {
         }
 
     }
+    // Função de atualização, com movimentação e gravidade
     update(delta){
         if(this.isOnGround()){
             this.velVertical = 0;
@@ -181,7 +184,18 @@ class PlayerController extends EventDispatcher {
 
         this.cameraHolder.translateX(direcao.x * moveDistance);
         this.cameraHolder.translateZ(direcao.y * moveDistance);
+
+        if(this.atirar){
+            const posicao = this.cameraHolder.position.clone();
+            posicao.y += 2.0; 
+
+            const alvo = this.alvo.getWorldPosition(new THREE.Vector3());
+
+            this.arma.atirar(posicao, alvo);
+        }
+
     }
+    // Função de animação
     render() {
         if (this.isLocked) {
             this.update(this.clock.getDelta());
@@ -190,19 +204,17 @@ class PlayerController extends EventDispatcher {
         this.renderer.render(this.scene, this.camera);
         requestAnimationFrame(() => this.render());
     }
+    // Começa as animações e etc...
     start() {
         this.render();
     }
-
+    // Verifica se o jogador está no chão, por meio de um raycast
     isOnGround(){
         const position = this.cameraHolder.position.clone();
-        position.y += 2.0; // levanta um pouco a posição da câmera para evitar que ela fique presa no chão
+        position.y += 2.0; 
         this.rayGround.set(position, new THREE.Vector3(0, -1, 0)); 
-        const chao = getChao();
-
-        console.log(this.alturaChao);
         
-        const intersects = this.rayGround.intersectObjects(chao);
+        const intersects = this.rayGround.intersectObjects(getChao());
         
         this.alturaChao = intersects.length > 0 ? intersects[0].point.y + 0.1 : 0.1;
         
