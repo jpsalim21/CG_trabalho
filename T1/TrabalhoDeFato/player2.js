@@ -117,7 +117,7 @@ class PlayerController extends EventDispatcher {
 
         this.velocity = new THREE.Vector2(0, 0);
         this.rayWall = new THREE.Raycaster();
-        this.rayWall.far = 1.5;
+        this.rayWall.far = 2.0;
 
         this.teclas = [false, false, false, false];
 
@@ -284,15 +284,18 @@ class PlayerController extends EventDispatcher {
         const intersects = this.rayWall.intersectObjects(paredes);
 
         if (intersects.length > 0) {
-            const dInversa = direcao.clone().multiplyScalar(-1);
+            const dInversa = direcao3.clone().multiplyScalar(-1);
+
             const normal = intersects[0].face.normal.clone();
-
-            let dotProduct = dInversa.dot(normal);
-            const projection = dInversa.clone().multiplyScalar(dotProduct);
-
-            direcao3.add(projection);
             
-            console.log(direcao3.x, direcao3.y);
+            
+            let dotProduct = dInversa.dot(normal);
+
+            const projection = normal.clone().multiplyScalar(dotProduct);
+            
+            direcao3.add(projection);
+            direcao.x = direcao3.x;
+            direcao.y = direcao3.z;
         }
     }
     //#endregion
