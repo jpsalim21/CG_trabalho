@@ -13,17 +13,19 @@ function inicializaCenario(scene) {
     let ground = new THREE.Mesh(planeGeometry, material);
     ground.position.set(0, 0, 0); // posiciona o chão no centro da cena
     ground.rotation.x = -0.5 * Math.PI; // rotaciona para ficar horizontal
+    chao.push(ground); // adiciona o chão ao array de chão
 
     // Cubo provisório
     let cubo1 = new THREE.Mesh(cubeGeometry, material2);
     cubo1.position.set(0, 2.5, -20);
-    paredes.push(cubo1);
     chao.push(cubo1);
+    paredes.push(cubo1);
 
     let cubo2 = new THREE.Mesh(cubeGeometry, material2);
     cubo2.position.set(-6.75, -0.3, -20);
     cubo2.rotation.z = Math.PI / 4;
     chao.push(cubo2);
+    paredes.push(cubo2);
 
 
     //Adiciona os objetos na cena

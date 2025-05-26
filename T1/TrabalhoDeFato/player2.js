@@ -116,6 +116,8 @@ class PlayerController extends EventDispatcher {
         this.rayGround.near = 1.0;
 
         this.velocity = new THREE.Vector2(0, 0);
+        this.rayWall = new THREE.Raycaster();
+        this.rayWall.far = 1.5;
 
         this.teclas = [false, false, false, false];
 
@@ -129,6 +131,15 @@ class PlayerController extends EventDispatcher {
         this.rayMira.far = 1000.0; // distância máxima do raycaster
 
         //#endregion
+
+
+        this.arrowHelper = new THREE.ArrowHelper(
+            new THREE.Vector3(0, 0, -1), // direção inicial
+            this.cameraHolder.position, // posição inicial
+            5, // comprimento da seta
+            0xff0000 // cor da seta (vermelho)
+        );
+        this.scene.add(this.arrowHelper); // adiciona a seta à cena
 
         this.connect(); 
     }
@@ -156,7 +167,6 @@ class PlayerController extends EventDispatcher {
                 this.teclas[3] = isPressed;
                 break;
             case " ":
-                //TODO: Colocar aqui a lógica de pulo, mas tá mto errada por agora
                 if(isPressed && this.grounded) {
                     this.velVertical = this.pulo;
                     this.cameraHolder.position.y += 0.1;
@@ -179,7 +189,6 @@ class PlayerController extends EventDispatcher {
         } else {
             this.velocity.x = 0;
         }
-
     }
     // Função de atualização, com movimentação e gravidade
     update(delta){
@@ -195,6 +204,8 @@ class PlayerController extends EventDispatcher {
 
         let direcao = this.velocity.clone();    
         direcao = direcao.normalize();
+
+        this.wallCollision(direcao);
 
         this.cameraHolder.translateX(direcao.x * moveDistance);
         this.cameraHolder.translateZ(direcao.y * moveDistance);
@@ -228,6 +239,7 @@ class PlayerController extends EventDispatcher {
         this.alturaChao = intersects.length > 0 ? intersects[0].point.y + 0.1 : 0.1;
         
         let isGround = this.cameraHolder.position.y <= this.alturaChao;
+
         if (isGround) {
             this.cameraHolder.position.y = this.alturaChao;
         }
@@ -244,14 +256,44 @@ class PlayerController extends EventDispatcher {
         
         const posicao = this.cilindro.getWorldPosition(new THREE.Vector3()); 
         
-        let alvo = new THREE.Vector3();
+        let alvo;
         
         if (intersects.length > 0) {
             alvo = intersects[0].point; // pega o ponto de interseção mais próximo
         } else {
-            alvo = posicao.clone().add(direcao.multiplyScalar(1000)); // se não houver interseção, define um alvo distante
+            alvo = posicao.clone().add(direcao.multiplyScalar(500)); // se não houver interseção, define um alvo distante
         }
         this.arma.atirar(posicao, alvo);
+    }
+    wallCollision(direcao) {
+        if(direcao.x === 0 && direcao.y === 0) {
+            return; // Não faz nada se a direção for zero
+        }
+        const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 1.0, 0));
+        const paredes = getParedes();
+
+        let quaternion = this.cameraHolder.quaternion.clone();
+
+        const dir = new THREE.Vector3(direcao.x, 0, direcao.y).normalize();
+        const direcao3 = new THREE.Vector3(direcao.x, 0, direcao.y).applyQuaternion(quaternion);
+
+        this.arrowHelper.setDirection(direcao3); // Atualiza a seta de direção
+        this.arrowHelper.position.copy(pos); // Atualiza a posição da seta
+
+        this.rayWall.set(pos, direcao3);
+        const intersects = this.rayWall.intersectObjects(paredes);
+
+        if (intersects.length > 0) {
+            const dInversa = direcao.clone().multiplyScalar(-1);
+            const normal = intersects[0].face.normal.clone();
+
+            let dotProduct = dInversa.dot(normal);
+            const projection = dInversa.clone().multiplyScalar(dotProduct);
+
+            direcao3.add(projection);
+            
+            console.log(direcao3.x, direcao3.y);
+        }
     }
     //#endregion
 
