@@ -91,6 +91,7 @@ class BulletPool {
 
         this.scene = scene;
         this.clock = new THREE.Clock();
+        let delta = this.clock.getDelta();
 
         this.listaParede = getParedes();
 
