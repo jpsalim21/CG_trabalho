@@ -126,6 +126,7 @@ class PlayerController extends EventDispatcher {
     // Função de captura de teclas
     movementControls(key, isPressed) {
         //console.log("key: " + key); // Em alguns momentos, essa função para de ser chamada e só volta com essa linha descomentada
+        key = key.toLowerCase(); // Normaliza a tecla para minúscula
         switch (key) {
             case "w":
             case "ArrowUp":
