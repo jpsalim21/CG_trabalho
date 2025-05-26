@@ -8,7 +8,7 @@ import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "./cenario.js";
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
-const eulerMesh = new Euler( 0, 0, 0, 'YXZ' );
+const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
 
 const GRAVIDADE = 9.8 * 10;
 
@@ -114,6 +114,9 @@ class PlayerController extends EventDispatcher {
         //#region Pool de balas
         this.arma = new BulletPool(this.scene); // cria a pool de balas
         this.atirar = false;
+        this.rayMira = new THREE.Raycaster(); // cria um raycaster para detectar o alvo
+        this.rayMira.far = 1000.0; // distância máxima do raycaster
+
         //#endregion
 
         this.connect(); 
@@ -122,7 +125,7 @@ class PlayerController extends EventDispatcher {
     //#region Funções de movimento
     // Função de captura de teclas
     movementControls(key, isPressed) {
-        console.log("key: " + key);
+        //console.log("key: " + key); // Em alguns momentos, essa função para de ser chamada e só volta com essa linha descomentada
         switch (key) {
             case "w":
             case "ArrowUp":
@@ -186,12 +189,7 @@ class PlayerController extends EventDispatcher {
         this.cameraHolder.translateZ(direcao.y * moveDistance);
 
         if(this.atirar){
-            const posicao = this.cameraHolder.position.clone();
-            posicao.y += 2.0; 
-
-            const alvo = this.alvo.getWorldPosition(new THREE.Vector3());
-
-            this.arma.atirar(posicao, alvo);
+            this.funcAtirar();
         }
 
     }
@@ -225,6 +223,25 @@ class PlayerController extends EventDispatcher {
 
         return isGround;
     }
+    funcAtirar() {
+        let objetos = getParedes();
+        let direcao = this.camera.getWorldDirection(new THREE.Vector3());
+        let camPos = this.camera.getWorldPosition(new THREE.Vector3());
+        
+        this.rayMira.set(camPos, direcao);
+        let intersects = this.rayMira.intersectObjects(objetos);
+        
+        const posicao = this.cilindro.getWorldPosition(new THREE.Vector3()); 
+        
+        let alvo = new THREE.Vector3();
+        
+        if (intersects.length > 0) {
+            alvo = intersects[0].point; // pega o ponto de interseção mais próximo
+        } else {
+            alvo = posicao.clone().add(direcao.multiplyScalar(1000)); // se não houver interseção, define um alvo distante
+        }
+        this.arma.atirar(posicao, alvo);
+    }
     //#endregion
 
     //#region Funções de eventos
@@ -256,18 +273,18 @@ function onMouseMove( event ) {
 	const movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
 	const camera = this.camera;
-    const mesh = this.cameraHolder;
+    const cameraHolder = this.cameraHolder; // Aqui foi modificado, para rotacionar o cameraHolder no eixo Y
 	_euler.setFromQuaternion( camera.quaternion );
 
-    eulerMesh.setFromQuaternion( mesh.quaternion );
+    eulerCameraHolder.setFromQuaternion( cameraHolder.quaternion );
 
-	eulerMesh.y -= movementX * 0.002 * this.pointerSpeed;
+	eulerCameraHolder.y -= movementX * 0.002 * this.pointerSpeed;
 	_euler.x -= movementY * 0.002 * this.pointerSpeed;
 
 	_euler.x = Math.max( _PI_2 - this.maxPolarAngle, Math.min( _PI_2 - this.minPolarAngle, _euler.x ) );
 
 	camera.quaternion.setFromEuler( _euler );
-    mesh.quaternion.setFromEuler( eulerMesh );
+    cameraHolder.quaternion.setFromEuler( eulerCameraHolder );
 
 	this.dispatchEvent( _changeEvent );
 }
