@@ -111,7 +111,7 @@ class BulletPool {
     // Método chamado quando o jogador atira
     atirar(posicao, alvo) {
         let delta = this.clock.getElapsedTime();
-        if(delta < 0.2) return;
+        if(delta < 0.5) return;
         let bullet = this.getBullet();
         bullet.atirar(posicao, alvo);
         this.bulletsInUse.push(bullet);

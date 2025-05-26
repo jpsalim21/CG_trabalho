@@ -80,6 +80,16 @@ class PlayerController extends EventDispatcher {
             },
             false
         );
+        this.domElement.addEventListener('mousedown', (event) => {
+            if (event.button === 0 || event.button === 2) { // Botão esquerdo do mouse
+                this.atirar = true; // Ativa o disparo
+            }
+        });
+        this.domElement.addEventListener('mouseup', (event) => {
+            if (event.button === 0 || event.button === 2) { // Botão esquerdo do mouse
+                this.atirar = false; // Desativa o disparo
+            }
+        });
 
         window.addEventListener("keydown", (event) => this.movementControls(event.key, true));
         window.addEventListener("keyup", (event) => this.movementControls(event.key, false));
@@ -150,9 +160,6 @@ class PlayerController extends EventDispatcher {
                     this.velVertical = this.pulo;
                     this.cameraHolder.position.y += 0.1;
                 }
-                break;
-            case "f": // atira
-                this.atirar = isPressed;
                 break;
         }
 
