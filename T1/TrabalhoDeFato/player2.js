@@ -110,6 +110,7 @@ class PlayerController extends EventDispatcher {
         this.pulo = 30;
         this.velVertical = 0;
         this.alturaChao = 0.1;
+        this.grounded = false;
         this.rayGround = new THREE.Raycaster(); // cria um raycaster para detectar colisões com o chão
         this.rayGround.far = 5.0;
         this.rayGround.near = 1.0;
@@ -156,7 +157,7 @@ class PlayerController extends EventDispatcher {
                 break;
             case " ":
                 //TODO: Colocar aqui a lógica de pulo, mas tá mto errada por agora
-                if(isPressed){
+                if(isPressed && this.grounded) {
                     this.velVertical = this.pulo;
                     this.cameraHolder.position.y += 0.1;
                 }
@@ -182,7 +183,8 @@ class PlayerController extends EventDispatcher {
     }
     // Função de atualização, com movimentação e gravidade
     update(delta){
-        if(this.isOnGround()){
+        this.grounded = this.isOnGround(); // Verifica se está no chão
+        if(this.grounded){
             this.velVertical = 0;
         } else {
             this.velVertical -= GRAVIDADE * delta;
