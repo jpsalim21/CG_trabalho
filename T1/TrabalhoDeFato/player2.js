@@ -188,7 +188,7 @@ class PlayerController extends EventDispatcher {
             this.velVertical = 0;
         } else {
             this.velVertical -= GRAVIDADE * delta;
-        this.cameraHolder.translateY(this.velVertical * delta);
+            this.cameraHolder.translateY(this.velVertical * delta);
         }
     
         const moveDistance = this.speed * delta;
