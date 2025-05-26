@@ -284,10 +284,10 @@ class PlayerController extends EventDispatcher {
         const intersects = this.rayWall.intersectObjects(paredes);
 
         if (intersects.length > 0) {
-            const dInversa = direcao3.clone().multiplyScalar(-1);
+            const dInversa = direcao3.clone().multiplyScalar(-1); //Essa conta tá bem errada
 
             const normal = intersects[0].face.normal.clone();
-            
+            console.log("Normal: ", normal.x, normal.y, normal.z);
             
             let dotProduct = dInversa.dot(normal);
 
