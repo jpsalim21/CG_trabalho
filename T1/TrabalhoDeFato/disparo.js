@@ -1,4 +1,5 @@
 import * as THREE from  'three';
+import { getParedes } from './cenario.js';
 
 const geometria = new THREE.SphereGeometry(0.2, 16, 16);
 const material = new THREE.MeshBasicMaterial({ color: 'rgb(241, 6, 6)' });
@@ -18,6 +19,10 @@ class Bullet {
         this.mesh.visible = false;
         this.pool = pool;
 
+        this.raycaster = new THREE.Raycaster();
+        this.raycaster.far = 3;
+        this.direcao = new THREE.Vector3(0, 0, 1); // direção inicial da bala
+
         this.clock = new THREE.Clock();
         this.clock.stopped = true;
 
@@ -30,6 +35,11 @@ class Bullet {
         this.mesh.lookAt(alvo);
         this.movendo = true;
         this.mesh.visible = true;
+
+        this.direcao = new THREE.Vector3(0, 0, 1);
+        this.direcao.applyQuaternion(this.mesh.quaternion);
+        this.direcao.normalize();
+
         this.render();
         //this.clock.start();
     }
@@ -40,14 +50,28 @@ class Bullet {
         this.mesh.translateZ(this.velocidade);
         if (this.mesh.position.y > teto || this.mesh.position.y < chao) {
             this.reset();
-        } //Daqui pra frente, não sei se é bom continuar, mas por enquanto, vou deixar assim
+            return;
+        }
         else if (this.mesh.position.x > limiteLateral || this.mesh.position.x < limiteLateralNegativo) {
             this.reset();
+            return;
         }
         else if (this.mesh.position.z > limiteLateral || this.mesh.position.z < limiteLateralNegativo) {
             this.reset();
+            return;
         }
+
+        this.isColliding();
+
         requestAnimationFrame(() => this.render());
+    }
+    isColliding(){
+        this.raycaster.set(this.mesh.getWorldPosition(new THREE.Vector3()), this.direcao);
+        const paredes = this.pool.listaParede;
+        const intersects = this.raycaster.intersectObjects(paredes);
+        if (intersects.length > 0) {
+            this.reset();
+        }
     }
 
     // Método chamado quando a bala deve ser destruída/resetada (por exemplo, quando sai da tela ou atinge um alvo)
@@ -67,6 +91,8 @@ class BulletPool {
 
         this.scene = scene;
         this.clock = new THREE.Clock();
+
+        this.listaParede = getParedes();
 
         for (let i = 0; i < this.poolSize; i++) {
             this.bullets.push(new Bullet(posInicial, this, this.scene));
