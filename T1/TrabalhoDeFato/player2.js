@@ -117,7 +117,7 @@ class PlayerController extends EventDispatcher {
 
         this.velocity = new THREE.Vector2(0, 0);
         this.rayWall = new THREE.Raycaster();
-        this.rayWall.far = 2.0;
+        this.rayWall.far = 1.5;
 
         this.teclas = [false, false, false, false];
 
@@ -204,11 +204,12 @@ class PlayerController extends EventDispatcher {
 
         let direcao = this.velocity.clone();    
         direcao = direcao.normalize();
+        direcao.multiplyScalar(moveDistance);
 
         this.wallCollision(direcao);
 
-        this.cameraHolder.translateX(direcao.x * moveDistance);
-        this.cameraHolder.translateZ(direcao.y * moveDistance);
+        this.cameraHolder.translateX(direcao.x);
+        this.cameraHolder.translateZ(direcao.y);
 
         if(this.atirar){
             this.funcAtirar();
@@ -269,33 +270,27 @@ class PlayerController extends EventDispatcher {
         if(direcao.x === 0 && direcao.y === 0) {
             return; // Não faz nada se a direção for zero
         }
+        // Raycast:
         const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 1.0, 0));
         const paredes = getParedes();
-
         let quaternion = this.cameraHolder.quaternion.clone();
-
-        const dir = new THREE.Vector3(direcao.x, 0, direcao.y).normalize();
         const direcao3 = new THREE.Vector3(direcao.x, 0, direcao.y).applyQuaternion(quaternion);
-
         this.arrowHelper.setDirection(direcao3); // Atualiza a seta de direção
         this.arrowHelper.position.copy(pos); // Atualiza a posição da seta
-
         this.rayWall.set(pos, direcao3);
         const intersects = this.rayWall.intersectObjects(paredes);
 
         if (intersects.length > 0) {
-            const dInversa = direcao3.clone().multiplyScalar(-1); //Essa conta tá bem errada
-
             const normal = intersects[0].face.normal.clone();
-            console.log("Normal: ", normal.x, normal.y, normal.z);
-            
-            let dotProduct = dInversa.dot(normal);
 
-            const projection = normal.clone().multiplyScalar(dotProduct);
-            
-            direcao3.add(projection);
-            direcao.x = direcao3.x;
-            direcao.y = direcao3.z;
+            let dNova = direcao3.clone().projectOnPlane(normal);
+
+            dNova = dNova.applyQuaternion(quaternion.clone().invert()); // Inverte a rotação do quaternion para aplicar corretamente a direção
+
+            console.log(dNova.x, dNova.y, dNova.z);
+
+            direcao.x = dNova.x;
+            direcao.y = dNova.z;
         }
     }
     //#endregion

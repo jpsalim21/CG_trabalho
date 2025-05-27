@@ -19,3 +19,11 @@ inicializaCenario(scene); // inicializa o chão
 const player = new PlayerController(scene, renderer);
 // const player = new PlayerController(scene, renderer);
 player.start();
+
+
+const normal = new THREE.Vector3(1, 0, 0);
+
+const direcao = new THREE.Vector3(1, 0, 1).normalize();
+
+const projection = direcao.clone().projectOnPlane(normal);
+console.log("Direção:", projection);
