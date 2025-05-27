@@ -147,7 +147,6 @@ class PlayerController extends EventDispatcher {
     //#region Funções de movimento
     // Função de captura de teclas
     movementControls(key, isPressed) {
-        //console.log("key: " + key); // Em alguns momentos, essa função para de ser chamada e só volta com essa linha descomentada
         key = key.toLowerCase(); // Normaliza a tecla para minúscula
         switch (key) {
             case "w":
@@ -214,7 +213,6 @@ class PlayerController extends EventDispatcher {
         if(this.atirar){
             this.funcAtirar();
         }
-
     }
     // Função de animação
     render() {
@@ -270,7 +268,6 @@ class PlayerController extends EventDispatcher {
         if(direcao.x === 0 && direcao.y === 0) {
             return; // Não faz nada se a direção for zero
         }
-        // Raycast:
         const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 1.0, 0));
         const paredes = getParedes();
         let quaternion = this.cameraHolder.quaternion.clone();
@@ -283,11 +280,9 @@ class PlayerController extends EventDispatcher {
         if (intersects.length > 0) {
             const normal = intersects[0].face.normal.clone();
 
-            let dNova = direcao3.clone().projectOnPlane(normal);
+            let dNova = direcao3.clone().projectOnPlane(normal); // Projeta a direção no plano para não atravessar paredes
 
-            dNova = dNova.applyQuaternion(quaternion.clone().invert()); // Inverte a rotação do quaternion para aplicar corretamente a direção
-
-            console.log(dNova.x, dNova.y, dNova.z);
+            dNova = dNova.applyQuaternion(quaternion.clone().invert()); // Inverte para retornar à direção original
 
             direcao.x = dNova.x;
             direcao.y = dNova.z;

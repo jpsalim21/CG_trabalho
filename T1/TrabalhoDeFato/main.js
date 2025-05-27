@@ -6,10 +6,8 @@ import {initRenderer,
 import { PlayerController } from "./player2.js";
 import { inicializaCenario } from "./cenario.js";
 
-const material = new THREE.MeshBasicMaterial({ color: 'rgb(37, 72, 45)' });
-
 const scene = new THREE.Scene();
-let renderer = initRenderer("rgb(235, 130, 216)"); // inicializa o renderizador com um rosa muito massa
+let renderer = initRenderer(); // inicializa o renderizador com um rosa muito massa
 
 let light = initDefaultBasicLight(scene);
 
