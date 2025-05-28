@@ -129,15 +129,6 @@ class PlayerController extends EventDispatcher {
 
         //#endregion
 
-
-        this.arrowHelper = new THREE.ArrowHelper(
-            new THREE.Vector3(0, 0, -1), // direção inicial
-            this.cameraHolder.position, // posição inicial
-            5, // comprimento da seta
-            0xff0000 // cor da seta (vermelho)
-        );
-        this.scene.add(this.arrowHelper); // adiciona a seta à cena
-
         this.connect(); 
     }
 
@@ -269,8 +260,6 @@ class PlayerController extends EventDispatcher {
         const paredes = getParedes();
         let quaternion = this.cameraHolder.quaternion.clone();
         const direcao3 = new THREE.Vector3(direcao.x, 0, direcao.y).applyQuaternion(quaternion);
-        this.arrowHelper.setDirection(direcao3); // Atualiza a seta de direção
-        this.arrowHelper.position.copy(pos); // Atualiza a posição da seta
         this.rayWall.set(pos, direcao3);
         const intersects = this.rayWall.intersectObjects(paredes);
 
