@@ -76,13 +76,7 @@ class PlayerController extends EventDispatcher {
             this.instructions.style.display = "";
             this.mira.style.display = "none"; 
         });
-        window.addEventListener(
-            "resize",
-            () => {
-                onWindowResize(this.camera, this.renderer);
-            },
-            false
-        );
+        window.addEventListener( 'resize', function(){onWindowResize(camera, renderer)}, false );
         this.domElement.addEventListener('mousedown', (event) => {
             if (event.button === 0 || event.button === 2) { // Botão esquerdo do mouse
                 this.atirar = true; // Ativa o disparo
