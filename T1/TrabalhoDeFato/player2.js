@@ -70,7 +70,7 @@ class PlayerController extends EventDispatcher {
             this.blocker.style.display = "none";
         });
         this.addEventListener("unlock", () => {
-            this.blocker.style.display = "block";
+            this.blocker.style.display = "";
             this.instructions.style.display = "";
         });
         window.addEventListener(
