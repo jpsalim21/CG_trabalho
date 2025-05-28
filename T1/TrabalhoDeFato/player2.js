@@ -56,6 +56,7 @@ class PlayerController extends EventDispatcher {
         //#region HTML e eventos
         this.blocker = document.getElementById("blocker");
         this.instructions = document.getElementById("instructions");
+        this.mira = document.getElementById("mira");
         this.domElement = renderer.domElement;
 
         this.instructions.addEventListener(
@@ -68,10 +69,12 @@ class PlayerController extends EventDispatcher {
         this.addEventListener("lock", () => {
             this.instructions.style.display = "none";
             this.blocker.style.display = "none";
+            this.mira.style.display = "block"; 
         });
         this.addEventListener("unlock", () => {
             this.blocker.style.display = "";
             this.instructions.style.display = "";
+            this.mira.style.display = "none"; 
         });
         window.addEventListener(
             "resize",
