@@ -1,6 +1,4 @@
 Criar o crosshair
 Fazer a colisão com paredes
 Fazer o cenário
-Verificar se a descida das escadas está satisfatória para o professor
-Verificar se o sistema de colisão do chão funciona no PC da UF
 Melhorar o aspectratio do site (provavelmente html ou css, olhar no exemplo FP)

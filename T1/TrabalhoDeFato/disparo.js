@@ -21,7 +21,7 @@ class Bullet {
 
         this.raycaster = new THREE.Raycaster();
         this.raycaster.far = 3;
-        this.direcao = new THREE.Vector3(0, 0, 1); // direção inicial da bala
+        this.direcao = new THREE.Vector3(0, 0, 1);
 
         this.clock = new THREE.Clock();
         this.clock.stopped = true;
@@ -91,6 +91,7 @@ class BulletPool {
 
         this.scene = scene;
         this.clock = new THREE.Clock();
+        let delta = this.clock.getDelta();
 
         this.listaParede = getParedes();
 

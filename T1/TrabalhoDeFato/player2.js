@@ -10,7 +10,7 @@ import { getChao, getParedes } from "./cenario.js";
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
 
-const GRAVIDADE = 9.8 * 10;
+const GRAVIDADE = 9.8 * 6;
 
 const _changeEvent = { type: 'change' };
 const _lockEvent = { type: 'lock' };
@@ -56,6 +56,7 @@ class PlayerController extends EventDispatcher {
         //#region HTML e eventos
         this.blocker = document.getElementById("blocker");
         this.instructions = document.getElementById("instructions");
+        this.mira = document.getElementById("mira");
         this.domElement = renderer.domElement;
 
         this.instructions.addEventListener(
@@ -68,18 +69,14 @@ class PlayerController extends EventDispatcher {
         this.addEventListener("lock", () => {
             this.instructions.style.display = "none";
             this.blocker.style.display = "none";
+            this.mira.style.display = "block"; 
         });
         this.addEventListener("unlock", () => {
-            this.blocker.style.display = "block";
+            this.blocker.style.display = "";
             this.instructions.style.display = "";
+            this.mira.style.display = "none"; 
         });
-        window.addEventListener(
-            "resize",
-            () => {
-                onWindowResize(this.camera, this.renderer);
-            },
-            false
-        );
+        window.addEventListener( 'resize', function(){onWindowResize(camera, renderer)}, false );
         this.domElement.addEventListener('mousedown', (event) => {
             if (event.button === 0 || event.button === 2) { // Botão esquerdo do mouse
                 this.atirar = true; // Ativa o disparo
@@ -107,7 +104,7 @@ class PlayerController extends EventDispatcher {
 		this.maxPolarAngle = Math.PI; 
 
         this.speed = 15;
-        this.pulo = 30;
+        this.pulo = 15;
         this.velVertical = 0;
         this.alturaChao = 0.1;
         this.grounded = false;
@@ -116,6 +113,8 @@ class PlayerController extends EventDispatcher {
         this.rayGround.near = 1.0;
 
         this.velocity = new THREE.Vector2(0, 0);
+        this.rayWall = new THREE.Raycaster();
+        this.rayWall.far = 1.5;
 
         this.teclas = [false, false, false, false];
 
@@ -136,7 +135,6 @@ class PlayerController extends EventDispatcher {
     //#region Funções de movimento
     // Função de captura de teclas
     movementControls(key, isPressed) {
-        //console.log("key: " + key); // Em alguns momentos, essa função para de ser chamada e só volta com essa linha descomentada
         key = key.toLowerCase(); // Normaliza a tecla para minúscula
         switch (key) {
             case "w":
@@ -156,7 +154,6 @@ class PlayerController extends EventDispatcher {
                 this.teclas[3] = isPressed;
                 break;
             case " ":
-                //TODO: Colocar aqui a lógica de pulo, mas tá mto errada por agora
                 if(isPressed && this.grounded) {
                     this.velVertical = this.pulo;
                     this.cameraHolder.position.y += 0.1;
@@ -179,7 +176,6 @@ class PlayerController extends EventDispatcher {
         } else {
             this.velocity.x = 0;
         }
-
     }
     // Função de atualização, com movimentação e gravidade
     update(delta){
@@ -190,18 +186,21 @@ class PlayerController extends EventDispatcher {
             this.velVertical -= GRAVIDADE * delta;
             this.cameraHolder.translateY(this.velVertical * delta);
         }
+    
         const moveDistance = this.speed * delta;
 
         let direcao = this.velocity.clone();    
         direcao = direcao.normalize();
+        direcao.multiplyScalar(moveDistance);
 
-        this.cameraHolder.translateX(direcao.x * moveDistance);
-        this.cameraHolder.translateZ(direcao.y * moveDistance);
+        this.wallCollision(direcao);
+
+        this.cameraHolder.translateX(direcao.x);
+        this.cameraHolder.translateZ(direcao.y);
 
         if(this.atirar){
             this.funcAtirar();
         }
-
     }
     // Função de animação
     render() {
@@ -227,6 +226,7 @@ class PlayerController extends EventDispatcher {
         this.alturaChao = intersects.length > 0 ? intersects[0].point.y + 0.1 : 0.1;
         
         let isGround = this.cameraHolder.position.y <= this.alturaChao;
+
         if (isGround) {
             this.cameraHolder.position.y = this.alturaChao;
         }
@@ -243,14 +243,36 @@ class PlayerController extends EventDispatcher {
         
         const posicao = this.cilindro.getWorldPosition(new THREE.Vector3()); 
         
-        let alvo = new THREE.Vector3();
+        let alvo;
         
         if (intersects.length > 0) {
             alvo = intersects[0].point; // pega o ponto de interseção mais próximo
         } else {
-            alvo = posicao.clone().add(direcao.multiplyScalar(1000)); // se não houver interseção, define um alvo distante
+            alvo = posicao.clone().add(direcao.multiplyScalar(500)); // se não houver interseção, define um alvo distante
         }
         this.arma.atirar(posicao, alvo);
+    }
+    wallCollision(direcao) {
+        if(direcao.x === 0 && direcao.y === 0) {
+            return; // Não faz nada se a direção for zero
+        }
+        const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 1.0, 0));
+        const paredes = getParedes();
+        let quaternion = this.cameraHolder.quaternion.clone();
+        const direcao3 = new THREE.Vector3(direcao.x, 0, direcao.y).applyQuaternion(quaternion);
+        this.rayWall.set(pos, direcao3);
+        const intersects = this.rayWall.intersectObjects(paredes);
+
+        if (intersects.length > 0) {
+            const normal = intersects[0].face.normal.clone();
+
+            let dNova = direcao3.clone().projectOnPlane(normal); // Projeta a direção no plano para não atravessar paredes
+
+            dNova = dNova.applyQuaternion(quaternion.clone().invert()); // Inverte para retornar à direção original
+
+            direcao.x = dNova.x;
+            direcao.y = dNova.z;
+        }
     }
     //#endregion
 

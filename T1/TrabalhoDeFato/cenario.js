@@ -9,32 +9,23 @@ let chao = []; // array para armazenar os objetos do chão
 let paredes = []; // array para armazenar as paredes
 
 function inicializaCenario(scene) {
-    /*
-    const groundTexturePath = "../../assets/textures/wood.png"; // caminho da textura do chão
-    const loader = new THREE.TextureLoader();
-    const groundTexture = loader.load(groundTexturePath);
-    groundTexture.colorSpace = THREE.SRGBColorSpace;
-    groundTexture.wrapS = THREE.MirroredRepeatWrapping;
-    groundTexture.wrapT = THREE.RepeatWrapping; // repetição vertical para garantir que o chão não fique descontinuo ou desigual
-    groundTexture.repeat.set(15, 15); // muito chão
-    */
-
     // Cria o chão
     let ground = new THREE.Mesh(planeGeometry, material);
     ground.position.set(0, 0, 0); // posiciona o chão no centro da cena
     ground.rotation.x = -0.5 * Math.PI; // rotaciona para ficar horizontal
-    chao.push(ground);
+    chao.push(ground); // adiciona o chão ao array de chão
 
     // Cubo provisório
     let cubo1 = new THREE.Mesh(cubeGeometry, material2);
     cubo1.position.set(0, 2.5, -20);
-    paredes.push(cubo1);
     chao.push(cubo1);
+    paredes.push(cubo1);
 
     let cubo2 = new THREE.Mesh(cubeGeometry, material2);
     cubo2.position.set(-6.75, -0.3, -20);
     cubo2.rotation.z = Math.PI / 4;
     chao.push(cubo2);
+    paredes.push(cubo2);
 
 
     //Adiciona os objetos na cena
