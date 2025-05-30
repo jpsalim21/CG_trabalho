@@ -8,8 +8,6 @@ const material = setDefaultMaterial();
 const posInicial = new THREE.Vector3(0, -10, 0);
 const teto = 150;
 const chao = -5;
-const limiteLateral = 250;
-const limiteLateralNegativo = -250;
 
 class Bullet {
     constructor(posicao, pool, scene) {
@@ -24,8 +22,6 @@ class Bullet {
         this.raycaster.far = 3;
         this.direcao = new THREE.Vector3(0, 0, 1);
 
-        this.clock = new THREE.Clock();
-
         scene.add(this.mesh);
     }
 
@@ -39,33 +35,19 @@ class Bullet {
         this.direcao = new THREE.Vector3(0, 0, 1);
         this.direcao.applyQuaternion(this.mesh.quaternion);
         this.direcao.normalize();
-        
-        this.clock.start();
-        this.clock.getDelta();
-
-        this.render();
     }
 
     //Método chamado a cada frame
-    render() {
+    render(delta) {
         if (!this.movendo) return;
-        this.mesh.translateZ(this.velocidade * this.clock.getDelta());
+        this.mesh.translateZ(this.velocidade * delta);
+
         if (this.mesh.position.y > teto || this.mesh.position.y < chao) {
-            this.reset();
-            return;
-        }
-        else if (this.mesh.position.x > limiteLateral || this.mesh.position.x < limiteLateralNegativo) {
-            this.reset();
-            return;
-        }
-        else if (this.mesh.position.z > limiteLateral || this.mesh.position.z < limiteLateralNegativo) {
             this.reset();
             return;
         }
 
         this.isColliding();
-
-        requestAnimationFrame(() => this.render());
     }
     isColliding(){
         this.raycaster.set(this.mesh.getWorldPosition(new THREE.Vector3()), this.direcao);
@@ -93,13 +75,27 @@ class BulletPool {
 
         this.scene = scene;
         this.clock = new THREE.Clock();
-        let delta = this.clock.getDelta();
+        this.clock.getDelta();
+
+        this.clockBala = new THREE.Clock();
+        this.clockBala.getDelta();
 
         this.listaParede = getParedes();
 
         for (let i = 0; i < this.poolSize; i++) {
             this.bullets.push(new Bullet(posInicial, this, this.scene));
         }
+        this.render();
+    }
+
+    render() {
+        let delta = this.clockBala.getDelta();
+
+        this.bulletsInUse.forEach(b => {
+            b.render(delta);
+        });
+
+        requestAnimationFrame(() => this.render());
     }
 
     // Um método para pegar uma bala da pool ou criar uma nova se não houver nenhuma disponível
