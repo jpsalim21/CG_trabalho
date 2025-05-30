@@ -33,7 +33,7 @@ function inicializaCenario(scene) {
     // Cria as escadas
     const escada = new THREE.Group();
 
-    const degraus = 8;
+    const degraus = 10;
     const largura = 30;
     const alturaTotal = 30;
     const comprimento = 30;

@@ -39,8 +39,8 @@ class PlayerController extends EventDispatcher {
             0.1, 
             1000 
         );
-        this.camera.position.set(0, 12, 0);
-        this.camera.lookAt(new THREE.Vector3(0, 12, -1)); // começa olhando pra frente
+        this.camera.position.set(0, 5, 0);
+        this.camera.lookAt(new THREE.Vector3(0, 5, -1)); // começa olhando pra frente
         this.cameraHolder.add(this.camera);
         
         // Cria a arma
@@ -167,7 +167,6 @@ class PlayerController extends EventDispatcher {
                 break;
         }
 
-        // TODO: Aqui, uma direção é privilegiada, ou seja, se apertar w e a, o w tem prioridade. ARRUMAR ISSO!!!!
         if (this.teclas[0]) {
             this.velocity.y = -1;
         } else if (this.teclas[1]) {
@@ -218,7 +217,7 @@ class PlayerController extends EventDispatcher {
         this.renderer.render(this.scene, this.camera);
         requestAnimationFrame(() => this.render());
     }
-    // Começa as animações e etc...
+
     start() {
         this.render();
     }
@@ -263,13 +262,13 @@ class PlayerController extends EventDispatcher {
         if(direcao.x === 0 && direcao.y === 0) {
             return; // Não faz nada se a direção for zero
         }
-
+        
         const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 4.0, 0));
         const paredes = getParedes();
         let quaternion = this.cameraHolder.quaternion.clone();
         const direcao3 = new THREE.Vector3(direcao.x, 0, direcao.y).applyQuaternion(quaternion);
         this.rayWall.set(pos, direcao3);
-        const intersects = this.rayWall.intersectObjects(paredes);
+        const intersects = this.rayWall.intersectObjects(paredes, true);
         
         if (intersects.length > 0) {
             let normal = intersects[0].face.normal.clone();
@@ -284,6 +283,22 @@ class PlayerController extends EventDispatcher {
 
             direcao.x = dNova.x;
             direcao.y = dNova.z;
+        }
+
+        //Verifica limites do cenário (500x500)
+        const LIMITE_CENA = 250; 
+        const posicaoFutura = pos.clone().add(new THREE.Vector3(direcao.x, 0, direcao.y));
+
+        if (Math.abs(posicaoFutura.x) > LIMITE_CENA - 1) { 
+            direcao.x = 0;
+            if (pos.x > LIMITE_CENA) this.cameraHolder.position.x = LIMITE_CENA - 0.1;
+            if (pos.x < -LIMITE_CENA) this.cameraHolder.position.x = -LIMITE_CENA + 0.1;
+        }
+
+        if (Math.abs(posicaoFutura.z) > LIMITE_CENA - 1) {
+            direcao.y = 0;
+            if (pos.z > LIMITE_CENA) this.cameraHolder.position.z = LIMITE_CENA - 0.1;
+            if (pos.z < -LIMITE_CENA) this.cameraHolder.position.z = -LIMITE_CENA + 0.1;
         }
     }
     //#endregion

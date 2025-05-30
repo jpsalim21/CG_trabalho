@@ -58,7 +58,7 @@ class Bullet {
         }
     }
 
-    // Método chamado quando a bala deve ser destruída/resetada (por exemplo, quando sai da tela ou atinge um alvo)
+    // Método chamado quando a bala sai da tela ou atinge um alvo
     reset() {
         this.movendo = false;
         this.mesh.position.copy(posInicial);
@@ -67,6 +67,7 @@ class Bullet {
     }
 }
 
+//Pool para quantidade de balas que o jogador pode disparar
 class BulletPool {
     constructor(scene) {
         this.bullets = [];
