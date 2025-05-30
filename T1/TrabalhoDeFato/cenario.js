@@ -1,11 +1,14 @@
 import * as THREE from "three";
 import {setDefaultMaterial} from "../../libs/util/util.js";
 
-const cubeGeometry = new THREE.BoxGeometry(5, 5, 5); // Geometria do cubo
+const material = setDefaultMaterial('rgb(37, 72, 45)'); // Material do chão
+const materialParede = setDefaultMaterial('rgb(86, 86, 86)'); // Material das paredes
+const materialEscada = setDefaultMaterial('rgb(164, 164, 164)'); // Material das escadas
+const material1 = setDefaultMaterial('rgb(157, 30, 117)'); // Material da área 1
+const material2 = setDefaultMaterial('rgb(21, 168, 21)'); // Material da área 2
+const material3 = setDefaultMaterial('rgb(23, 23, 167)'); // Material da área 3
+const material4 = setDefaultMaterial('rgb(165, 165, 30)'); // Material da área 4
 
-const material = new THREE.MeshBasicMaterial({ color: 'rgb(37, 72, 45)' });
-const materialParede = new THREE.MeshBasicMaterial({ color: 'rgb(68, 68, 68)' });
-const materialEscada = setDefaultMaterial(); 
 const planeGeometry = new THREE.PlaneGeometry(500, 500, 5);
 const paredeGeometry = new THREE.PlaneGeometry(500, 100, 5); 
 
@@ -86,10 +89,10 @@ function area3() {
     const geoBox = new THREE.BoxGeometry(48, 48, 24);
 
     const escadaObj = escada();
-    const boxArea = new THREE.Mesh(boxAreas, materialEscada);
-    const box2 = new THREE.Mesh(geoBox, materialEscada);
-    const box3 = new THREE.Mesh(geoBox, materialEscada);
-    const rampa = new THREE.Mesh(rampaGeo, materialEscada);
+    const boxArea = new THREE.Mesh(boxAreas, material1);
+    const box2 = new THREE.Mesh(geoBox, material1);
+    const box3 = new THREE.Mesh(geoBox, material1);
+    const rampa = new THREE.Mesh(rampaGeo, material1);
 
     obj.add(escadaObj);
     obj.add(boxArea);
@@ -125,10 +128,10 @@ function area1() {
     const geoBox2 = new THREE.BoxGeometry(24, 48, 24);
 
     const escadaObj = escada();
-    const boxArea = new THREE.Mesh(boxAreas, materialEscada);
-    const box2 = new THREE.Mesh(geoBox1, materialEscada);
-    const box3 = new THREE.Mesh(geoBox2, materialEscada);
-    const rampa = new THREE.Mesh(rampaGeo, materialEscada);
+    const boxArea = new THREE.Mesh(boxAreas, material2);
+    const box2 = new THREE.Mesh(geoBox1, material2);
+    const box3 = new THREE.Mesh(geoBox2, material2);
+    const rampa = new THREE.Mesh(rampaGeo, material2);
     obj.add(escadaObj);
     obj.add(boxArea);
     obj.add(box2);
@@ -161,10 +164,10 @@ function area2(){
     const geoBox2 = new THREE.BoxGeometry(24, 48, 24);
 
     const escadaObj = escada();
-    const boxArea = new THREE.Mesh(boxAreas, materialEscada);
-    const box2 = new THREE.Mesh(geoBox1, materialEscada);
-    const box3 = new THREE.Mesh(geoBox2, materialEscada);
-    const rampa = new THREE.Mesh(rampaGeo, materialEscada);
+    const boxArea = new THREE.Mesh(boxAreas, material3);
+    const box2 = new THREE.Mesh(geoBox1, material3);
+    const box3 = new THREE.Mesh(geoBox2, material3);
+    const rampa = new THREE.Mesh(rampaGeo, material3);
     obj.add(escadaObj);
     obj.add(boxArea);
     obj.add(box2);
@@ -197,10 +200,10 @@ function area4(){
     const geoBox2 = new THREE.BoxGeometry(113, 48, 24);
 
     const escadaObj = escada();
-    const box1 = new THREE.Mesh(geoBox1, materialEscada);
-    const box2 = new THREE.Mesh(geoBox2, materialEscada);
-    const rampa = new THREE.Mesh(rampaGeo, materialEscada);
-    const box3 = new THREE.Mesh(geoBox2, materialEscada);
+    const box1 = new THREE.Mesh(geoBox1, material4);
+    const box2 = new THREE.Mesh(geoBox2, material4);
+    const rampa = new THREE.Mesh(rampaGeo, material4);
+    const box3 = new THREE.Mesh(geoBox2, material4);
     obj.add(escadaObj);
     obj.add(box1);
     obj.add(box2);

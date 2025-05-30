@@ -1,7 +1,7 @@
 import * as THREE from  'three';
 import { getParedes } from './cenario.js';
 
-const geometria = new THREE.SphereGeometry(0.2, 16, 16);
+const geometria = new THREE.SphereGeometry(0.8, 16, 16);
 const material = new THREE.MeshBasicMaterial({ color: 'rgb(241, 6, 6)' });
 
 const posInicial = new THREE.Vector3(0, -10, 0);
@@ -14,7 +14,7 @@ class Bullet {
     constructor(posicao, pool, scene) {
         this.mesh = new THREE.Mesh(geometria, material);
         this.mesh.position.copy(posicao);
-        this.velocidade = 0.5;
+        this.velocidade = 2;
         this.movendo = false;
         this.mesh.visible = false;
         this.pool = pool;

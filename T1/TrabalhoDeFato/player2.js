@@ -44,10 +44,10 @@ class PlayerController extends EventDispatcher {
         this.cameraHolder.add(this.camera);
         
         // Cria a arma
-        let cilindroGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1, 16);
+        let cilindroGeometry = new THREE.CylinderGeometry(1.0, 1.0, 4, 16);
         this.cilindro = new THREE.Mesh(cilindroGeometry, armaMaterial); 
         this.camera.add(this.cilindro); 
-        this.cilindro.position.set(0, -1, -2); 
+        this.cilindro.position.set(0, -2.5, -6); 
         this.cilindro.rotation.x = -Math.PI / 2;
         
         scene.add(this.cameraHolder);
@@ -115,8 +115,8 @@ class PlayerController extends EventDispatcher {
         this.alturaChao = 0.1;
         this.grounded = false;
         this.rayGround = new THREE.Raycaster(); // cria um raycaster para detectar colisões com o chão
-        this.rayGround.far = 7.0;
-        this.rayGround.near = 1.0;
+        this.rayGround.far = 20.0;
+        this.rayGround.near = 0.1;
 
         this.velocity = new THREE.Vector2(0, 0);
         this.rayWall = new THREE.Raycaster();
@@ -186,8 +186,9 @@ class PlayerController extends EventDispatcher {
     // Função de atualização, com movimentação e gravidade
     update(delta){
         this.grounded = this.isOnGround(); // Verifica se está no chão
+
         if(this.grounded){
-            this.velVertical = 0;
+            this.velVertical = -50;
         } else {
             this.velVertical -= GRAVIDADE * delta;
             this.cameraHolder.translateY(this.velVertical * delta);
@@ -224,16 +225,17 @@ class PlayerController extends EventDispatcher {
     // Verifica se o jogador está no chão, por meio de um raycast
     isOnGround(){
         const position = this.cameraHolder.position.clone();
-        position.y += 6.0; 
+        position.y += 10.0; 
         this.rayGround.set(position, new THREE.Vector3(0, -1, 0)); 
         
         const intersects = this.rayGround.intersectObjects(getChao());
         
         this.alturaChao = intersects.length > 0 ? intersects[0].point.y + 0.1 : 0.1;
         
-        let isGround = this.cameraHolder.position.y <= this.alturaChao;
+        let isGround = this.cameraHolder.position.y <= this.alturaChao + 0.05;
 
-        if (isGround) {
+        if (this.cameraHolder.position.y < this.alturaChao - 0.1) {
+            console.log("Rodou aqui");
             this.cameraHolder.position.y = this.alturaChao;
         }
 
