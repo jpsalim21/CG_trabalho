@@ -1,8 +1,9 @@
 import * as THREE from  'three';
 import { getParedes } from './cenario.js';
+import {setDefaultMaterial} from "../../libs/util/util.js";
 
 const geometria = new THREE.SphereGeometry(0.8, 16, 16);
-const material = new THREE.MeshBasicMaterial({ color: 'rgb(241, 6, 6)' });
+const material = setDefaultMaterial();
 
 const posInicial = new THREE.Vector3(0, -10, 0);
 const teto = 150;
