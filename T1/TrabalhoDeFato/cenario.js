@@ -1,16 +1,22 @@
 import * as THREE from "three";
-
-const material = new THREE.MeshBasicMaterial({ color: 'rgb(37, 72, 45)' });
-const material2 = new THREE.MeshBasicMaterial({ color: 'rgb(0, 106, 255)' });
-const materialParede = new THREE.MeshBasicMaterial({ color: 'rgb(68, 68, 68)' }); // Material para as paredes
-const planeGeometry = new THREE.PlaneGeometry(500, 500, 5);
-const paredeGeometry = new THREE.PlaneGeometry(500, 100, 5); // Geometria para as paredes frontais e traseiras
+import {setDefaultMaterial} from "../../libs/util/util.js";
 
 const cubeGeometry = new THREE.BoxGeometry(5, 5, 5); // Geometria do cubo
 
-let chao = []; // array para armazenar os objetos do chão
-let paredes = []; // array para armazenar as paredes
+const material = new THREE.MeshBasicMaterial({ color: 'rgb(37, 72, 45)' });
+const material2 = new THREE.MeshBasicMaterial({ color: 'rgb(0, 106, 255)' });
+const materialParede = new THREE.MeshBasicMaterial({ color: 'rgb(68, 68, 68)' });
+const materialEscada = setDefaultMaterial(); 
+const planeGeometry = new THREE.PlaneGeometry(500, 500, 5);
+const paredeGeometry = new THREE.PlaneGeometry(500, 100, 5); 
 
+const degrauGeo = new THREE.BoxGeometry(24, 3, 3); 
+const boxAreas = new THREE.BoxGeometry(120, 48, 96); 
+const xzPlane = Math.sqrt(24**2 + 24**2);
+const rampaGeo = new THREE.PlaneGeometry(xzPlane, xzPlane, 5);
+
+let chao = []; 
+let paredes = []; 
 
 function inicializaCenario(scene) {
     // Cria o chão
@@ -19,12 +25,7 @@ function inicializaCenario(scene) {
     ground.rotation.x = -0.5 * Math.PI; // rotaciona para ficar horizontal
     chao.push(ground); // adiciona o chão ao array de chão
 
-    // Cubo provisório
-    let cubo1 = new THREE.Mesh(cubeGeometry, material2);
-    cubo1.position.set(0, 2.5, -20);
-    chao.push(cubo1);
-    paredes.push(cubo1);
-
+    // #region Paredes
     const parede1 = new THREE.Mesh(paredeGeometry, materialParede); // Cria a parede frontal
     parede1.position.set(0, 50, -250); // Posiciona a parede frontal
     parede1.rotation.x = 0 * Math.PI; // Rotaciona para ficar horizontal
@@ -48,11 +49,56 @@ function inicializaCenario(scene) {
     parede4.rotation.y = -0.5 * Math.PI; // Rotaciona para ficar vertical
     paredes.push(parede4); // Adiciona a parede direita ao array de paredes
     scene.add(parede4); // Adiciona a parede direita à cena
+    // #endregion Paredes
+
+    const area3Obj = area3(); // Cria a área 1
+    scene.add(area3Obj); // Adiciona a área 1 à cena
 
     //Adiciona os objetos na cena
     scene.add(ground);
-    scene.add(cubo1);
 }
+
+function escada(){
+    const obj = new THREE.Object3D(); // Cria um objeto vazio para agrupar os degraus
+
+    for (let i = 0; i < 8; i++) {
+        const degrau = new THREE.Mesh(degrauGeo, materialEscada);
+        degrau.position.set(0, 22 - (i * 3), 10.5 - (i * 3));
+        obj.add(degrau);
+    }
+    return obj;
+}
+
+function area3() {
+    const obj = new THREE.Object3D();
+    const geoBox = new THREE.BoxGeometry(48, 48, 24);
+
+    const escadaObj = escada();
+    const boxArea = new THREE.Mesh(boxAreas, materialEscada);
+    const box2 = new THREE.Mesh(geoBox, materialEscada);
+    const box3 = new THREE.Mesh(geoBox, materialEscada);
+    const rampa = new THREE.Mesh(rampaGeo, materialEscada);
+
+    obj.add(escadaObj);
+    obj.add(boxArea);
+    obj.add(box2);
+    obj.add(box3);
+    obj.add(rampa);
+
+    boxArea.position.set(0, 0, 48);
+    escadaObj.position.set(0, 0, -12);
+    box2.position.set(36, 0, -12);
+    box3.position.set(-36, 0, -12);
+    rampa.position.set(0, 12, -12);
+    rampa.rotation.x = Math.PI / 4;
+
+    chao.push(rampa);
+
+    obj.rotation.y = Math.PI;
+
+    return obj;
+}
+
 
 //Só pra gente puxar os objetos para a colisão
 function getParedes() {
