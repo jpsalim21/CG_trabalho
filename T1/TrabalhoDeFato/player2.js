@@ -76,7 +76,13 @@ class PlayerController extends EventDispatcher {
             this.instructions.style.display = "";
             this.mira.style.display = "none"; 
         });
-        window.addEventListener( 'resize', function(){onWindowResize(camera, renderer)}, false );
+        window.addEventListener(
+            "resize",
+            () => {
+                onWindowResize(this.camera, this.renderer);
+            },
+            false
+        );
         this.domElement.addEventListener('mousedown', (event) => {
             if (event.button === 0 || event.button === 2) { // Botão esquerdo do mouse
                 this.atirar = true; // Ativa o disparo
@@ -103,7 +109,7 @@ class PlayerController extends EventDispatcher {
         this.minPolarAngle = 0;
 		this.maxPolarAngle = Math.PI; 
 
-        this.speed = 15;
+        this.speed = 40;
         this.pulo = 15;
         this.velVertical = 0;
         this.alturaChao = 0.1;
@@ -256,15 +262,20 @@ class PlayerController extends EventDispatcher {
         if(direcao.x === 0 && direcao.y === 0) {
             return; // Não faz nada se a direção for zero
         }
+
         const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 1.0, 0));
         const paredes = getParedes();
         let quaternion = this.cameraHolder.quaternion.clone();
         const direcao3 = new THREE.Vector3(direcao.x, 0, direcao.y).applyQuaternion(quaternion);
         this.rayWall.set(pos, direcao3);
         const intersects = this.rayWall.intersectObjects(paredes);
-
+        
         if (intersects.length > 0) {
-            const normal = intersects[0].face.normal.clone();
+            let normal = intersects[0].face.normal.clone();
+
+            normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(intersects[0].object.matrixWorld)).normalize(); // Aplica a matriz normal para obter a direção correta
+
+            console.log("Colidiu com parede: ", normal.x, normal.y, normal.z);
 
             let dNova = direcao3.clone().projectOnPlane(normal); // Projeta a direção no plano para não atravessar paredes
 
