@@ -2,7 +2,7 @@ import {
 	Euler,
 	EventDispatcher,
 } from 'three';
-import { onWindowResize } from "../libs/util/util.js";
+import { onWindowResize, setDefaultMaterial } from "../libs/util/util.js";
 import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "./cenario.js";
@@ -18,7 +18,7 @@ const _unlockEvent = { type: 'unlock' };
 
 const _PI_2 = Math.PI / 2;
 
-const armaMaterial = new THREE.MeshBasicMaterial({ color: "rgb(108, 108, 108)" }); // material para a arma
+const armaMaterial = setDefaultMaterial('rgb(108, 108, 108)');
 
 class PlayerController extends EventDispatcher {
     constructor(scene, renderer) {
