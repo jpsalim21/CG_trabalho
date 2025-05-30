@@ -10,7 +10,7 @@ import { getChao, getParedes } from "./cenario.js";
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
 
-const GRAVIDADE = 9.8 * 6;
+const GRAVIDADE = 9.8 * 10;
 
 const _changeEvent = { type: 'change' };
 const _lockEvent = { type: 'lock' };
@@ -39,8 +39,8 @@ class PlayerController extends EventDispatcher {
             0.1, 
             1000 
         );
-        this.camera.position.set(0, 2, 0);
-        this.camera.lookAt(new THREE.Vector3(0, 2, -1)); // começa olhando pra frente
+        this.camera.position.set(0, 12, 0);
+        this.camera.lookAt(new THREE.Vector3(0, 12, -1)); // começa olhando pra frente
         this.cameraHolder.add(this.camera);
         
         // Cria a arma
@@ -109,13 +109,13 @@ class PlayerController extends EventDispatcher {
         this.minPolarAngle = 0;
 		this.maxPolarAngle = Math.PI; 
 
-        this.speed = 40;
-        this.pulo = 15;
+        this.speed = 60;
+        this.pulo = 40;
         this.velVertical = 0;
         this.alturaChao = 0.1;
         this.grounded = false;
         this.rayGround = new THREE.Raycaster(); // cria um raycaster para detectar colisões com o chão
-        this.rayGround.far = 5.0;
+        this.rayGround.far = 7.0;
         this.rayGround.near = 1.0;
 
         this.velocity = new THREE.Vector2(0, 0);
@@ -224,7 +224,7 @@ class PlayerController extends EventDispatcher {
     // Verifica se o jogador está no chão, por meio de um raycast
     isOnGround(){
         const position = this.cameraHolder.position.clone();
-        position.y += 2.0; 
+        position.y += 6.0; 
         this.rayGround.set(position, new THREE.Vector3(0, -1, 0)); 
         
         const intersects = this.rayGround.intersectObjects(getChao());
@@ -263,7 +263,7 @@ class PlayerController extends EventDispatcher {
             return; // Não faz nada se a direção for zero
         }
 
-        const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 1.0, 0));
+        const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 4.0, 0));
         const paredes = getParedes();
         let quaternion = this.cameraHolder.quaternion.clone();
         const direcao3 = new THREE.Vector3(direcao.x, 0, direcao.y).applyQuaternion(quaternion);
