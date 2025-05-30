@@ -4,7 +4,6 @@ import {setDefaultMaterial} from "../../libs/util/util.js";
 const cubeGeometry = new THREE.BoxGeometry(5, 5, 5); // Geometria do cubo
 
 const material = new THREE.MeshBasicMaterial({ color: 'rgb(37, 72, 45)' });
-const material2 = new THREE.MeshBasicMaterial({ color: 'rgb(0, 106, 255)' });
 const materialParede = new THREE.MeshBasicMaterial({ color: 'rgb(68, 68, 68)' });
 const materialEscada = setDefaultMaterial(); 
 const planeGeometry = new THREE.PlaneGeometry(500, 500, 5);
@@ -53,7 +52,15 @@ function inicializaCenario(scene) {
 
     const area3Obj = area3(); 
     scene.add(area3Obj);
-    area3Obj.position.set(125, 0, -125); 
+    area3Obj.position.set(135, 0, -125); 
+
+    const area1Obj = area1();
+    scene.add(area1Obj);
+    area1Obj.position.set(-135, 0, -125);
+
+    const area2Obj = area2();
+    scene.add(area2Obj);
+    area2Obj.position.set(0, 0, -125);
 
     //Adiciona os objetos na cena
     scene.add(ground);
@@ -64,7 +71,7 @@ function escada(){
 
     for (let i = 0; i < 8; i++) {
         const degrau = new THREE.Mesh(degrauGeo, materialEscada);
-        degrau.position.set(0, 22 - (i * 3), 10.5 - (i * 3));
+        degrau.position.set(0, 22.5 - (i * 3), 10.5 - (i * 3));
         obj.add(degrau);
     }
     return obj;
@@ -108,6 +115,77 @@ function area3() {
     return obj;
 }
 
+function area1() {
+    const obj = new THREE.Object3D();
+    const geoBox1 = new THREE.BoxGeometry(72, 48, 24);
+    const geoBox2 = new THREE.BoxGeometry(24, 48, 24);
+
+    const escadaObj = escada();
+    const boxArea = new THREE.Mesh(boxAreas, materialEscada);
+    const box2 = new THREE.Mesh(geoBox1, materialEscada);
+    const box3 = new THREE.Mesh(geoBox2, materialEscada);
+    const rampa = new THREE.Mesh(rampaGeo, materialEscada);
+    obj.add(escadaObj);
+    obj.add(boxArea);
+    obj.add(box2);
+    obj.add(box3);
+    obj.add(rampa);
+    boxArea.position.set(0, 0, 48);
+    escadaObj.position.set(24, 0, -12);
+    box2.position.set(-24, 0, -12);
+    box3.position.set(48, 0, -12);
+    rampa.position.set(24, 12, -12);
+    rampa.rotation.x = Math.PI / 4;
+    rampa.rotation.y = Math.PI;
+    rampa.visible = false;
+    chao.push(rampa);
+    chao.push(boxArea);
+    chao.push(box2);
+    chao.push(box3);
+    paredes.push(boxArea);
+    paredes.push(box2);
+    paredes.push(box3);
+
+    obj.rotation.y = Math.PI;
+
+    return obj;
+}
+
+function area2(){
+    const obj = new THREE.Object3D();
+    const geoBox1 = new THREE.BoxGeometry(72, 48, 24);
+    const geoBox2 = new THREE.BoxGeometry(24, 48, 24);
+
+    const escadaObj = escada();
+    const boxArea = new THREE.Mesh(boxAreas, materialEscada);
+    const box2 = new THREE.Mesh(geoBox1, materialEscada);
+    const box3 = new THREE.Mesh(geoBox2, materialEscada);
+    const rampa = new THREE.Mesh(rampaGeo, materialEscada);
+    obj.add(escadaObj);
+    obj.add(boxArea);
+    obj.add(box2);
+    obj.add(box3);
+    obj.add(rampa);
+    boxArea.position.set(0, 0, 48);
+    escadaObj.position.set(-24, 0, -12);
+    box2.position.set(24, 0, -12);
+    box3.position.set(-48, 0, -12);
+    rampa.position.set(-24, 12, -12);
+    rampa.rotation.x = Math.PI / 4;
+    rampa.rotation.y = Math.PI;
+    rampa.visible = false;
+    chao.push(rampa);
+    chao.push(boxArea);
+    chao.push(box2);
+    chao.push(box3);
+    paredes.push(boxArea);
+    paredes.push(box2);
+    paredes.push(box3);
+
+    obj.rotation.y = Math.PI;
+
+    return obj;
+}
 
 //Só pra gente puxar os objetos para a colisão
 function getParedes() {
