@@ -1,20 +1,19 @@
 import * as THREE from  'three';
 import { getParedes } from './cenario.js';
+import {setDefaultMaterial} from "../libs/util/util.js";
 
-const geometria = new THREE.SphereGeometry(0.2, 16, 16);
-const material = new THREE.MeshBasicMaterial({ color: 'rgb(241, 6, 6)' });
+const geometria = new THREE.SphereGeometry(0.8, 16, 16);
+const material = setDefaultMaterial();
 
 const posInicial = new THREE.Vector3(0, -10, 0);
-const teto = 30;
+const teto = 150;
 const chao = -5;
-const limiteLateral = 250;
-const limiteLateralNegativo = -250;
 
 class Bullet {
     constructor(posicao, pool, scene) {
         this.mesh = new THREE.Mesh(geometria, material);
         this.mesh.position.copy(posicao);
-        this.velocidade = 0.5;
+        this.velocidade = 180;
         this.movendo = false;
         this.mesh.visible = false;
         this.pool = pool;
@@ -22,9 +21,6 @@ class Bullet {
         this.raycaster = new THREE.Raycaster();
         this.raycaster.far = 3;
         this.direcao = new THREE.Vector3(0, 0, 1);
-
-        this.clock = new THREE.Clock();
-        this.clock.stopped = true;
 
         scene.add(this.mesh);
     }
@@ -39,31 +35,19 @@ class Bullet {
         this.direcao = new THREE.Vector3(0, 0, 1);
         this.direcao.applyQuaternion(this.mesh.quaternion);
         this.direcao.normalize();
-
-        this.render();
-        //this.clock.start();
     }
 
     //Método chamado a cada frame
-    render() {
+    render(delta) {
         if (!this.movendo) return;
-        this.mesh.translateZ(this.velocidade);
+        this.mesh.translateZ(this.velocidade * delta);
+
         if (this.mesh.position.y > teto || this.mesh.position.y < chao) {
-            this.reset();
-            return;
-        }
-        else if (this.mesh.position.x > limiteLateral || this.mesh.position.x < limiteLateralNegativo) {
-            this.reset();
-            return;
-        }
-        else if (this.mesh.position.z > limiteLateral || this.mesh.position.z < limiteLateralNegativo) {
             this.reset();
             return;
         }
 
         this.isColliding();
-
-        requestAnimationFrame(() => this.render());
     }
     isColliding(){
         this.raycaster.set(this.mesh.getWorldPosition(new THREE.Vector3()), this.direcao);
@@ -91,13 +75,27 @@ class BulletPool {
 
         this.scene = scene;
         this.clock = new THREE.Clock();
-        let delta = this.clock.getDelta();
+        this.clock.getDelta();
+
+        this.clockBala = new THREE.Clock();
+        this.clockBala.getDelta();
 
         this.listaParede = getParedes();
 
         for (let i = 0; i < this.poolSize; i++) {
             this.bullets.push(new Bullet(posInicial, this, this.scene));
         }
+        this.render();
+    }
+
+    render() {
+        let delta = this.clockBala.getDelta();
+
+        this.bulletsInUse.forEach(b => {
+            b.render(delta);
+        });
+
+        requestAnimationFrame(() => this.render());
     }
 
     // Um método para pegar uma bala da pool ou criar uma nova se não houver nenhuma disponível

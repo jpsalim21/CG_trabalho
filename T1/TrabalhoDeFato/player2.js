@@ -2,7 +2,7 @@ import {
 	Euler,
 	EventDispatcher,
 } from 'three';
-import { onWindowResize } from "../../libs/util/util.js";
+import { onWindowResize } from "../libs/util/util.js";
 import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "./cenario.js";
@@ -10,7 +10,7 @@ import { getChao, getParedes } from "./cenario.js";
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
 
-const GRAVIDADE = 9.8 * 6;
+const GRAVIDADE = 9.8 * 14;
 
 const _changeEvent = { type: 'change' };
 const _lockEvent = { type: 'lock' };
@@ -39,15 +39,15 @@ class PlayerController extends EventDispatcher {
             0.1, 
             1000 
         );
-        this.camera.position.set(0, 2, 0);
-        this.camera.lookAt(new THREE.Vector3(0, 2, -1)); // começa olhando pra frente
+        this.camera.position.set(0, 12, 0);
+        this.camera.lookAt(new THREE.Vector3(0, 12, -1)); // começa olhando pra frente
         this.cameraHolder.add(this.camera);
         
         // Cria a arma
-        let cilindroGeometry = new THREE.CylinderGeometry(0.3, 0.3, 1, 16);
+        let cilindroGeometry = new THREE.CylinderGeometry(1.0, 1.0, 4, 16);
         this.cilindro = new THREE.Mesh(cilindroGeometry, armaMaterial); 
         this.camera.add(this.cilindro); 
-        this.cilindro.position.set(0, -1, -2); 
+        this.cilindro.position.set(0, -2.5, -6); 
         this.cilindro.rotation.x = -Math.PI / 2;
         
         scene.add(this.cameraHolder);
@@ -76,7 +76,13 @@ class PlayerController extends EventDispatcher {
             this.instructions.style.display = "";
             this.mira.style.display = "none"; 
         });
-        window.addEventListener( 'resize', function(){onWindowResize(camera, renderer)}, false );
+        window.addEventListener(
+            "resize",
+            () => {
+                onWindowResize(this.camera, this.renderer);
+            },
+            false
+        );
         this.domElement.addEventListener('mousedown', (event) => {
             if (event.button === 0 || event.button === 2) { // Botão esquerdo do mouse
                 this.atirar = true; // Ativa o disparo
@@ -103,14 +109,14 @@ class PlayerController extends EventDispatcher {
         this.minPolarAngle = 0;
 		this.maxPolarAngle = Math.PI; 
 
-        this.speed = 15;
-        this.pulo = 15;
+        this.speed = 60;
+        this.pulo = 60;
         this.velVertical = 0;
         this.alturaChao = 0.1;
         this.grounded = false;
         this.rayGround = new THREE.Raycaster(); // cria um raycaster para detectar colisões com o chão
-        this.rayGround.far = 5.0;
-        this.rayGround.near = 1.0;
+        this.rayGround.far = 20.0;
+        this.rayGround.near = 0.1;
 
         this.velocity = new THREE.Vector2(0, 0);
         this.rayWall = new THREE.Raycaster();
@@ -180,8 +186,9 @@ class PlayerController extends EventDispatcher {
     // Função de atualização, com movimentação e gravidade
     update(delta){
         this.grounded = this.isOnGround(); // Verifica se está no chão
+
         if(this.grounded){
-            this.velVertical = 0;
+            this.velVertical = -30;
         } else {
             this.velVertical -= GRAVIDADE * delta;
             this.cameraHolder.translateY(this.velVertical * delta);
@@ -218,16 +225,16 @@ class PlayerController extends EventDispatcher {
     // Verifica se o jogador está no chão, por meio de um raycast
     isOnGround(){
         const position = this.cameraHolder.position.clone();
-        position.y += 2.0; 
+        position.y += 10.0; 
         this.rayGround.set(position, new THREE.Vector3(0, -1, 0)); 
         
         const intersects = this.rayGround.intersectObjects(getChao());
         
         this.alturaChao = intersects.length > 0 ? intersects[0].point.y + 0.1 : 0.1;
         
-        let isGround = this.cameraHolder.position.y <= this.alturaChao;
+        let isGround = this.cameraHolder.position.y <= this.alturaChao + 0.05;
 
-        if (isGround) {
+        if (this.cameraHolder.position.y < this.alturaChao - 0.1) {
             this.cameraHolder.position.y = this.alturaChao;
         }
 
@@ -256,15 +263,20 @@ class PlayerController extends EventDispatcher {
         if(direcao.x === 0 && direcao.y === 0) {
             return; // Não faz nada se a direção for zero
         }
-        const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 1.0, 0));
+
+        const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 4.0, 0));
         const paredes = getParedes();
         let quaternion = this.cameraHolder.quaternion.clone();
         const direcao3 = new THREE.Vector3(direcao.x, 0, direcao.y).applyQuaternion(quaternion);
         this.rayWall.set(pos, direcao3);
         const intersects = this.rayWall.intersectObjects(paredes);
-
+        
         if (intersects.length > 0) {
-            const normal = intersects[0].face.normal.clone();
+            let normal = intersects[0].face.normal.clone();
+
+            normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(intersects[0].object.matrixWorld)).normalize(); // Aplica a matriz normal para obter a direção correta
+
+            console.log("Colidiu com parede: ", normal.x, normal.y, normal.z);
 
             let dNova = direcao3.clone().projectOnPlane(normal); // Projeta a direção no plano para não atravessar paredes
 
