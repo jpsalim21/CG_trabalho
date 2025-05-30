@@ -1,6 +1,6 @@
 import * as THREE from  'three';
 import { getParedes } from './cenario.js';
-import {setDefaultMaterial} from "../../libs/util/util.js";
+import {setDefaultMaterial} from "../libs/util/util.js";
 
 const geometria = new THREE.SphereGeometry(0.8, 16, 16);
 const material = setDefaultMaterial();

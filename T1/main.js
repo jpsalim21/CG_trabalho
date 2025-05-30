@@ -2,7 +2,7 @@ import * as THREE from "three";
 import {initRenderer, 
         initDefaultBasicLight,
         setDefaultMaterial,
-} from "../../libs/util/util.js";
+} from "../libs/util/util.js";
 import { PlayerController } from "./player2.js";
 import { inicializaCenario } from "./cenario.js";
 
@@ -12,7 +12,6 @@ let renderer = initRenderer(); // inicializa o renderizador com um rosa muito ma
 let light = initDefaultBasicLight(scene);
 
 inicializaCenario(scene); // inicializa o chão
-
 
 // salim e mariana, pra colocar componentes de camera e movimento no arquvivo principal usem desta forma:
 const player = new PlayerController(scene, renderer);

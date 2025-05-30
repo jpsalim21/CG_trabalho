@@ -2,7 +2,7 @@ import {
 	Euler,
 	EventDispatcher,
 } from 'three';
-import { onWindowResize } from "../../libs/util/util.js";
+import { onWindowResize } from "../libs/util/util.js";
 import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "./cenario.js";

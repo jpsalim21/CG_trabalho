@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {setDefaultMaterial} from "../../libs/util/util.js";
+import {setDefaultMaterial} from "../libs/util/util.js";
 
 const material = setDefaultMaterial('rgb(37, 72, 45)'); // Material do chão
 const materialParede = setDefaultMaterial('rgb(86, 86, 86)'); // Material das paredes
