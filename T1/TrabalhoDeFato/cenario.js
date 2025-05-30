@@ -62,6 +62,10 @@ function inicializaCenario(scene) {
     scene.add(area2Obj);
     area2Obj.position.set(0, 0, -125);
 
+    const area4Obj = area4();
+    scene.add(area4Obj);
+    area4Obj.position.set(0, 0, 125);
+
     //Adiciona os objetos na cena
     scene.add(ground);
 }
@@ -184,6 +188,42 @@ function area2(){
 
     obj.rotation.y = Math.PI;
 
+    return obj;
+}
+
+function area4(){
+    const obj = new THREE.Object3D();
+    const geoBox1 = new THREE.BoxGeometry(250, 48, 96);
+    const geoBox2 = new THREE.BoxGeometry(113, 48, 24);
+
+    const escadaObj = escada();
+    const box1 = new THREE.Mesh(geoBox1, materialEscada);
+    const box2 = new THREE.Mesh(geoBox2, materialEscada);
+    const rampa = new THREE.Mesh(rampaGeo, materialEscada);
+    const box3 = new THREE.Mesh(geoBox2, materialEscada);
+    obj.add(escadaObj);
+    obj.add(box1);
+    obj.add(box2);
+    obj.add(box3);
+    obj.add(rampa);
+    box1.position.set(0, 0, 48);
+    escadaObj.position.set(0, 0, -12);
+    box2.position.set(68.5, 0, -12);
+    box3.position.set(-68.5, 0, -12);
+    rampa.position.set(0, 12, -12);
+    rampa.rotation.x = Math.PI / 4;
+    rampa.rotation.y = Math.PI;
+    rampa.visible = false;
+
+    
+    chao.push(rampa);
+    chao.push(box1);
+    chao.push(box2);
+    chao.push(box3);
+    paredes.push(box1);
+    paredes.push(box2);
+    paredes.push(box3);
+    
     return obj;
 }
 
