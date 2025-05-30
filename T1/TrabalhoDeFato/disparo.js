@@ -15,7 +15,7 @@ class Bullet {
     constructor(posicao, pool, scene) {
         this.mesh = new THREE.Mesh(geometria, material);
         this.mesh.position.copy(posicao);
-        this.velocidade = 2;
+        this.velocidade = 180;
         this.movendo = false;
         this.mesh.visible = false;
         this.pool = pool;
@@ -25,7 +25,6 @@ class Bullet {
         this.direcao = new THREE.Vector3(0, 0, 1);
 
         this.clock = new THREE.Clock();
-        this.clock.stopped = true;
 
         scene.add(this.mesh);
     }
@@ -40,15 +39,17 @@ class Bullet {
         this.direcao = new THREE.Vector3(0, 0, 1);
         this.direcao.applyQuaternion(this.mesh.quaternion);
         this.direcao.normalize();
+        
+        this.clock.start();
+        this.clock.getDelta();
 
         this.render();
-        //this.clock.start();
     }
 
     //Método chamado a cada frame
     render() {
         if (!this.movendo) return;
-        this.mesh.translateZ(this.velocidade);
+        this.mesh.translateZ(this.velocidade * this.clock.getDelta());
         if (this.mesh.position.y > teto || this.mesh.position.y < chao) {
             this.reset();
             return;
