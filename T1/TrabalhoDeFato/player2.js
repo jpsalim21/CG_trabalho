@@ -10,7 +10,7 @@ import { getChao, getParedes } from "./cenario.js";
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
 
-const GRAVIDADE = 9.8 * 10;
+const GRAVIDADE = 9.8 * 14;
 
 const _changeEvent = { type: 'change' };
 const _lockEvent = { type: 'lock' };
@@ -110,7 +110,7 @@ class PlayerController extends EventDispatcher {
 		this.maxPolarAngle = Math.PI; 
 
         this.speed = 60;
-        this.pulo = 40;
+        this.pulo = 60;
         this.velVertical = 0;
         this.alturaChao = 0.1;
         this.grounded = false;
@@ -188,7 +188,7 @@ class PlayerController extends EventDispatcher {
         this.grounded = this.isOnGround(); // Verifica se está no chão
 
         if(this.grounded){
-            this.velVertical = -50;
+            this.velVertical = -30;
         } else {
             this.velVertical -= GRAVIDADE * delta;
             this.cameraHolder.translateY(this.velVertical * delta);

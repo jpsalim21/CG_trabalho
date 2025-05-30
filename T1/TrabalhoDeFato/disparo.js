@@ -5,7 +5,7 @@ const geometria = new THREE.SphereGeometry(0.8, 16, 16);
 const material = new THREE.MeshBasicMaterial({ color: 'rgb(241, 6, 6)' });
 
 const posInicial = new THREE.Vector3(0, -10, 0);
-const teto = 30;
+const teto = 150;
 const chao = -5;
 const limiteLateral = 250;
 const limiteLateralNegativo = -250;

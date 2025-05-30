@@ -55,11 +55,11 @@ function inicializaCenario(scene) {
 
     const area3Obj = area3(); 
     scene.add(area3Obj);
-    area3Obj.position.set(135, 0, -125); 
+    area3Obj.position.set(145, 0, -125); 
 
     const area1Obj = area1();
     scene.add(area1Obj);
-    area1Obj.position.set(-135, 0, -125);
+    area1Obj.position.set(-145, 0, -125);
 
     const area2Obj = area2();
     scene.add(area2Obj);
