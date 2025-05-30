@@ -235,7 +235,6 @@ class PlayerController extends EventDispatcher {
         let isGround = this.cameraHolder.position.y <= this.alturaChao + 0.05;
 
         if (this.cameraHolder.position.y < this.alturaChao - 0.1) {
-            console.log("Rodou aqui");
             this.cameraHolder.position.y = this.alturaChao;
         }
 
