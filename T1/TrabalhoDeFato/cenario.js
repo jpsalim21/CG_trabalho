@@ -51,8 +51,9 @@ function inicializaCenario(scene) {
     scene.add(parede4); // Adiciona a parede direita à cena
     // #endregion Paredes
 
-    const area3Obj = area3(); // Cria a área 1
-    scene.add(area3Obj); // Adiciona a área 1 à cena
+    const area3Obj = area3(); 
+    scene.add(area3Obj);
+    area3Obj.position.set(125, 0, -125); 
 
     //Adiciona os objetos na cena
     scene.add(ground);
@@ -91,8 +92,16 @@ function area3() {
     box3.position.set(-36, 0, -12);
     rampa.position.set(0, 12, -12);
     rampa.rotation.x = Math.PI / 4;
+    rampa.rotation.y = Math.PI;
+    rampa.visible = false;
 
     chao.push(rampa);
+    chao.push(boxArea);
+    chao.push(box2);
+    chao.push(box3);
+    paredes.push(boxArea);
+    paredes.push(box2);
+    paredes.push(box3);
 
     obj.rotation.y = Math.PI;
 
