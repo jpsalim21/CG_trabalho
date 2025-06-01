@@ -200,6 +200,20 @@ class PlayerController extends EventDispatcher {
         direcao.multiplyScalar(moveDistance);
 
         this.wallCollision(direcao);
+        //Verifica limites do cenário (500x500)
+        const LIMITE_CENA = 250; 
+        const reducao = 2;
+        const pos = this.cameraHolder.position.clone();
+        const posicaoFutura = pos.clone().add(new THREE.Vector3(direcao.x, 0, direcao.y));
+
+        if (Math.abs(posicaoFutura.x) > LIMITE_CENA - reducao) { 
+            if (posicaoFutura.x > LIMITE_CENA) direcao.x = LIMITE_CENA - pos.x - reducao;
+            if (posicaoFutura.x < -LIMITE_CENA) direcao.x = -LIMITE_CENA - pos.x + reducao;
+        }
+        if (Math.abs(posicaoFutura.z) > LIMITE_CENA - reducao) {
+            if (posicaoFutura.z > LIMITE_CENA) direcao.y = LIMITE_CENA - pos.z - reducao;
+            if (posicaoFutura.z < -LIMITE_CENA) direcao.y = -LIMITE_CENA - pos.z + reducao;
+        }
 
         this.cameraHolder.translateX(direcao.x);
         this.cameraHolder.translateZ(direcao.y);
@@ -283,19 +297,6 @@ class PlayerController extends EventDispatcher {
 
             direcao.x = dNova.x;
             direcao.y = dNova.z;
-        }
-
-        //Verifica limites do cenário (500x500)
-        const LIMITE_CENA = 250; 
-        const posicaoFutura = pos.clone().add(new THREE.Vector3(direcao.x, 0, direcao.y));
-
-        if (Math.abs(posicaoFutura.x) > LIMITE_CENA) { 
-            if (pos.x > LIMITE_CENA) this.cameraHolder.position.x = LIMITE_CENA - 0.1;
-            if (pos.x < -LIMITE_CENA) this.cameraHolder.position.x = -LIMITE_CENA + 0.1;
-        }
-        if (Math.abs(posicaoFutura.z) > LIMITE_CENA) {
-            if (pos.z > LIMITE_CENA) this.cameraHolder.position.z = LIMITE_CENA - 0.1;
-            if (pos.z < -LIMITE_CENA) this.cameraHolder.position.z = -LIMITE_CENA + 0.1;
         }
     }
     //#endregion
