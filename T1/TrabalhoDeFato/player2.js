@@ -289,14 +289,11 @@ class PlayerController extends EventDispatcher {
         const LIMITE_CENA = 250; 
         const posicaoFutura = pos.clone().add(new THREE.Vector3(direcao.x, 0, direcao.y));
 
-        if (Math.abs(posicaoFutura.x) > LIMITE_CENA - 1) { 
-            direcao.x = 0;
+        if (Math.abs(posicaoFutura.x) > LIMITE_CENA) { 
             if (pos.x > LIMITE_CENA) this.cameraHolder.position.x = LIMITE_CENA - 0.1;
             if (pos.x < -LIMITE_CENA) this.cameraHolder.position.x = -LIMITE_CENA + 0.1;
         }
-
-        if (Math.abs(posicaoFutura.z) > LIMITE_CENA - 1) {
-            direcao.y = 0;
+        if (Math.abs(posicaoFutura.z) > LIMITE_CENA) {
             if (pos.z > LIMITE_CENA) this.cameraHolder.position.z = LIMITE_CENA - 0.1;
             if (pos.z < -LIMITE_CENA) this.cameraHolder.position.z = -LIMITE_CENA + 0.1;
         }
