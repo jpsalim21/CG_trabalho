@@ -144,19 +144,19 @@ class PlayerController extends EventDispatcher {
         key = key.toLowerCase(); // Normaliza a tecla para minúscula
         switch (key) {
             case "w":
-            case "ArrowUp":
+            case "arrowup":
                 this.teclas[0] = isPressed;
                 break;
             case "s":
-            case "ArrowDown":
+            case "arrowdown":
                 this.teclas[1] = isPressed;
                 break;
             case "a":
-            case "ArrowLeft":
+            case "arrowleft":
                 this.teclas[2] = isPressed;
                 break;
             case "d":
-            case "ArrowRight":
+            case "arrowright":
                 this.teclas[3] = isPressed;
                 break;
             case " ":
