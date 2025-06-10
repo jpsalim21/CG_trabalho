@@ -298,6 +298,27 @@ class PlayerController extends EventDispatcher {
             direcao.x = dNova.x;
             direcao.y = dNova.z;
         }
+
+        if (direcao.x === 0 && direcao.y === 0)
+            return;
+        
+        direcao3.set(direcao.x, 0, direcao.y).applyQuaternion(quaternion);
+        this.rayWall.set(pos, direcao3);
+        const wallIntersects = this.rayWall.intersectObjects(paredes, true);
+
+        if (wallIntersects.length > 0) {
+            let normal = wallIntersects[0].face.normal.clone();
+            normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(wallIntersects[0].object.matrixWorld)).normalize(); // Aplica a matriz normal para obter a direção correta
+
+            console.log("Colidiu com parede: ", normal.x, normal.y, normal.z);
+
+            let dNova = direcao3.clone().projectOnPlane(normal); // Projeta a direção no plano para não atravessar paredes
+
+            dNova = dNova.applyQuaternion(quaternion.clone().invert()); // Inverte para retornar à direção original
+
+            direcao.x = dNova.x;
+            direcao.y = dNova.z;
+        }
     }
     //#endregion
 

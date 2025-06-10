@@ -17,7 +17,7 @@ const boxGeometry6 = new THREE.BoxGeometry(30, 30, 100);
 const boxGeometry7 = new THREE.BoxGeometry(135, 30, 100);
 const boxGeometry8 = new THREE.BoxGeometry(30, 30, 70);
 const rampGeometry = new THREE.PlaneGeometry(30, Math.sqrt(30 * 30 + 30 * 30));
-const wallGeometry = new THREE.PlaneGeometry(500, 50);
+const wallGeometry = new THREE.PlaneGeometry(520, 50);
 const wallMaterial  = setDefaultMaterial ('rgb(255, 255, 255)');
 
 const chao = []; // array para armazenar os objetos do chão
