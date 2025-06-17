@@ -39,8 +39,8 @@ class PlayerController extends EventDispatcher {
             0.1, 
             1000 
         );
-        this.camera.position.set(0, 5, 0);
-        this.camera.lookAt(new THREE.Vector3(0, 5, -1)); // começa olhando pra frente
+        this.camera.position.set(0, 2, 0);
+        this.camera.lookAt(new THREE.Vector3(0, 2, -1)); // começa olhando pra frente
         this.cameraHolder.add(this.camera);
         
         // Cria a arma
@@ -109,8 +109,8 @@ class PlayerController extends EventDispatcher {
         this.minPolarAngle = 0;
 		this.maxPolarAngle = Math.PI; 
 
-        this.speed = 60;
-        this.pulo = 60;
+        this.speed = 30;
+        this.pulo = 30;
         this.velVertical = 0;
         this.alturaChao = 0.1;
         this.grounded = false;
