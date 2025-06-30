@@ -30,14 +30,46 @@ let csgObj = cubeCSG.subtract(cilCSG);
 csgObj = csgObj.subtract(cilCSG2);
 csgObj = csgObj.subtract(cilCSG3);
 
+
 class Chave {
-    constructor(scene){
+    constructor(scene, playerbb){
         this.mesh = CSG.toMesh(csgObj, new THREE.Matrix4(), material);
         this.mesh.castShadow = true;
 
-        this.mesh.position.set(5, 2, 2);
+        this.mesh.position.set(0, 2, -15);
 
+        this.bb = new THREE.Box3().setFromObject(this.mesh);
+        this.bbHelper = new THREE.Box3Helper(this.bb, 'white');
+        this.bbHelper.visible = true; 
+        
+        this.playerbb = playerbb; 
+
+        scene.add(this.bbHelper);
         scene.add(this.mesh);
+        this.render();
+    }
+
+    update(){
+        if(this.bb.intersectsBox(this.playerbb)){
+            console.log("Colisão detectada com a chave!");
+            this.destroy();
+        }
+    }
+
+    render(){
+        this.update();
+        requestAnimationFrame(() => this.render());
+    }
+
+    destroy(){
+        if (this.mesh && this.bbHelper) {
+            this.mesh.geometry.dispose();
+            this.mesh.material.dispose();
+            this.bbHelper.geometry.dispose();
+            this.bbHelper.material.dispose();
+            this.mesh.parent.remove(this.mesh);
+            this.bbHelper.parent.remove(this.bbHelper);
+        }
     }
 }
 

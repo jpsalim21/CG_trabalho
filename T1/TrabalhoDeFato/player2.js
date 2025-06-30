@@ -20,6 +20,8 @@ const _PI_2 = Math.PI / 2;
 
 const armaMaterial = setDefaultMaterial('rgb(108, 108, 108)');
 
+const playerGeo = new THREE.BoxGeometry(1.5, 2.5, 1.5);
+
 class PlayerController extends EventDispatcher {
     constructor(scene, renderer) {
         super();
@@ -135,6 +137,17 @@ class PlayerController extends EventDispatcher {
 
         //#endregion
 
+        //#region Colisao
+        this.playerMesh = new THREE.Mesh(playerGeo, armaMaterial);
+        this.playerMesh.position.set(0, 1.25, 0);
+        this.cameraHolder.add(this.playerMesh);
+        this.playerMesh.visible = false;
+
+
+        this.bb = new THREE.Box3().setFromObject(this.playerMesh);
+        //#endregion
+
+
         this.connect(); 
     }
 
@@ -184,6 +197,9 @@ class PlayerController extends EventDispatcher {
     }
     // Função de atualização, com movimentação e gravidade
     update(delta){
+        this.bb.setFromObject(this.playerMesh); // Atualiza a caixa delimitadora do jogador
+
+
         this.grounded = this.isOnGround(); // Verifica se está no chão
 
         if(this.grounded){
@@ -201,11 +217,12 @@ class PlayerController extends EventDispatcher {
 
         this.wallCollision(direcao);
         //Verifica limites do cenário (500x500)
+        /*
         const LIMITE_CENA = 250; 
         const reducao = 2;
         const pos = this.cameraHolder.position.clone();
         const posicaoFutura = pos.clone().add(new THREE.Vector3(direcao.x, 0, direcao.y));
-
+        
         if (Math.abs(posicaoFutura.x) > LIMITE_CENA - reducao) { 
             if (posicaoFutura.x > LIMITE_CENA) direcao.x = LIMITE_CENA - pos.x - reducao;
             if (posicaoFutura.x < -LIMITE_CENA) direcao.x = -LIMITE_CENA - pos.x + reducao;
@@ -214,7 +231,8 @@ class PlayerController extends EventDispatcher {
             if (posicaoFutura.z > LIMITE_CENA) direcao.y = LIMITE_CENA - pos.z - reducao;
             if (posicaoFutura.z < -LIMITE_CENA) direcao.y = -LIMITE_CENA - pos.z + reducao;
         }
-
+        */
+        
         this.cameraHolder.translateX(direcao.x);
         this.cameraHolder.translateZ(direcao.y);
 

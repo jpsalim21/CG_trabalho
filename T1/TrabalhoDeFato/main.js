@@ -13,8 +13,8 @@ let light = initDefaultBasicLight(scene);
 
 inicializaCenario(scene); // inicializa o chão
 
-const chave1 = new Chave(scene); // cria a chave
 
 const player = new PlayerController(scene, renderer);
 player.start();
 
+const chave1 = new Chave(scene, player.bb); // cria a chave
