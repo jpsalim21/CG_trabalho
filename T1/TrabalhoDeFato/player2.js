@@ -41,7 +41,7 @@ class PlayerController extends EventDispatcher {
             0.1, 
             1000 
         );
-        this.camera.position.set(0, 2, 0);
+        this.camera.position.set(0, 2, 0); //altura do jogador
         this.camera.lookAt(new THREE.Vector3(0, 2, -1)); // começa olhando pra frente
         this.cameraHolder.add(this.camera);
         
@@ -117,7 +117,7 @@ class PlayerController extends EventDispatcher {
         this.alturaChao = 0.1;
         this.grounded = false;
         this.rayGround = new THREE.Raycaster(); // cria um raycaster para detectar colisões com o chão
-        this.rayGround.far = 20.0;
+        this.rayGround.far = 10.0;
         this.rayGround.near = 0.1;
 
         this.velocity = new THREE.Vector2(0, 0);
@@ -256,7 +256,7 @@ class PlayerController extends EventDispatcher {
     // Verifica se o jogador está no chão, por meio de um raycast
     isOnGround(){
         const position = this.cameraHolder.position.clone();
-        position.y += 10.0; 
+        position.y += 2.0; 
         this.rayGround.set(position, new THREE.Vector3(0, -1, 0)); 
         
         const intersects = this.rayGround.intersectObjects(getChao());
