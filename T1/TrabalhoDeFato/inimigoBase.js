@@ -2,12 +2,13 @@ import * as THREE from 'three';
 
 const spriteMaterial = new THREE.SpriteMaterial({ color: 0x00ff00 });
 
-
 class InimigoBase {
     constructor(scene, vida, ataque){
         this.vida = vida;
         this.maxVida = vida;
         this.ataque = ataque;
+
+        this.scene = scene;
 
         this.mesh = null;
         this.sprite = new THREE.Sprite(spriteMaterial);
@@ -15,6 +16,12 @@ class InimigoBase {
         //this.sprite.visible = false;
         this.sprite.position.set(10, 2, 10);
         scene.add(this.sprite);
+    }
+
+    setup(){
+        this.mesh.add(this.sprite);
+        this.sprite.position.set(0, 1, 0);
+        this.scene.add(this.mesh);
     }
 
     tomarDano(dano) {
