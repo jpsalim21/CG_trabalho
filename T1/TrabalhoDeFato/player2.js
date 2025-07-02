@@ -123,6 +123,12 @@ class PlayerController extends EventDispatcher {
         this.velocity = new THREE.Vector2(0, 0);
         this.rayWall = new THREE.Raycaster();
         this.rayWall.far = 1.5;
+        this.arrowHelper = new THREE.ArrowHelper(
+            new THREE.Vector3(0, 0, -1), // direção inicial
+            new THREE.Vector3(0, 0, 0), // posição inicial
+            1, // comprimento da seta
+            0xff0000 // cor da seta
+        );
 
         this.teclas = [false, false, false, false];
 
@@ -295,14 +301,19 @@ class PlayerController extends EventDispatcher {
             return; // Não faz nada se a direção for zero
         }
         
-        const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 4.0, 0));
+        const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 0.0, 0));
         const paredes = getParedes();
         let quaternion = this.cameraHolder.quaternion.clone();
         const direcao3 = new THREE.Vector3(direcao.x, 0, direcao.y).applyQuaternion(quaternion);
         this.rayWall.set(pos, direcao3);
         const intersects = this.rayWall.intersectObjects(paredes, true);
-        
+
+        this.arrowHelper.setDirection(direcao3.clone().normalize());
+        this.arrowHelper.setLength(1.5, 0.1, 0.1);
+        this.arrowHelper.setColor(new THREE.Color(0xff0000));
+
         if (intersects.length > 0) {
+            console.log("Interseções com paredes: ", wallIntersects.length);
             let normal = intersects[0].face.normal.clone();
 
             normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(intersects[0].object.matrixWorld)).normalize(); // Aplica a matriz normal para obter a direção correta
@@ -324,6 +335,7 @@ class PlayerController extends EventDispatcher {
         this.rayWall.set(pos, direcao3);
         const wallIntersects = this.rayWall.intersectObjects(paredes, true);
 
+        
         if (wallIntersects.length > 0) {
             let normal = wallIntersects[0].face.normal.clone();
             normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(wallIntersects[0].object.matrixWorld)).normalize(); // Aplica a matriz normal para obter a direção correta
