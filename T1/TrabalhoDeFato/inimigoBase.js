@@ -3,10 +3,11 @@ import * as THREE from 'three';
 const spriteMaterial = new THREE.SpriteMaterial({ color: 0x00ff00 });
 
 class InimigoBase {
-    constructor(scene, vida, ataque){
+    constructor(scene, vida, ataque, player){
         this.vida = vida;
         this.maxVida = vida;
         this.ataque = ataque;
+        this.player = player; 
 
         this.scene = scene;
 
@@ -44,6 +45,15 @@ class InimigoBase {
 
     morrer(){
         throw new Error("Método 'morrer' não implementado na classe base InimigoBase.");
+    }
+
+    render() {
+        this.update();
+        requestAnimationFrame(() => this.render());
+    }
+
+    update(){
+        throw new Error("Método 'update' não implementado na classe base InimigoBase.");
     }
 }
 

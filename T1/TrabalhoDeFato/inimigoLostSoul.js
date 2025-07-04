@@ -7,8 +7,8 @@ const texturePath = "../assets/skul/";
 
 
 class InimigoLostSoul extends InimigoBase {
-    constructor(scene, vida, ataque) {
-        super(scene, vida, ataque);
+    constructor(scene, vida, ataque, player) {
+        super(scene, vida, ataque, player);
         this.loadModel();
     }
 
@@ -60,6 +60,9 @@ class InimigoLostSoul extends InimigoBase {
         console.log("Lost Soul derrotada!");
         this.scene.remove(this.mesh);
     }
+
+    
+
 }
 
 export { InimigoLostSoul };

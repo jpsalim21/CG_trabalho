@@ -354,6 +354,10 @@ class PlayerController extends EventDispatcher {
 	}
     //#endregion
 
+    getCamPosition() {
+        return this.camera.position.clone();
+    }
+
 }
 
 //Funções copiadas do PointerLockControls.js
