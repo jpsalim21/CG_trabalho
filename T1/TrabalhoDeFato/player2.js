@@ -209,7 +209,7 @@ class PlayerController extends EventDispatcher {
         this.grounded = this.isOnGround(); // Verifica se está no chão
 
         if(this.grounded){
-            this.velVertical = -30;
+            this.velVertical = 0;
         } else {
             this.velVertical -= GRAVIDADE * delta;
             this.cameraHolder.translateY(this.velVertical * delta);
@@ -255,7 +255,7 @@ class PlayerController extends EventDispatcher {
         
         let isGround = this.cameraHolder.position.y <= this.alturaChao + 0.05;
 
-        if (this.cameraHolder.position.y < this.alturaChao - 0.1) {
+        if (this.cameraHolder.position.y < this.alturaChao - 0.1 || isGround) {
             this.cameraHolder.position.y = this.alturaChao;
         }
 
