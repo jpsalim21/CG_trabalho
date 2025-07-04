@@ -285,7 +285,7 @@ class PlayerController extends EventDispatcher {
             return; // Não faz nada se a direção for zero
         }
         
-        const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 0.0, 0));
+        const pos = this.cameraHolder.position.clone().add(new THREE.Vector3(0, 0.5, 0));
         const paredes = getParedes();
         let quaternion = this.cameraHolder.quaternion.clone();
         const direcao3 = new THREE.Vector3(direcao.x, 0, direcao.y).applyQuaternion(quaternion);
