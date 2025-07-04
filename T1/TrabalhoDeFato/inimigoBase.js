@@ -26,6 +26,7 @@ class InimigoBase {
         this.object.add(this.sprite);
         this.object.add(this.mesh);
         this.scene.add(this.object);
+        this.render();
     }
 
     tomarDano(dano) {

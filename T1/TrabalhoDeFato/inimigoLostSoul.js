@@ -7,8 +7,10 @@ const texturePath = "../assets/skul/";
 
 
 class InimigoLostSoul extends InimigoBase {
-    constructor(scene, vida, ataque, player) {
+    constructor(scene, vida, ataque, player, velocidade = 0.2) {
         super(scene, vida, ataque, player);
+        this.player = player;
+        this.velocidade = velocidade;
         this.loadModel();
     }
 
@@ -40,8 +42,8 @@ class InimigoLostSoul extends InimigoBase {
                 });
 
                 this.mesh = object;
-                this.setup();
                 this.mesh.position.set(0.2, -23, 2);
+                this.setup();
             },
             (xhr) => {
                 console.log((xhr.loaded / xhr.total * 100) + '% loaded');
@@ -61,7 +63,13 @@ class InimigoLostSoul extends InimigoBase {
         this.scene.remove(this.mesh);
     }
 
-    
+    update(){
+        let distancia = this.object.position.distanceTo(this.player.getCamPosition());
+        if (distancia > 3) {
+            this.object.lookAt(this.player.getCamPosition());
+            this.object.translateZ(this.velocidade);
+        }
+    }
 
 }
 

@@ -355,7 +355,7 @@ class PlayerController extends EventDispatcher {
     //#endregion
 
     getCamPosition() {
-        return this.camera.position.clone();
+        return this.camera.getWorldPosition(new THREE.Vector3());
     }
 
 }
