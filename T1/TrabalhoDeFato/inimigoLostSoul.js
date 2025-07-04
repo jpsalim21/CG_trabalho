@@ -42,7 +42,7 @@ class InimigoLostSoul extends InimigoBase {
                 });
 
                 this.mesh = object;
-                this.mesh.position.set(0.2, -23, 2);
+                this.mesh.position.set(0.325, -23, 2);
                 this.setup();
             },
             (xhr) => {
