@@ -222,22 +222,6 @@ class PlayerController extends EventDispatcher {
         direcao.multiplyScalar(moveDistance);
 
         this.wallCollision(direcao);
-        //Verifica limites do cenário (500x500)
-        /*
-        const LIMITE_CENA = 250; 
-        const reducao = 2;
-        const pos = this.cameraHolder.position.clone();
-        const posicaoFutura = pos.clone().add(new THREE.Vector3(direcao.x, 0, direcao.y));
-        
-        if (Math.abs(posicaoFutura.x) > LIMITE_CENA - reducao) { 
-            if (posicaoFutura.x > LIMITE_CENA) direcao.x = LIMITE_CENA - pos.x - reducao;
-            if (posicaoFutura.x < -LIMITE_CENA) direcao.x = -LIMITE_CENA - pos.x + reducao;
-        }
-        if (Math.abs(posicaoFutura.z) > LIMITE_CENA - reducao) {
-            if (posicaoFutura.z > LIMITE_CENA) direcao.y = LIMITE_CENA - pos.z - reducao;
-            if (posicaoFutura.z < -LIMITE_CENA) direcao.y = -LIMITE_CENA - pos.z + reducao;
-        }
-        */
         
         this.cameraHolder.translateX(direcao.x);
         this.cameraHolder.translateZ(direcao.y);
@@ -313,7 +297,6 @@ class PlayerController extends EventDispatcher {
         this.arrowHelper.setColor(new THREE.Color(0xff0000));
 
         if (intersects.length > 0) {
-            console.log("Interseções com paredes: ", wallIntersects.length);
             let normal = intersects[0].face.normal.clone();
 
             normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(intersects[0].object.matrixWorld)).normalize(); // Aplica a matriz normal para obter a direção correta

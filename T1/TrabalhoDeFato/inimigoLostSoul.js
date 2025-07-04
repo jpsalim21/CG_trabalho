@@ -1,0 +1,65 @@
+import { InimigoBase } from "./inimigoBase.js";
+import { OBJLoader } from '../../build/jsm/loaders/OBJLoader.js';
+import * as THREE from 'three';
+
+const path = "../assets/skull.obj";
+const texturePath = "../assets/skul/";
+
+
+class InimigoLostSoul extends InimigoBase {
+    constructor(scene, vida, ataque) {
+        super(scene, vida, ataque);
+        this.loadModel();
+    }
+
+    loadModel() {
+        const loader = new OBJLoader();
+        const texLoader = new THREE.TextureLoader();
+
+        const texture = texLoader.load(`${texturePath}skull_blood_BaseColor.png`);
+        const normalMap = texLoader.load(`${texturePath}skull_blood_Normal.png`);
+        const roughnessMap = texLoader.load(`${texturePath}skull_Roughness.png`);
+        const metalnessMap = texLoader.load(`${texturePath}skull_blood_Metallic.png`);
+
+        loader.load(
+            path,
+            (object) => {
+                const material = new THREE.MeshStandardMaterial({
+                    map: texture,
+                    normalMap: normalMap,
+                    roughnessMap: roughnessMap,
+                    metalnessMap: metalnessMap,
+                    metalness: 0.5,
+                    roughness: 1.0,
+                });
+
+                object.traverse((child) => {
+                    if (child.isMesh) {
+                        child.material = material;
+                    }
+                });
+
+                this.mesh = object;
+                this.setup();
+                this.mesh.position.set(0.2, -23, 2);
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            (error) => {
+                console.error('An error happened while loading the model:', error);
+            }
+        )
+    }
+
+    setup() {
+        super.setup();
+    }
+
+    morrer() {
+        console.log("Lost Soul derrotada!");
+        this.scene.remove(this.mesh);
+    }
+}
+
+export { InimigoLostSoul };

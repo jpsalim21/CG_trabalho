@@ -10,18 +10,21 @@ class InimigoBase {
 
         this.scene = scene;
 
+        this.object = new THREE.Object3D();
+        this.object.position.set(0, 0, 0);
         this.mesh = null;
         this.sprite = new THREE.Sprite(spriteMaterial);
         this.sprite.scale.set(2, 0.4, 1);
-        //this.sprite.visible = false;
         this.sprite.position.set(10, 2, 10);
         scene.add(this.sprite);
     }
 
     setup(){
         this.mesh.add(this.sprite);
-        this.sprite.position.set(0, 1, 0);
-        this.scene.add(this.mesh);
+        this.sprite.position.set(0, 4, 0);
+        this.object.add(this.sprite);
+        this.object.add(this.mesh);
+        this.scene.add(this.object);
     }
 
     tomarDano(dano) {
