@@ -7,7 +7,7 @@ const texturePath = "../assets/skul/";
 
 
 class InimigoLostSoul extends InimigoBase {
-    constructor(scene, vida, ataque, player, velocidade = 0.2) {
+    constructor(scene, vida, ataque, player, velocidade = 0.05) {
         super(scene, vida, ataque, player);
         this.player = player;
         this.velocidade = velocidade;
@@ -60,6 +60,7 @@ class InimigoLostSoul extends InimigoBase {
 
         this.bb = new THREE.Box3().setFromObject(this.mesh);
         this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
+        this.scene.add(this.bbHelper);
     }
 
     morrer() {
@@ -72,6 +73,7 @@ class InimigoLostSoul extends InimigoBase {
         if (distancia > 3) {
             this.object.lookAt(this.player.getCamPosition());
             this.object.translateZ(this.velocidade);
+            this.bb.setFromObject(this.mesh);
         }
     }
 
