@@ -13,8 +13,8 @@ Mari:
 Salim:
     Tiro: FEITO
         Lógica de causar dano nos inimigos FEITO
-    Inimigo Base:
-        Morte por transição de opacidade (Descobrir como fazer)
+    Inimigo Base: FEITO
+        Morte por transição de opacidade (Descobrir como fazer) FEITO
     Inimigo voador
         Criar máquina de estado
         Colisão com cenário
