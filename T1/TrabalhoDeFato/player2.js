@@ -338,6 +338,11 @@ class PlayerController extends EventDispatcher {
     }
     //#endregion
 
+    getBulletPool() {
+        return this.arma; // Retorna a pool de balas
+    }
+
+
     //#region Funções de eventos
     connect() {
 		this.domElement.ownerDocument.addEventListener( 'mousemove', this._onMouseMove );

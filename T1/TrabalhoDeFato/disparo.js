@@ -13,7 +13,7 @@ class Bullet {
     constructor(posicao, pool, scene) {
         this.mesh = new THREE.Mesh(geometria, material);
         this.mesh.position.copy(posicao);
-        this.velocidade = 30;
+        this.velocidade = 90;
         this.movendo = false;
         this.mesh.visible = false;
         this.pool = pool;
