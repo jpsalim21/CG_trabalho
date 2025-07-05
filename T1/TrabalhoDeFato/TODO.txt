@@ -1,25 +1,34 @@
-Terminar área 1:
-    Terminar pilares
-    Fazer elevador com a chave
-Fazer área 2:
-    elevador
-    pilares voadores
-Tiro:
-    Lógica de causar dano nos inimigos
-Inimigo Base:
-    Armazenar todos os inimigos em algo static
-    Morte por transição de opacidade
-Inimigo voador
-    Criar máquina de estado
-    Colisão com cenário
-Inimigo terrestre
-    Importar obj
-    Criar comportamento (máquina de estado)
-    Colisão com cenario
-arma 2
-    Importar sprite
-    lógica de atirar
-chave:
-    Aparecer após a área 1 ser limpa
-    Pilar na frente da área 2
-    Aparecer no pilar quando o jogador aproximar com ela
+Mari:
+    Terminar área 1:
+        Terminar pilares
+        Fazer elevador com a chave
+    Fazer área 2:
+        elevador
+        pilares voadores
+    chave:
+        Aparecer após a área 1 ser limpa (Dica: use o gameController pra lidar com isso)
+        Pilar na frente da área 2
+        Aparecer no pilar quando o jogador aproximar com ela
+
+Salim:
+    Tiro:
+        Lógica de causar dano nos inimigos
+    Inimigo Base:
+        Armazenar todos os inimigos em algo static
+        Morte por transição de opacidade (Descobrir como fazer)
+    Inimigo voador
+        Criar máquina de estado
+        Colisão com cenário
+
+
+Leo:
+    Inimigo terrestre
+        Importar obj
+        Criar comportamento (máquina de estado)
+        Colisão com cenario
+    Arma 1:
+        Corrigir posição e formato
+    arma 2
+        Importar sprite
+        lógica de atirar
+
