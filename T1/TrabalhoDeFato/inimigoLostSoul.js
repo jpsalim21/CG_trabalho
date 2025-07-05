@@ -43,6 +43,7 @@ class InimigoLostSoul extends InimigoBase {
                 object.traverse((child) => {
                     if (child.isMesh) {
                         child.material = material;
+                        child.material.transparent = true;
                     }
                 });
 
@@ -71,8 +72,46 @@ class InimigoLostSoul extends InimigoBase {
 
     morrer() {
         this.rodando = false;
-        this.mesh.visible = false;
-        console.log("Lost Soul derrotada!");
+
+        const metodoDestructor = this.destructor.bind(this);
+        let start = null;
+        const initialOpacities = [];
+        const mesh = this.mesh;
+        mesh.traverse(child => {
+            if (child.isMesh && child.material) {
+                initialOpacities.push(child.material.opacity ?? 1);
+            }
+        });
+        const duration = 0.7; // segundos
+        function animateFadeOut(timestamp) {
+            if (!start) start = timestamp;
+            const elapsed = (timestamp - start) / 1000;
+            const t = Math.min(elapsed / duration, 1);
+
+            let i = 0;
+            mesh.traverse(child => {
+                if (child.isMesh && child.material) {
+                    child.material.opacity = initialOpacities[i] * (1 - t);
+                    i++;
+                }
+            });
+
+            if (t < 1) {
+                requestAnimationFrame(animateFadeOut);
+            } else {
+                metodoDestructor();
+            }
+        }
+
+        requestAnimationFrame(animateFadeOut);
+    }
+
+    destructor(){
+        this.scene.remove(this.bbHelper);
+        this.scene.remove(this.mesh);
+        this.mesh = null;
+        this.bbHelper = null;
+        this.bulletPool = null;
     }
 
     update(){
