@@ -11,10 +11,9 @@ Mari:
         Aparecer no pilar quando o jogador aproximar com ela
 
 Salim:
-    Tiro:
-        Lógica de causar dano nos inimigos
+    Tiro: FEITO
+        Lógica de causar dano nos inimigos FEITO
     Inimigo Base:
-        Armazenar todos os inimigos em algo static
         Morte por transição de opacidade (Descobrir como fazer)
     Inimigo voador
         Criar máquina de estado
