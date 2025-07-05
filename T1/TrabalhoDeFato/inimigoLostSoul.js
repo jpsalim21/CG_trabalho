@@ -1,16 +1,21 @@
 import { InimigoBase } from "./inimigoBase.js";
 import { OBJLoader } from '../../build/jsm/loaders/OBJLoader.js';
 import * as THREE from 'three';
+import { BulletPool } from "./disparo.js";
 
 const path = "../assets/skull.obj";
 const texturePath = "../assets/skul/";
 
 
 class InimigoLostSoul extends InimigoBase {
-    constructor(scene, vida, ataque, player, velocidade = 0.2) {
+    constructor(scene, vida, ataque, player, velocidade = 0.05) {
         super(scene, vida, ataque, player);
         this.player = player;
         this.velocidade = velocidade;
+        this.rodando = true;
+
+        this.bulletPool = this.player.getBulletPool();
+
         this.loadModel();
     }
 
@@ -56,18 +61,40 @@ class InimigoLostSoul extends InimigoBase {
 
     setup() {
         super.setup();
+
+        this.bb = new THREE.Box3().setFromObject(this.mesh);
+        this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
+        this.scene.add(this.bbHelper);
+
+        this.rodando = true;
     }
 
     morrer() {
+        this.rodando = false;
+        this.mesh.visible = false;
         console.log("Lost Soul derrotada!");
-        this.scene.remove(this.mesh);
     }
 
     update(){
+        if (!this.rodando) return;
+
         let distancia = this.object.position.distanceTo(this.player.getCamPosition());
+        this.testeColisao();
         if (distancia > 3) {
             this.object.lookAt(this.player.getCamPosition());
             this.object.translateZ(this.velocidade);
+            this.bb.setFromObject(this.mesh);
+        }
+    }
+
+    testeColisao(){
+        const objects = this.bulletPool.getBulletsInUse();
+
+        const bullet = objects.find(obj => this.bb.intersectsBox(obj.bb));
+        if (bullet) {
+            bullet.reset();
+            this.tomarDano(20);
+            console.log("Colidiu com pelo menos uma bounding box!");
         }
     }
 

@@ -41,7 +41,7 @@ class InimigoBase {
 
     atualizarBarraVida() {
         let porcentagemVida = this.vida / this.maxVida;
-        this.sprite.scale(2 * porcentagemVida, 0.4, 1);
+        this.sprite.scale.set(2 * porcentagemVida, 0.4, 1);
     }
 
     morrer(){

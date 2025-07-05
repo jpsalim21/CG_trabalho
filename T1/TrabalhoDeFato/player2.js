@@ -151,6 +151,8 @@ class PlayerController extends EventDispatcher {
 
 
         this.bb = new THREE.Box3().setFromObject(this.playerMesh);
+        this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
+        scene.add(this.bbHelper);
         //#endregion
 
 
@@ -205,6 +207,7 @@ class PlayerController extends EventDispatcher {
     update(delta){
         this.bb.setFromObject(this.playerMesh); // Atualiza a caixa delimitadora do jogador
 
+        this.bbHelper.position.copy(this.playerMesh.position); // Atualiza a posição do helper da caixa delimitadora
 
         this.grounded = this.isOnGround(); // Verifica se está no chão
 
@@ -334,6 +337,11 @@ class PlayerController extends EventDispatcher {
         }
     }
     //#endregion
+
+    getBulletPool() {
+        return this.arma; // Retorna a pool de balas
+    }
+
 
     //#region Funções de eventos
     connect() {
