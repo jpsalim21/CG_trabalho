@@ -11,6 +11,7 @@ class InimigoLostSoul extends InimigoBase {
         super(scene, vida, ataque, player);
         this.player = player;
         this.velocidade = velocidade;
+
         this.loadModel();
     }
 
@@ -56,6 +57,9 @@ class InimigoLostSoul extends InimigoBase {
 
     setup() {
         super.setup();
+
+        this.bb = new THREE.Box3().setFromObject(this.mesh);
+        this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
     }
 
     morrer() {

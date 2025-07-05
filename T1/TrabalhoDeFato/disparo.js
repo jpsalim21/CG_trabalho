@@ -13,15 +13,21 @@ class Bullet {
     constructor(posicao, pool, scene) {
         this.mesh = new THREE.Mesh(geometria, material);
         this.mesh.position.copy(posicao);
-        this.velocidade = 180;
+        this.velocidade = 30;
         this.movendo = false;
         this.mesh.visible = false;
         this.pool = pool;
 
         this.raycaster = new THREE.Raycaster();
-        this.raycaster.far = 3;
+        this.raycaster.far = 1;
         this.direcao = new THREE.Vector3(0, 0, 1);
 
+        this.bb = new THREE.Box3().setFromObject(this.mesh);
+        this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
+
+        this.bbHelper.visible = true;
+
+        scene.add(this.bbHelper);
         scene.add(this.mesh);
     }
 
@@ -41,6 +47,8 @@ class Bullet {
     render(delta) {
         if (!this.movendo) return;
         this.mesh.translateZ(this.velocidade * delta);
+
+        this.bb.setFromObject(this.mesh);
 
         if (this.mesh.position.y > teto || this.mesh.position.y < chao) {
             this.reset();
@@ -62,6 +70,7 @@ class Bullet {
     reset() {
         this.movendo = false;
         this.mesh.position.copy(posInicial);
+        this.bb.setFromObject(this.mesh);
         this.mesh.visible = false;
         this.pool.resetBullet(this);
     }
@@ -122,6 +131,10 @@ class BulletPool {
     resetBullet(bullet) {
         this.bullets.push(bullet);
         this.bulletsInUse.splice(this.bulletsInUse.indexOf(bullet), 1);
+    }
+
+    getBulletsInUse() {
+        return this.bulletsInUse;
     }
 }
 
