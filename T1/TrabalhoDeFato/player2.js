@@ -1,11 +1,13 @@
 import {
 	Euler,
 	EventDispatcher,
+    TextureLoader
 } from 'three';
 import { onWindowResize, setDefaultMaterial } from "../libs/util/util.js";
 import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "./cenario.js";
+import { SpriteMixer } from '../libs/sprites/SpriteMixer.js';
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
@@ -44,13 +46,44 @@ class PlayerController extends EventDispatcher {
         this.camera.position.set(0, 2, 0); //altura do jogador
         this.camera.lookAt(new THREE.Vector3(0, 2, -1)); // começa olhando pra frente
         this.cameraHolder.add(this.camera);
-        
-        // Cria a arma
-        let cilindroGeometry = new THREE.CylinderGeometry(1.0, 1.0, 4, 16);
-        this.cilindro = new THREE.Mesh(cilindroGeometry, armaMaterial); 
-        this.camera.add(this.cilindro); 
-        this.cilindro.position.set(0, -2.5, -6); 
-        this.cilindro.rotation.x = -Math.PI / 2;
+
+        // setup das duas armas
+        this.weapons = {};
+        this.activeWeapon = 1;
+        this.clock = new THREE.Clock();
+     
+        // cria a arma "lançador"
+        let launcherGeometry = new THREE.CylinderGeometry(1.0, 1.0, 4, 16);
+        const launcher = new THREE.Mesh(launcherGeometry, armaMaterial); 
+        launcher.position.set(0, -2.5, -6); 
+        launcher.rotation.x = -Math.PI / 2;
+        this.weapons[2] = {
+            object: launcher,
+            cooldown: 0.5,
+            lastShotTime: 0, // tempo do último disparo
+        };
+        this.camera.add(launcher); 
+        launcher.visible = (this.activeWeapon === 2); 
+
+        //cria chaingun
+        this.spriteMixer = SpriteMixer();
+        const loader = new TextureLoader();
+        loader.load('../assets/textures/chaingun.png', (texture) => {
+            const chaingunSprite = this.spriteMixer.ActionSprite(texture, 3, 1);
+            chaingunSprite.position.set(0, -0.5 , -2.0);
+            chaingunSprite.scale.set(0.8, 0.8, 0.8);
+            
+            this.weapons[1] = {
+                object: chaingunSprite,
+                actions: {
+                    idle: this.spriteMixer.Action(chaingunSprite, 0, 0, 100),
+                    shoot: this.spriteMixer.Action(chaingunSprite, 1, 4, 80) // movimento de tiro, começando no frame 1 e terminando no frame 4, com 80ms por frame
+                },
+                isShooting: false
+            };
+            this.camera.add(chaingunSprite); 
+            chaingunSprite.visible = (this.activeWeapon === 1); 
+        });
         
         scene.add(this.cameraHolder);
         //#endregion
@@ -96,6 +129,9 @@ class PlayerController extends EventDispatcher {
             }
         });
 
+        window.addEventListener("keydown", (event) => this.handleWeaponSwitchKey(event.key));
+        window.addEventListener('wheel', (event) => this.handleWeaponSwitchScroll(event));
+
         window.addEventListener("keydown", (event) => this.movementControls(event.key, true));
         window.addEventListener("keyup", (event) => this.movementControls(event.key, false));
         this._onMouseMove = onMouseMove.bind( this );
@@ -139,6 +175,7 @@ class PlayerController extends EventDispatcher {
         this.arma = new BulletPool(this.scene); // cria a pool de balas
         this.atirar = false;
         this.rayMira = new THREE.Raycaster(); // cria um raycaster para detectar o alvo
+        this.rayMira.camera = this.camera; // associa o raycaster à câmera
         this.rayMira.far = 1000.0; // distância máxima do raycaster
 
         //#endregion
@@ -204,14 +241,17 @@ class PlayerController extends EventDispatcher {
         }
     }
     // Função de atualização, com movimentação e gravidade
-    update(delta){
-        this.bb.setFromObject(this.playerMesh); // Atualiza a caixa delimitadora do jogador
-
-        this.bbHelper.position.copy(this.playerMesh.position); // Atualiza a posição do helper da caixa delimitadora
-
-        this.grounded = this.isOnGround(); // Verifica se está no chão
-
-        if(this.grounded){
+    update(delta) {
+        // atualiza o mixer de sprites para que a animação seja atualizada conforme o delta de tempo
+        if (this.spriteMixer) {
+            this.spriteMixer.update(delta);
+        }
+    
+        this.bb.setFromObject(this.playerMesh);
+        this.bbHelper.position.copy(this.playerMesh.position);
+        this.grounded = this.isOnGround();
+    
+        if (this.grounded) {
             this.velVertical = 0;
         } else {
             this.velVertical -= GRAVIDADE * delta;
@@ -219,18 +259,45 @@ class PlayerController extends EventDispatcher {
         }
     
         const moveDistance = this.speed * delta;
-
-        let direcao = this.velocity.clone();    
+        let direcao = this.velocity.clone();
         direcao = direcao.normalize();
         direcao.multiplyScalar(moveDistance);
-
         this.wallCollision(direcao);
-        
         this.cameraHolder.translateX(direcao.x);
         this.cameraHolder.translateZ(direcao.y);
-
-        if(this.atirar){
-            this.funcAtirar();
+        
+        // tratando duas armas
+        if (this.atirar) {
+            // se for a chaingun
+            if (this.activeWeapon === 1 && this.weapons[1]) {
+                const weapon = this.weapons[1];
+                // inicia a animação de tiro se não estiver atirando
+                if (!weapon.isShooting) {
+                    weapon.actions.shoot.playLoop();
+                    weapon.isShooting = true;
+                }
+                // chama a função de tiro da metralhadora (raycast)
+                this.fireChaingun(delta);
+            }
+            // se for o lancador
+            else if (this.activeWeapon === 2 && this.weapons[2]) {
+                const weapon = this.weapons[2];
+                const now = this.clock.getElapsedTime();
+    
+                // verifica o cooldown de 0.5 segundos
+                if (now - weapon.lastShotTime > weapon.cooldown) {
+                    this.fireLauncher(); // dispara o projétil
+                    weapon.lastShotTime = now; // atualiza o tempo do último disparo
+                }
+            }
+        } else {
+            // se o jogador SOLTOU o botão de atirar, para a animação da metralhadora
+            if (this.activeWeapon === 1 && this.weapons[1] && this.weapons[1].isShooting && this.weapons[1].actions) {
+                const weapon = this.weapons[1];
+                weapon.actions.idle.playLoop();
+                weapon.object.setFrame(0); // voltamos ao frame inicial
+                weapon.isShooting = false;
+            }
         }
     }
     // Função de animação
@@ -264,7 +331,7 @@ class PlayerController extends EventDispatcher {
 
         return isGround;
     }
-    funcAtirar() {
+    fireLauncher() {
         let objetos = getParedes();
         let direcao = this.camera.getWorldDirection(new THREE.Vector3());
         let camPos = this.camera.getWorldPosition(new THREE.Vector3());
@@ -272,7 +339,7 @@ class PlayerController extends EventDispatcher {
         this.rayMira.set(camPos, direcao);
         let intersects = this.rayMira.intersectObjects(objetos);
         
-        const posicao = this.cilindro.getWorldPosition(new THREE.Vector3()); 
+        const posicao = this.weapons[2].object.getWorldPosition(new THREE.Vector3()); 
         
         let alvo;
         
@@ -283,6 +350,53 @@ class PlayerController extends EventDispatcher {
         }
         this.arma.atirar(posicao, alvo);
     }
+
+    fireChaingun(delta) {
+        let objetos = getParedes();
+        let direcao = this.camera.getWorldDirection(new THREE.Vector3());
+        let camPos = this.camera.getWorldPosition(new THREE.Vector3());
+    
+        this.rayMira.set(camPos, direcao);
+        let sceneObjects = this.scene.children.filter(obj => 
+            obj !== this.weapons[1]?.object && 
+            (objetos.includes(obj) || obj.userData?.isEnemy)
+        );
+        let intersects = this.rayMira.intersectObjects(sceneObjects, true);
+    
+        if (intersects.length > 0) {
+            const targetObject = intersects[0].object;
+    
+            let targetInimigo = targetObject;
+            while (targetInimigo && !targetInimigo.userData?.isEnemy) {
+                targetInimigo = targetInimigo.parent;
+                if (!targetInimigo) break;
+            }
+    
+            if (targetInimigo && targetInimigo.userData?.isEnemy) {
+                if (this.currentTarget !== targetInimigo) {
+                    this.currentTarget = targetInimigo;
+                    this.chaingunDamageTime = 0;
+                }
+    
+                this.chaingunDamageTime += delta;
+                if (this.chaingunDamageTime >= 1.0 / 2) {
+                    const inimigo = targetInimigo.userData.inimigoInstance;
+                    if (inimigo) {
+                        inimigo.tomarDano(2);
+                        console.log(`Chaingun atingiu ${inimigo.constructor.name}! HP restante: ${inimigo.vida}`);
+                    } else {
+                        console.log("Erro: inimigoInstance não encontrado");
+                    }
+                    this.chaingunDamageTime -= 1.0 / 2;
+                }
+            } else {
+                this.currentTarget = null;
+            }
+        } else {
+            this.currentTarget = null;
+        }
+    }
+
     wallCollision(direcao) {
         if(direcao.x === 0 && direcao.y === 0) {
             return; // Não faz nada se a direção for zero
@@ -364,6 +478,51 @@ class PlayerController extends EventDispatcher {
 
     getCamPosition() {
         return this.camera.getWorldPosition(new THREE.Vector3());
+    }
+
+    // trocando as arma
+    switchWeapon(newWeaponIndex) {
+        console.log("Tentando trocar para arma:", newWeaponIndex);
+        if (this.activeWeapon === newWeaponIndex || !this.weapons[newWeaponIndex]) {
+            console.log("Troca cancelada: arma já ativa ou não existe");
+            return;
+        }
+        // esconde a arma antiga
+        if (this.weapons[this.activeWeapon]) {
+            this.weapons[this.activeWeapon].object.visible = false;
+            console.log("Escondendo arma:", this.activeWeapon);
+        }
+        // pra animação da chaingun, se for o caso
+        if (this.activeWeapon === 1 && this.weapons[1] && this.weapons[1].actions) {
+            this.weapons[1].isShooting = false;
+            this.weapons[1].actions.idle.playLoop();
+            this.weapons[1].object.setFrame(0);
+            this.weapons[1].object.visible = false; // força a invisibilidade
+        }
+        // mostra a nova arma
+        this.activeWeapon = newWeaponIndex;
+        this.weapons[this.activeWeapon].object.visible = true;
+        console.log("Mostrando arma:", this.activeWeapon);
+    }
+
+    // novo método para lidar com as teclas '1' e '2'
+    handleWeaponSwitchKey(key) {
+        if (key === '1') {
+            this.switchWeapon(1); // chaingun
+        } else if (key === '2') {
+            this.switchWeapon(2); // lançador
+        }
+    }
+
+    // método para lidar com o scroll do mouse
+    handleWeaponSwitchScroll(event) {
+        // event.deltaY > 0 significa scroll para baixo
+        // event.deltaY < 0 significa scroll para cima
+        if (this.activeWeapon === 1) {
+            this.switchWeapon(2);
+        } else {
+            this.switchWeapon(1);
+        }
     }
 
 }

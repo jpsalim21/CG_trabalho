@@ -8,10 +8,12 @@ class InimigoBase {
         this.maxVida = vida;
         this.ataque = ataque;
         this.player = player; 
+        this.isEnemy = true;
 
         this.scene = scene;
 
         this.object = new THREE.Object3D();
+        this.object.userData.isEnemy = true;
         this.object.position.set(0, 0, 0);
         this.mesh = null;
         this.sprite = new THREE.Sprite(spriteMaterial);
@@ -21,11 +23,14 @@ class InimigoBase {
     }
 
     setup(){
-        this.mesh.add(this.sprite);
-        this.sprite.position.set(0, 4, 0);
-        this.object.add(this.sprite);
-        this.object.add(this.mesh);
-        this.scene.add(this.object);
+        if(this.mesh){
+            this.mesh.add(this.sprite);
+            this.sprite.position.set(0, 4, 0);
+            this.object.add(this.sprite);
+            this.object.add(this.mesh);
+            this.scene.add(this.object);
+            this.object.userData.inimigoInstance = this;
+        }
         this.render();
     }
 
