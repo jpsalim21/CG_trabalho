@@ -3,7 +3,6 @@ Mari:
         Terminar pilares
         Fazer elevador com a chave
     Fazer área 2:
-        elevador
         pilares voadores
     chave:
         Aparecer após a área 1 ser limpa (Dica: use o gameController pra lidar com isso)
@@ -13,7 +12,13 @@ Mari:
 Salim:
     Inimigo voador
         Criar trigger
-
+    Iluminação
+        Luz principal
+        Luz secundária
+    chave
+        Fazer chave rodar
+    Área 2:
+        elevador
 
 Leo:
     Inimigo terrestre
