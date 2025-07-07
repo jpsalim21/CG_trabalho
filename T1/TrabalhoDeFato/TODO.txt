@@ -2,7 +2,6 @@ Mari:
     Terminar área 1:
         Fazer elevador com a chave
     Fazer área 2:
-        elevador
         pilares voadores
     chave:
         Aparecer após a área 1 ser limpa (Dica: use o gameController pra lidar com isso)
@@ -10,14 +9,16 @@ Mari:
         Aparecer no pilar quando o jogador aproximar com ela
 
 Salim:
-    Tiro: FEITO
-        Lógica de causar dano nos inimigos FEITO
-    Inimigo Base:
-        Morte por transição de opacidade (Descobrir como fazer)
     Inimigo voador
-        Criar máquina de estado
-        Colisão com cenário
-
+        Criar trigger
+        Colisão
+    Iluminação
+        Luz principal
+        Luz secundária
+    chave
+        Fazer chave rodar
+    Área 2:
+        elevador
 
 Leo:
     Inimigo terrestre
@@ -26,7 +27,4 @@ Leo:
         Colisão com cenario
     Arma 1:
         Corrigir posição e formato
-    arma 2
-        Importar sprite
-        lógica de atirar
 

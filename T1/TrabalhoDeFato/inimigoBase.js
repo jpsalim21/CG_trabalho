@@ -19,6 +19,8 @@ class InimigoBase {
         this.sprite = new THREE.Sprite(spriteMaterial);
         this.sprite.scale.set(2, 0.4, 1);
         this.sprite.position.set(10, 2, 10);
+
+        
         scene.add(this.sprite);
     }
 
