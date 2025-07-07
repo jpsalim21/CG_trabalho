@@ -9,7 +9,7 @@ const texturePath = "../assets/skul/";
 
 
 class InimigoLostSoul extends InimigoBase {
-    constructor(scene, vida, ataque, player, velocidade = 0.05) {
+    constructor(scene, vida, ataque, player, velocidade = 0.1) {
         super(scene, vida, ataque, player);
         this.player = player;
         this.velocidade = velocidade;
@@ -125,7 +125,7 @@ class InimigoLostSoul extends InimigoBase {
         this.testeColisao();
         if (distancia > 3) {
             this.object.lookAt(this.player.getCamPosition());
-            this.object.translateZ(this.velocidade);
+            this.wallCollision();
             this.bb.setFromObject(this.mesh);
         }
     }
@@ -150,9 +150,16 @@ class InimigoLostSoul extends InimigoBase {
         const objects = getParedes().concat(getChao());
         const intersectedObjects = this.rayWall.intersectObjects(objects, true);
 
+        if (intersectedObjects.length > 0) {
+            let normal = intersectedObjects[0].face.normal;
 
+            normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(intersectedObjects[0].object.matrixWorld)).normalize();
+            
+            let dNova = direcao.clone().projectOnPlane(normal); // Projeta a direção no plano para não atravessar paredes
+            direcao = dNova.normalize();
+        }
 
-
+        this.object.position.addScaledVector(direcao, this.velocidade);
     }
 
 }
