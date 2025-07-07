@@ -2,8 +2,9 @@ import { InimigoBase } from "./inimigoBase.js";
 import { OBJLoader } from '../../build/jsm/loaders/OBJLoader.js';
 import * as THREE from 'three';
 import { BulletPool } from "./disparo.js";
+import { getParedes, getChao } from "./cenario.js";
 
-const path = "../assets/skull.obj";
+const path = "../assets/skullMelhor.obj";
 const texturePath = "../assets/skul/";
 
 
@@ -15,6 +16,10 @@ class InimigoLostSoul extends InimigoBase {
         this.rodando = true;
 
         this.bulletPool = this.player.getBulletPool();
+
+        this.rayWall = new THREE.Raycaster();
+        this.rayWall.far = 0.5;
+        this.rayWall.near = 0.1;
 
         this.loadModel();
     }
@@ -48,7 +53,6 @@ class InimigoLostSoul extends InimigoBase {
                 });
 
                 this.mesh = object;
-                this.mesh.position.set(0.325, -23, 2);
                 this.setup();
             },
             (xhr) => {
@@ -135,6 +139,20 @@ class InimigoLostSoul extends InimigoBase {
             this.tomarDano(20);
             console.log("Colidiu com pelo menos uma bounding box!");
         }
+    }
+
+    wallCollision(){
+        const quaternion = this.object.quaternion;
+        let direcao = new THREE.Vector3(0, 0, 1).applyQuaternion(quaternion);
+
+        this.rayWall.set(this.object.position, direcao);
+
+        const objects = getParedes().concat(getChao());
+        const intersectedObjects = this.rayWall.intersectObjects(objects, true);
+
+
+
+
     }
 
 }
