@@ -147,7 +147,7 @@ class PlayerController extends EventDispatcher {
         this.minPolarAngle = 0;
 		this.maxPolarAngle = Math.PI; 
 
-        this.speed = 30;
+        this.speed = 40;
         this.pulo = 30;
         this.velVertical = 0;
         this.alturaChao = 0.1;

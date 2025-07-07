@@ -2,19 +2,24 @@ import { InimigoBase } from "./inimigoBase.js";
 import { OBJLoader } from '../../build/jsm/loaders/OBJLoader.js';
 import * as THREE from 'three';
 import { BulletPool } from "./disparo.js";
+import { getParedes, getChao } from "./cenario.js";
 
-const path = "../assets/skull.obj";
+const path = "../assets/skullMelhor.obj";
 const texturePath = "../assets/skul/";
 
 
 class InimigoLostSoul extends InimigoBase {
-    constructor(scene, vida, ataque, player, velocidade = 0.05) {
+    constructor(scene, vida, ataque, player, velocidade = 0.1) {
         super(scene, vida, ataque, player);
         this.player = player;
         this.velocidade = velocidade;
         this.rodando = true;
 
         this.bulletPool = this.player.getBulletPool();
+
+        this.rayWall = new THREE.Raycaster();
+        this.rayWall.far = 0.5;
+        this.rayWall.near = 0.1;
 
         this.loadModel();
     }
@@ -43,11 +48,11 @@ class InimigoLostSoul extends InimigoBase {
                 object.traverse((child) => {
                     if (child.isMesh) {
                         child.material = material;
+                        child.material.transparent = true;
                     }
                 });
 
                 this.mesh = object;
-                this.mesh.position.set(0.325, -23, 2);
                 this.setup();
             },
             (xhr) => {
@@ -71,8 +76,46 @@ class InimigoLostSoul extends InimigoBase {
 
     morrer() {
         this.rodando = false;
-        this.mesh.visible = false;
-        console.log("Lost Soul derrotada!");
+
+        const metodoDestructor = this.destructor.bind(this);
+        let start = null;
+        const initialOpacities = [];
+        const mesh = this.mesh;
+        mesh.traverse(child => {
+            if (child.isMesh && child.material) {
+                initialOpacities.push(child.material.opacity ?? 1);
+            }
+        });
+        const duration = 0.7; // segundos
+        function animateFadeOut(timestamp) {
+            if (!start) start = timestamp;
+            const elapsed = (timestamp - start) / 1000;
+            const t = Math.min(elapsed / duration, 1);
+
+            let i = 0;
+            mesh.traverse(child => {
+                if (child.isMesh && child.material) {
+                    child.material.opacity = initialOpacities[i] * (1 - t);
+                    i++;
+                }
+            });
+
+            if (t < 1) {
+                requestAnimationFrame(animateFadeOut);
+            } else {
+                metodoDestructor();
+            }
+        }
+
+        requestAnimationFrame(animateFadeOut);
+    }
+
+    destructor(){
+        this.scene.remove(this.bbHelper);
+        this.scene.remove(this.mesh);
+        this.mesh = null;
+        this.bbHelper = null;
+        this.bulletPool = null;
     }
 
     update(){
@@ -82,7 +125,7 @@ class InimigoLostSoul extends InimigoBase {
         this.testeColisao();
         if (distancia > 3) {
             this.object.lookAt(this.player.getCamPosition());
-            this.object.translateZ(this.velocidade);
+            this.wallCollision();
             this.bb.setFromObject(this.mesh);
         }
     }
@@ -96,6 +139,27 @@ class InimigoLostSoul extends InimigoBase {
             this.tomarDano(20);
             console.log("Colidiu com pelo menos uma bounding box!");
         }
+    }
+
+    wallCollision(){
+        const quaternion = this.object.quaternion;
+        let direcao = new THREE.Vector3(0, 0, 1).applyQuaternion(quaternion);
+
+        this.rayWall.set(this.object.position, direcao);
+
+        const objects = getParedes().concat(getChao());
+        const intersectedObjects = this.rayWall.intersectObjects(objects, true);
+
+        if (intersectedObjects.length > 0) {
+            let normal = intersectedObjects[0].face.normal;
+
+            normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(intersectedObjects[0].object.matrixWorld)).normalize();
+            
+            let dNova = direcao.clone().projectOnPlane(normal); // Projeta a direção no plano para não atravessar paredes
+            direcao = dNova.normalize();
+        }
+
+        this.object.position.addScaledVector(direcao, this.velocidade);
     }
 
 }
