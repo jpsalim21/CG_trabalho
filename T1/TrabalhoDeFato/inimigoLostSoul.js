@@ -168,9 +168,9 @@ class InimigoLostSoul extends InimigoBase {
         }
     }
 
-    wallCollision(){
+    wallCollision(dir){
         const quaternion = this.object.quaternion;
-        let direcao = new THREE.Vector3(0, 0, 1).applyQuaternion(quaternion);
+        let direcao = dir.copy().applyQuaternion(quaternion);
 
         this.rayWall.set(this.object.position, direcao);
 
@@ -186,7 +186,7 @@ class InimigoLostSoul extends InimigoBase {
             direcao = dNova.normalize();
         }
 
-        this.object.position.addScaledVector(direcao, this.velocidade);
+        return direcao;
     }
 
     //#region MÁQUINA DE ESTADOS
@@ -230,6 +230,7 @@ class InimigoLostSoul extends InimigoBase {
         direcao.applyAxisAngle(new THREE.Vector3(0, 1, 0), this.dirSignal * Math.PI / 2);
         let alvo = this.object.position.clone().add(direcao);
         this.object.lookAt(alvo);
+        
         this.object.translateZ(this.velocidade * delta);
     }
 
