@@ -21,6 +21,12 @@ class InimigoLostSoul extends InimigoBase {
         this.rayWall.far = 0.5;
         this.rayWall.near = 0.1;
 
+        this.updateFunction = null;
+        this.estado = null;
+
+        this.clock = new THREE.Clock();
+        this.clock.start();
+
         this.loadModel();
     }
 
@@ -67,9 +73,13 @@ class InimigoLostSoul extends InimigoBase {
     setup() {
         super.setup();
 
+        this.object.position.set(0, 5, 0);
+
         this.bb = new THREE.Box3().setFromObject(this.mesh);
         this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
         this.scene.add(this.bbHelper);
+
+        //this.enterIdle();
 
         this.rodando = true;
     }
@@ -116,11 +126,20 @@ class InimigoLostSoul extends InimigoBase {
         this.mesh = null;
         this.bbHelper = null;
         this.bulletPool = null;
+        this.clock.stop();
+        this.clock = null;
     }
 
     update(){
         if (!this.rodando) return;
 
+        if (this.updateFunction) {
+            const delta = this.clock.getDelta();
+            this.updateFunction(delta);
+        }
+
+
+        /*
         let distancia = this.object.position.distanceTo(this.player.getCamPosition());
         this.testeColisao();
         if (distancia > 3) {
@@ -128,6 +147,7 @@ class InimigoLostSoul extends InimigoBase {
             this.wallCollision();
             this.bb.setFromObject(this.mesh);
         }
+        */
     }
 
     testeColisao(){
@@ -161,6 +181,35 @@ class InimigoLostSoul extends InimigoBase {
 
         this.object.position.addScaledVector(direcao, this.velocidade);
     }
+
+    //#region MÁQUINA DE ESTADOS
+
+    enterIdle(){
+        if(this.estado === "idle") return;
+
+        this.altura = this.object.position.y;
+        this.updateFunction = this.idle.bind(this);
+        this.estado = "idle";
+    }
+
+    idle(delta){
+        let seno = Math.sin(this.clock.getElapsedTime() * 2);
+
+        this.object.position.y = this.altura + seno;
+        this.bb.setFromObject(this.mesh);
+    }
+
+    enterAttack(){
+        if(this.estado === "attack") return;
+
+        this.updateFunction = this.attack.bind(this);
+        this.estado = "attack";
+    }
+
+    attack(delta){
+
+    }
+    //#endregion
 
 }
 
