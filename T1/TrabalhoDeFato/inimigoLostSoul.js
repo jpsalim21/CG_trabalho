@@ -9,7 +9,7 @@ const texturePath = "../assets/skul/";
 
 
 class InimigoLostSoul extends InimigoBase {
-    constructor(scene, vida, ataque, player, velocidade = 0.1) {
+    constructor(scene, vida, ataque, player, velocidade = 15) {
         super(scene, vida, ataque, player);
         this.player = player;
         this.velocidade = velocidade;
@@ -24,8 +24,13 @@ class InimigoLostSoul extends InimigoBase {
         this.updateFunction = null;
         this.estado = null;
 
+        this.clockIdle = new THREE.Clock();
+        this.clockIdle.start();
         this.clock = new THREE.Clock();
         this.clock.start();
+
+        this.timeOnState = 0;
+
 
         this.loadModel();
     }
@@ -80,6 +85,8 @@ class InimigoLostSoul extends InimigoBase {
         this.scene.add(this.bbHelper);
 
         //this.enterIdle();
+        this.enterTriggered();
+
 
         this.rodando = true;
     }
@@ -133,21 +140,21 @@ class InimigoLostSoul extends InimigoBase {
     update(){
         if (!this.rodando) return;
         
-        /*
+        this.testeColisao();
+        
         if (this.updateFunction) {
             const delta = this.clock.getDelta();
             this.updateFunction(delta);
+            this.bb.setFromObject(this.mesh);
         }
-        */
 
-
+        /*
         let distancia = this.object.position.distanceTo(this.player.getCamPosition());
-        this.testeColisao();
         if (distancia > 3) {
             this.object.lookAt(this.player.getCamPosition());
             this.wallCollision();
-            this.bb.setFromObject(this.mesh);
         }
+        */
     }
 
     testeColisao(){
@@ -187,27 +194,63 @@ class InimigoLostSoul extends InimigoBase {
     enterIdle(){
         if(this.estado === "idle") return;
 
+        this.clockIdle.start();
         this.altura = this.object.position.y;
         this.updateFunction = this.idle.bind(this);
         this.estado = "idle";
+
     }
 
     idle(delta){
-        let seno = Math.sin(this.clock.getElapsedTime() * 2);
+        let seno = Math.sin(this.clockIdle.getElapsedTime() * 2);
 
         this.object.position.y = this.altura + seno;
         this.bb.setFromObject(this.mesh);
     }
 
+    enterTriggered(){
+        if(this.estado === "triggered") return;
+
+        this.timeOnState = 0;
+        this.dirSignal = Math.random() < 0.5 ? -1 : 1;
+        this.updateFunction = this.triggered.bind(this);
+        this.estado = "triggered";
+    }
+
+    triggered(delta){
+        this.timeOnState += delta;
+        if (this.timeOnState > 5) {
+            this.enterAttack();
+            return;
+        }
+
+        let direcao = this.player.getCamPosition().clone().sub(this.object.position);
+        direcao.y = 0;
+        direcao.normalize();
+        direcao.applyAxisAngle(new THREE.Vector3(0, 1, 0), this.dirSignal * Math.PI / 2);
+        let alvo = this.object.position.clone().add(direcao);
+        this.object.lookAt(alvo);
+        this.object.translateZ(this.velocidade * delta);
+    }
+
     enterAttack(){
         if(this.estado === "attack") return;
 
+        this.timeOnState = 0;
+        const alvo = this.player.getCamPosition();
+        this.direcao = alvo.clone().sub(this.object.position).normalize();
+        this.object.lookAt(alvo);
         this.updateFunction = this.attack.bind(this);
         this.estado = "attack";
     }
 
     attack(delta){
-
+        this.timeOnState += delta;
+        if (this.timeOnState > 2) {
+            this.enterTriggered();
+            return;
+        }
+        this.object.translateZ(this.velocidade * 2 * delta);
     }
     //#endregion
 

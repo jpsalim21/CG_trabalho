@@ -11,13 +11,8 @@ Mari:
         Aparecer no pilar quando o jogador aproximar com ela
 
 Salim:
-    Tiro: FEITO
-        Lógica de causar dano nos inimigos FEITO
-    Inimigo Base: FEITO
-        Morte por transição de opacidade (Descobrir como fazer) FEITO
     Inimigo voador
-        Criar máquina de estado
-        Colisão com cenário
+        Criar trigger
 
 
 Leo:
@@ -27,7 +22,4 @@ Leo:
         Colisão com cenario
     Arma 1:
         Corrigir posição e formato
-    arma 2
-        Importar sprite
-        lógica de atirar
 
