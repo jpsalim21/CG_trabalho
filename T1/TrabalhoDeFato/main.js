@@ -22,4 +22,4 @@ player.start();
 const chave1 = new Chave(scene, player.bb); // cria a chave
 //const inimigo = new InimigoBase(scene, 100, 10); // cria o inimigo
 
-const inimigoLostSoul = new InimigoLostSoul(scene, 50, 5, player);
+const inimigoLostSoul = new InimigoLostSoul(scene, 20, 5, player);

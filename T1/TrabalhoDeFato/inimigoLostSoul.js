@@ -132,14 +132,15 @@ class InimigoLostSoul extends InimigoBase {
 
     update(){
         if (!this.rodando) return;
-
+        
+        /*
         if (this.updateFunction) {
             const delta = this.clock.getDelta();
             this.updateFunction(delta);
         }
+        */
 
 
-        /*
         let distancia = this.object.position.distanceTo(this.player.getCamPosition());
         this.testeColisao();
         if (distancia > 3) {
@@ -147,7 +148,6 @@ class InimigoLostSoul extends InimigoBase {
             this.wallCollision();
             this.bb.setFromObject(this.mesh);
         }
-        */
     }
 
     testeColisao(){
