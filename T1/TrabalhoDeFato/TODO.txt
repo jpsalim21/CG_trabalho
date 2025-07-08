@@ -12,8 +12,6 @@ Salim:
     Iluminação
         Luz principal
         Luz secundária
-    Área 2:
-        elevador
 
 Leo:
     Inimigo terrestre
