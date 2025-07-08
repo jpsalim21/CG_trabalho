@@ -1,6 +1,5 @@
 Mari:
     Terminar área 1:
-        Terminar pilares
         Fazer elevador com a chave
     Fazer área 2:
         pilares voadores
