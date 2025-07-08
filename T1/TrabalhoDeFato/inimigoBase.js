@@ -3,12 +3,15 @@ import * as THREE from 'three';
 const spriteMaterial = new THREE.SpriteMaterial({ color: 0x00ff00 });
 
 class InimigoBase {
-    constructor(scene, vida, ataque, player){
+    constructor(scene, vida, ataque, player, observer){
         this.vida = vida;
         this.maxVida = vida;
         this.ataque = ataque;
         this.player = player; 
         this.isEnemy = true;
+
+        this.observer = observer;
+        this.observer.addListener(this);
 
         this.scene = scene;
 
@@ -38,12 +41,12 @@ class InimigoBase {
 
     tomarDano(dano) {
         this.vida -= dano;
-        if (this.vida < 0) {
+        this.atualizarBarraVida();
+        if (this.vida <= 0) {
             this.vida = 0;
             console.log("Inimigo derrotado!");
             this.morrer();
         }
-        this.atualizarBarraVida();
     }
 
     atualizarBarraVida() {

@@ -9,8 +9,8 @@ const texturePath = "../assets/skul/";
 
 
 class InimigoLostSoul extends InimigoBase {
-    constructor(scene, vida, ataque, player, velocidade = 15) {
-        super(scene, vida, ataque, player);
+    constructor(scene, vida, ataque, player, observer, velocidade = 15) {
+        super(scene, vida, ataque, player, observer);
         this.player = player;
         this.velocidade = velocidade;
         this.rodando = true;
@@ -127,6 +127,7 @@ class InimigoLostSoul extends InimigoBase {
     }
 
     destructor(){
+        this.observer.removeListener(this);
         this.scene.remove(this.bbHelper);
         this.scene.remove(this.mesh);
         this.mesh = null;

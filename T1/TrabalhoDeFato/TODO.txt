@@ -9,13 +9,9 @@ Mari:
         Aparecer no pilar quando o jogador aproximar com ela
 
 Salim:
-    Inimigo voador
-        Criar trigger
     Iluminação
         Luz principal
         Luz secundária
-    chave
-        Fazer chave rodar
     Área 2:
         elevador
 

@@ -26,6 +26,12 @@ class AreaTrigger {
             this.listeners.push(listener);
         }
     }
+    removeListener(listener) {
+        const index = this.listeners.indexOf(listener);
+        if (index !== -1) {
+            this.listeners.splice(index, 1);
+        }
+    }
 
     update(){
         if(this.bb.intersectsBox(this.player.bb)){

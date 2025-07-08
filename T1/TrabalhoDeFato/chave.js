@@ -50,6 +50,10 @@ class Chave {
     }
 
     update(){
+        this.mesh.rotateX(0.01);
+        this.mesh.rotateY(0.01);
+        this.mesh.rotateZ(0.01);
+
         if(this.bb.intersectsBox(this.playerbb)){
             console.log("Colisão detectada com a chave!");
             this.destroy();

@@ -293,4 +293,8 @@ function createEscada(){
     return escada;
 }
 
-export { inicializaCenario, getParedes, getChao };
+function addChao(objeto){
+    chao.push(objeto);
+}
+
+export { inicializaCenario, getParedes, getChao, addChao };
