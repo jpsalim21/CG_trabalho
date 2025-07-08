@@ -31,9 +31,6 @@ class InimigoLostSoul extends InimigoBase {
 
         this.timeOnState = 0;
 
-        this.arrowHelper = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0), 10, 0xff0000);
-        this.scene.add(this.arrowHelper);
-
 
         this.loadModel();
     }
@@ -167,7 +164,6 @@ class InimigoLostSoul extends InimigoBase {
         const quaternion = this.object.quaternion.clone();
         let direcao = dir.clone();
         direcao.applyQuaternion(quaternion);
-        this.arrowHelper.setDirection(direcao);
 
         this.rayWall.set(this.object.position, direcao);
 
@@ -184,8 +180,6 @@ class InimigoLostSoul extends InimigoBase {
             direcao = dNova.normalize();
         }
         
-        
-        this.arrowHelper.position.copy(this.object.position);
         this.object.position.add(direcao.multiplyScalar(this.velocidade * delta * scale));
     }
 

@@ -63,6 +63,16 @@ class InimigoBase {
     update(){
         throw new Error("Método 'update' não implementado na classe base InimigoBase.");
     }
+
+    enterIdle(){
+        throw new Error("Método 'enterIdle' não implementado na classe base InimigoBase.");
+    }
+    enterTriggered(){
+        throw new Error("Método 'enterTriggered' não implementado na classe base InimigoBase.");
+    }
+    enterAttack(){
+        throw new Error("Método 'enterAttack' não implementado na classe base InimigoBase.");
+    }
 }
 
 export { InimigoBase };
