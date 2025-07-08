@@ -31,6 +31,9 @@ class InimigoLostSoul extends InimigoBase {
 
         this.timeOnState = 0;
 
+        this.arrowHelper = new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 0), 10, 0xff0000);
+        this.scene.add(this.arrowHelper);
+
 
         this.loadModel();
     }
@@ -78,7 +81,7 @@ class InimigoLostSoul extends InimigoBase {
     setup() {
         super.setup();
 
-        this.object.position.set(0, 5, 0);
+        this.object.position.set(-10, 5, 0);
 
         this.bb = new THREE.Box3().setFromObject(this.mesh);
         this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
@@ -147,14 +150,6 @@ class InimigoLostSoul extends InimigoBase {
             this.updateFunction(delta);
             this.bb.setFromObject(this.mesh);
         }
-
-        /*
-        let distancia = this.object.position.distanceTo(this.player.getCamPosition());
-        if (distancia > 3) {
-            this.object.lookAt(this.player.getCamPosition());
-            this.wallCollision();
-        }
-        */
     }
 
     testeColisao(){
@@ -168,25 +163,30 @@ class InimigoLostSoul extends InimigoBase {
         }
     }
 
-    wallCollision(dir){
-        const quaternion = this.object.quaternion;
-        let direcao = dir.copy().applyQuaternion(quaternion);
+    wallCollision(dir, delta, scale = 1){
+        const quaternion = this.object.quaternion.clone();
+        let direcao = dir.clone();
+        direcao.applyQuaternion(quaternion);
+        this.arrowHelper.setDirection(direcao);
 
         this.rayWall.set(this.object.position, direcao);
 
         const objects = getParedes().concat(getChao());
         const intersectedObjects = this.rayWall.intersectObjects(objects, true);
 
+        
         if (intersectedObjects.length > 0) {
             let normal = intersectedObjects[0].face.normal;
-
+            
             normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(intersectedObjects[0].object.matrixWorld)).normalize();
             
             let dNova = direcao.clone().projectOnPlane(normal); // Projeta a direção no plano para não atravessar paredes
             direcao = dNova.normalize();
         }
-
-        return direcao;
+        
+        
+        this.arrowHelper.position.copy(this.object.position);
+        this.object.position.add(direcao.multiplyScalar(this.velocidade * delta * scale));
     }
 
     //#region MÁQUINA DE ESTADOS
@@ -231,7 +231,8 @@ class InimigoLostSoul extends InimigoBase {
         let alvo = this.object.position.clone().add(direcao);
         this.object.lookAt(alvo);
         
-        this.object.translateZ(this.velocidade * delta);
+        const dir = new THREE.Vector3(0, 0, 1);
+        this.wallCollision(dir, delta, 1.0);
     }
 
     enterAttack(){
@@ -251,7 +252,8 @@ class InimigoLostSoul extends InimigoBase {
             this.enterTriggered();
             return;
         }
-        this.object.translateZ(this.velocidade * 2 * delta);
+        const dir = new THREE.Vector3(0, 0, 1);
+        this.wallCollision(dir, delta, 2.0);
     }
     //#endregion
 

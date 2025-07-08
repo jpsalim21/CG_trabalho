@@ -12,7 +12,6 @@ Mari:
 Salim:
     Inimigo voador
         Criar trigger
-        Colisão
     Iluminação
         Luz principal
         Luz secundária
