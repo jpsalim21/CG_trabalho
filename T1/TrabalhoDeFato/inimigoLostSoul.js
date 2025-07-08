@@ -84,8 +84,7 @@ class InimigoLostSoul extends InimigoBase {
         this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
         this.scene.add(this.bbHelper);
 
-        //this.enterIdle();
-        this.enterTriggered();
+        this.enterIdle();
 
 
         this.rodando = true;
