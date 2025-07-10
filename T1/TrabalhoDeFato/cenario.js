@@ -133,24 +133,78 @@ function inicializaCenario(scene) {
     box2.add(box23);
     box2.position.set(0, 0, -150);
 
-    // const box21 = new THREE.Mesh(boxGeometry3, box2Material);
-    // box21.position.set(-20, 2, -150);
-    // chao.push(box21);
-    // paredes.push(box21);
-    
-    // const box22 = new THREE.Mesh(boxGeometry2, box2Material);
-    // box22.position.set(25, 2, -165);
-    // chao.push(box22);
-    // paredes.push(box22);
-    
-    // const box23 = new THREE.Mesh(boxGeometry1, box2Material);
-    // box23.position.set(45, 2, -150);
-    // chao.push(box23);
-    // paredes.push(box23);
-    
-    // const escada2 = createEscada();
-    // escada2.position.set(25, 0, -100);
-    // escada2.rotation.y = Math.PI; 
+    const block = new THREE.Mesh(new THREE.BoxGeometry(5, 25, 5), box2Material);
+    let block1 = block.clone();
+    block1.position.set(-25, 9, 5);
+    let block2 = block.clone();
+    block2.position.set(40, 9, 35);
+    let block3 = block.clone();
+    block3.position.set(20, 16, -15);
+    let block4 = block.clone();
+    block4.position.set(0, 5, -45);
+    let block5 = block.clone();
+    block5.position.set(0, 5, 15);
+    let block6 = block.clone();
+    block6.position.set(30, 3, 15);
+    let block7 = block.clone();
+    block7.position.set(-20, 16, -15);
+    let block8 = block.clone();
+    block8.position.set(40, 16, -40);
+    let block9 = block.clone();
+    block9.position.set(-10, 15, 35);
+    let block10 = block.clone();
+    block10.position.set(20, 5, -35);
+    let block11 = block.clone();
+    block11.position.set(-40, 5, -5);
+    let block12 = block.clone();
+    block12.position.set(-40, 5, 25);
+    let block13 = block.clone();
+    block13.position.set(-30, 14, 45);
+    let block14 = block.clone();
+    block14.position.set(-40, 7, -45);
+    let block15 = block.clone();
+    block15.position.set(0, 5, 0);
+    box2.add(block1);
+    box2.add(block2);
+    box2.add(block3);
+    box2.add(block4);
+    box2.add(block5);    
+    box2.add(block6);
+    box2.add(block7);
+    box2.add(block8);
+    box2.add(block9);
+    box2.add(block10);
+    box2.add(block11);
+    box2.add(block12);
+    box2.add(block13);
+    paredes.push(block1);
+    paredes.push(block2);
+    paredes.push(block3);
+    paredes.push(block4);
+    paredes.push(block5);    
+    paredes.push(block6);
+    paredes.push(block7);
+    paredes.push(block8);
+    paredes.push(block9);
+    paredes.push(block10);
+    paredes.push(block11);
+    paredes.push(block12); 
+    paredes.push(block13);
+
+    // pilar para a chave
+    const pillarGeometry = new THREE.BoxGeometry(2, 2, 2);
+    let pillar = new THREE.Mesh(pillarGeometry, wallMaterial);
+    pillar.position.set(-3, 1, -95);
+    paredes.push(pillar);
+    scene.add(pillar);
+
+    //porta da área 2
+    const doorGeometry = new THREE.BoxGeometry(0.1, 4, 10);
+    let door = new THREE.Mesh(doorGeometry, wallMaterial);
+    door.position.set(5, 2, -100);
+    door.rotation.y = Math.PI / 2;
+    paredes.push(door);
+    scene.add(door);
     
     //box 3
     const box31 = new THREE.Mesh(boxGeometry4, box3Material);
@@ -194,9 +248,9 @@ function inicializaCenario(scene) {
     // Cria as rampas
 
     // const ramp2 = new THREE.Mesh(rampGeometry, wallMaterial);
-    // ramp2.rotation.x = -Math.atan(30/4); 
-    // ramp2.position.set(25, 2, -115); 
-    // ramp2.visible = false;
+    // ramp2.rotation.x = -Math.atan(10/4); 
+    // ramp2.position.set(0, 2, -105); 
+    // ramp2.visible = true;
     // chao.push(ramp2);
 
     const ramp3 = new THREE.Mesh(rampGeometry, wallMaterial);
