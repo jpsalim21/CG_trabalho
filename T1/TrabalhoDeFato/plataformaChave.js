@@ -11,6 +11,8 @@ class PlataformaChave {
         
         this.plataforma = new THREE.Mesh(new THREE.BoxGeometry(2,2,2), new THREE.MeshPhongMaterial({ color: 0x888888 }));
         this.plataforma.position.copy(position);
+        this.plataforma.add(chave.mesh);
+        chave.mesh.position.set(0, 3, 0); // Ajusta a posição da chave na plataforma
         scene.add(this.plataforma);
         
         this.render();
@@ -26,7 +28,7 @@ class PlataformaChave {
         
         if (this.plataforma.position.y < this.alturaAlvo) {
             this.plataforma.position.y += this.velocidade * 0.016; // 0.016 aproxima 60fps
-            this.chave.mesh.position.y = this.plataforma.position.y + 1;
+            this.chave.bb.setFromObject(this.chave.mesh);
         }
     }
 

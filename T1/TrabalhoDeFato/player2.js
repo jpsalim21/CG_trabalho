@@ -53,9 +53,9 @@ class PlayerController extends EventDispatcher {
         this.clock = new THREE.Clock();
      
         // cria a arma "lançador"
-        let launcherGeometry = new THREE.CylinderGeometry(1.0, 1.0, 4, 16);
+        let launcherGeometry = new THREE.CylinderGeometry(0.6, 0.6, 1.5, 16);
         const launcher = new THREE.Mesh(launcherGeometry, armaMaterial); 
-        launcher.position.set(0, -2.5, -6); 
+        launcher.position.set(0, -1.0, -1.5); 
         launcher.rotation.x = -Math.PI / 2;
         this.weapons[2] = {
             object: launcher,

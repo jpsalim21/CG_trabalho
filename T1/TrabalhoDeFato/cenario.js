@@ -126,7 +126,6 @@ function inicializaCenario(scene, player) {
     // chave vermelha mostrada quando matar todos os inimigos
     chave1Obj = new Chave(scene, player.bb, 'vermelha');
     chave1Obj.mesh.visible = false;
-    box1.add(chave1Obj.mesh);
 
     // plataforma da chave na área 1
     plataformaChave1 = new PlataformaChave(scene, new THREE.Vector3(0, 3, 0), chave1Obj);
