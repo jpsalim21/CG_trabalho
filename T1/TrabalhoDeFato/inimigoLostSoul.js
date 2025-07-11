@@ -159,7 +159,7 @@ class InimigoLostSoul extends InimigoBase {
         const bullet = objects.find(obj => this.bb.intersectsBox(obj.bb));
         if (bullet) {
             bullet.reset();
-            this.tomarDano(20);
+            this.tomarDano(10);
             console.log("Colidiu com pelo menos uma bounding box!");
         }
     }
