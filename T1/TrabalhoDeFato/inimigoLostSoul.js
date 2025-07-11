@@ -137,7 +137,6 @@ class InimigoLostSoul extends InimigoBase {
         this.mesh = null;
         this.bbHelper = null;
         this.bulletPool = null;
-        this.clock.stop();
         this.clock = null;
     }
 

@@ -6,11 +6,6 @@ Mari:
         Aparecer após a área 1 ser limpa (Dica: use o gameController pra lidar com isso)
         Aparecer no pilar quando o jogador aproximar com ela
 
-Salim:
-    Iluminação
-        Luz principal
-        Luz secundária
-
 Leo:
     Inimigo terrestre
         Importar obj

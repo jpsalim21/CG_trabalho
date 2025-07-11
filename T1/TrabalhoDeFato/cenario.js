@@ -408,4 +408,8 @@ function addChao(objeto){
     chao.push(objeto);
 }
 
-export { inicializaCenario, getParedes, getChao, addChao, plataformaChave1, chave1Obj, porta, pilarChave, elevador, block15};
+function addParedes(objeto){
+    paredes.push(objeto);
+}
+
+export { inicializaCenario, getParedes, getChao, addChao, addParedes, plataformaChave1, chave1Obj, porta, pilarChave, elevador, block15};

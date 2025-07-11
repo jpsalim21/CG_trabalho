@@ -411,7 +411,7 @@ class PlayerController extends EventDispatcher {
         let quaternion = this.cameraHolder.quaternion.clone();
         const direcao3 = new THREE.Vector3(direcao.x, 0, direcao.y).applyQuaternion(quaternion);
         this.rayWall.set(pos, direcao3);
-        const intersects = this.rayWall.intersectObjects(paredes, true);
+        const intersects = this.rayWall.intersectObjects(paredes, false);
 
         this.arrowHelper.setDirection(direcao3.clone().normalize());
         this.arrowHelper.setLength(1.5, 0.1, 0.1);
@@ -437,7 +437,7 @@ class PlayerController extends EventDispatcher {
         
         direcao3.set(direcao.x, 0, direcao.y).applyQuaternion(quaternion);
         this.rayWall.set(pos, direcao3);
-        const wallIntersects = this.rayWall.intersectObjects(paredes, true);
+        const wallIntersects = this.rayWall.intersectObjects(paredes, false);
 
         
         if (wallIntersects.length > 0) {

@@ -40,6 +40,7 @@ class InimigoBase {
     }
 
     tomarDano(dano) {
+        if (this.vida <= 0) return; // Não faz nada se já estiver morto
         this.vida -= dano;
         this.atualizarBarraVida();
         if (this.vida <= 0) {

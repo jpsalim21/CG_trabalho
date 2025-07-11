@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { addChao } from './cenario.js';
+import { addChao, addParedes} from './cenario.js';
 
 const geometry = new THREE.BoxGeometry(10, 20, 10);
+const geometriaMaior = new THREE.BoxGeometry(20, 20, 20);
 const material = new THREE.MeshLambertMaterial({
     color: 'rgb(200, 200, 200)',
     emissive: 'rgb(100, 100, 100)',
@@ -17,14 +18,17 @@ class Elevador {
         this.mesh = new THREE.Mesh(geometry, material);
         position.y -= 10.1;
 
-        this.falseMesh = new THREE.Mesh(geometry, material);
+        this.mesh.position.copy(position);
+        
+        addChao(this.mesh); // adiciona o elevador ao chão
+        addParedes(this.mesh); // adiciona o elevador às paredes
+        
+        this.falseMesh = new THREE.Mesh(geometriaMaior, material);
         this.mesh.add(this.falseMesh);
-        this.falseMesh.position.set(0, 10, 0); // posição do falso teto
+        this.falseMesh.position.set(0, 5, 0); // posição do falso teto
         this.falseMesh.visible = false; // torna o falso teto invisível
         
-        this.mesh.position.copy(position);
-        addChao(this.mesh); // adiciona o elevador ao chão
-        
+
         this.bb = new THREE.Box3().setFromObject(this.falseMesh);
         this.bbHelper = new THREE.Box3Helper(this.bb, 'blue');
         this.scene.add(this.bbHelper);
@@ -32,48 +36,94 @@ class Elevador {
 
         this.ativo = false;
         this.alturaInicial = position.y;
-        this.alturaAlvo = 4;
+        this.alturaAlvo = 1;
 
-        this.updateFunction = this.waiting.bind(this);
+        this.clock = new THREE.Clock();
+        this.clock.start();
+        this.tempoPassado = 0;
+
+        this.playerDentro = false;
+
+        this.enterIdle();
         this.render();
     }
 
-    ativar() {
-        this.ativo = true;
-        this.updateFunction = this.moving.bind(this);
+    enterIdle(){
+        this.bb.setFromObject(this.falseMesh);
+        this.updateFunction = this.idle.bind(this);
+        this.tempoPassado = 0;
     }
 
-    waiting(){
-        this.bb.setFromObject(this.falseMesh);
+    idle(delta){
         if(this.bb.intersectsBox(this.player.bb)) {
-            this.updateFunction = this.moving.bind(this);
-            console.log("Jogador entrou no elevador, iniciando movimento.");
-        }
-    }
-
-    moving(){
-        this.bb.setFromObject(this.falseMesh);
-        if(this.bb.intersectsBox(this.player.bb)) {
-            if(this.mesh.position.y < this.alturaAlvo) {
-            this.mesh.position.y += 0.1;
+            if(!this.playerDentro) {
+                this.playerDentro = true;
+                this.enterDescer();
             }
-        }else {
-            this.updateFunction = this.waiting.bind(this); // volta para a função de espera se o jogador sair do elevador
+        } else{
+            this.playerDentro = false;
         }
     }
 
+    enterDescer(){
+        this.updateFunction = this.descer.bind(this);
+        this.tempoPassado = 0;
+    }
+
+    descer(delta){
+        if(this.mesh.position.y > this.alturaInicial){
+            this.mesh.position.y -= 2 * delta; // Desce a uma velocidade de 0.5 unidades por segundo
+            this.bb.setFromObject(this.falseMesh);
+        } else {
+            this.enterEsperar();
+        }
+    }
+
+    enterEsperar(){
+        this.updateFunction = this.esperar.bind(this);
+        this.tempoPassado = 0;
+    }
+
+    esperar(delta){
+        this.tempoPassado += delta;
+        if(this.tempoPassado >= 2) {
+            this.tempoPassado = 0;
+            this.enterSubir();
+        }
+    }
+
+    enterSubir(){
+        this.updateFunction = this.subir.bind(this);
+        this.tempoPassado = 0;
+    }
+
+    subir(delta){
+        const intersecao = this.bb.intersectsBox(this.player.bb);
+        if(!intersecao && this.playerDentro) {
+            this.playerDentro = false; // O jogador saiu do elevador
+        }
+        if(!this.playerDentro && intersecao) {
+            this.enterDescer();
+            this.playerDentro = true; // O jogador entrou no elevador
+            return;
+        }
+
+        if(this.mesh.position.y < this.alturaAlvo){
+            this.mesh.position.y += 2 * delta; // Sobe a uma velocidade de 0.5 unidades por segundo
+            this.bb.setFromObject(this.falseMesh);
+        } else {
+            this.enterIdle();
+        }
+    }
         
     update(){
-        this.updateFunction();
+        console.log("Elevador update");
+        this.updateFunction(this.clock.getDelta());
     }
 
     render(){
         this.update();
         requestAnimationFrame(() => this.render());
-    }
-
-    nada(){
-
     }
 
 }
