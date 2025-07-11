@@ -3,6 +3,7 @@ import { OBJLoader } from '../../build/jsm/loaders/OBJLoader.js';
 import * as THREE from 'three';
 import { BulletPool } from "./disparo.js";
 import { getParedes, getChao } from "./cenario.js";
+import gameController from "./gamecontroller.js";
 
 const path = "../assets/skullMelhor.obj";
 const texturePath = "../assets/skul/";
@@ -30,6 +31,7 @@ class InimigoLostSoul extends InimigoBase {
         this.clock.start();
 
         this.timeOnState = 0;
+        this.maxTime = 5;
 
         this.loadModel();
 
@@ -125,7 +127,6 @@ class InimigoLostSoul extends InimigoBase {
         }
 
         requestAnimationFrame(animateFadeOut);
-        super.morrer();
         gameController.inimigoMorreu(this);
     }
 
@@ -212,11 +213,12 @@ class InimigoLostSoul extends InimigoBase {
         this.dirSignal = Math.random() < 0.5 ? -1 : 1;
         this.updateFunction = this.triggered.bind(this);
         this.estado = "triggered";
+        this.maxTime = 0.5 + Math.random() * 5; // Tempo aleatório entre 1 e 5 segundos
     }
 
     triggered(delta){
         this.timeOnState += delta;
-        if (this.timeOnState > 5) {
+        if (this.timeOnState > this.maxTime) {
             this.enterAttack();
             return;
         }
@@ -241,11 +243,12 @@ class InimigoLostSoul extends InimigoBase {
         this.object.lookAt(alvo);
         this.updateFunction = this.attack.bind(this);
         this.estado = "attack";
+        this.maxTime = 2 + Math.random() * 2; // Tempo aleatório entre 4 e 10 segundos
     }
 
     attack(delta){
         this.timeOnState += delta;
-        if (this.timeOnState > 2) {
+        if (this.timeOnState > this.maxTime) {
             this.enterTriggered();
             return;
         }

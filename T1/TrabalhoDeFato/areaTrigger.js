@@ -10,6 +10,7 @@ class AreaTrigger {
         this.player = player;
 
         this.listeners = [];
+        this.estaDentro = false;
 
         this.bb = new THREE.Box3(
             new THREE.Vector3(position.x - size.x / 2, position.y - size.y / 2, position.z - size.z / 2),
@@ -34,8 +35,14 @@ class AreaTrigger {
     }
 
     update(){
-        if(this.bb.intersectsBox(this.player.bb)){
+        if(this.bb.intersectsBox(this.player.bb)) {
+            if (this.estaDentro){
+                return;
+            }
+            this.estaDentro = true;
             this.trigger();
+        } else {
+            this.estaDentro = false;
         }
     }
 
