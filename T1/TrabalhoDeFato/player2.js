@@ -382,11 +382,15 @@ class PlayerController extends EventDispatcher {
                 if (this.chaingunDamageTime >= 1.0 / 2) {
                     const inimigo = targetInimigo.userData.inimigoInstance;
                     if (inimigo) {
-                        inimigo.tomarDano(2);
-                        console.log(`Chaingun atingiu ${inimigo.constructor.name}! HP restante: ${inimigo.vida}`);
-                    } else {
-                        console.log("Erro: inimigoInstance não encontrado");
-                    }
+                        // verifica se o raycast intersecta a bounding box do inimigo
+                        const bb = inimigo.bb; // a bounding box deve estar atualizada em inimigo
+                        if (bb) {
+                            const ray = new THREE.Ray(camPos, direcao);
+                            if (ray.intersectsBox(bb)) {
+                                inimigo.tomarDano(2);
+                            }
+                        } 
+                    } 
                     this.chaingunDamageTime -= 1.0 / 2;
                 }
             } else {

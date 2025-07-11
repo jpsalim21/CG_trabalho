@@ -1,12 +1,11 @@
 import * as THREE from "three";
-import {initRenderer, 
-        initDefaultBasicLight,
-} from "../libs/util/util.js";
+import { initRenderer, initDefaultBasicLight } from "../libs/util/util.js";
 import { PlayerController } from "./player2.js";
 import { inicializaCenario } from "./cenario.js";
 import { Chave } from "./chave.js";
 import { InimigoBase } from "./inimigoBase.js";
 import { InimigoLostSoul } from "./inimigoLostSoul.js";
+import { Cacodemon } from "./cacodemon.js";
 import { AreaTrigger } from "./areaTrigger.js";
 import { Elevador } from "./elevador.js";
 
@@ -22,7 +21,14 @@ player.start();
 const chave1 = new Chave(scene, player.bb); // cria a chave
 //const inimigo = new InimigoBase(scene, 100, 10); // cria o inimigo
 
-const areaTrigger = new AreaTrigger(scene, new THREE.Vector3(-160, 0, 0), new THREE.Vector3(10, 10, 10), player);
+const areaTrigger = new AreaTrigger(
+	scene,
+	new THREE.Vector3(-160, 0, 0),
+	new THREE.Vector3(10, 10, 10),
+	player
+);
+
+new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(-160, 6, 0));
 
 new InimigoLostSoul(scene, 20, 5, player, areaTrigger);
 
@@ -31,7 +37,7 @@ new Elevador(scene, new THREE.Vector3(50, 0, 50), player);
 // Iluminação
 
 let lightPosition = new THREE.Vector3(10, 100, 10);
-let lightColor = new THREE.Color('rgb(255, 255, 255)');
+let lightColor = new THREE.Color("rgb(255, 255, 255)");
 let dirLight = new THREE.DirectionalLight(lightColor, 3);
 dirLight.position.copy(lightPosition);
 dirLight.castShadow = true;
@@ -45,7 +51,6 @@ dirLight.shadow.camera.top = 500;
 dirLight.shadow.camera.bottom = -500;
 dirLight.shadow.bias = -0.0001; // Ajuste fino do viés da sombra
 dirLight.shadow.radius = 2; // Suavização das sombras
-
 
 let lightPosition2 = new THREE.Vector3(-30, 100, -30);
 let dirLight2 = new THREE.DirectionalLight(lightColor, 1);
