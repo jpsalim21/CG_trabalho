@@ -379,7 +379,7 @@ class PlayerController extends EventDispatcher {
                 }
     
                 this.chaingunDamageTime += delta;
-                if (this.chaingunDamageTime >= 1.0 / 2) {
+                if (this.chaingunDamageTime >= 0.1) {
                     const inimigo = targetInimigo.userData.inimigoInstance;
                     if (inimigo) {
                         // verifica se o raycast intersecta a bounding box do inimigo
@@ -387,11 +387,11 @@ class PlayerController extends EventDispatcher {
                         if (bb) {
                             const ray = new THREE.Ray(camPos, direcao);
                             if (ray.intersectsBox(bb)) {
-                                inimigo.tomarDano(2);
+                                inimigo.tomarDano(1);
                             }
                         } 
                     } 
-                    this.chaingunDamageTime -= 1.0 / 2;
+                    this.chaingunDamageTime -= 0.1;
                 }
             } else {
                 this.currentTarget = null;
