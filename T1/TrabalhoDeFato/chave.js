@@ -32,17 +32,28 @@ csgObj = csgObj.subtract(cilCSG3);
 
 
 class Chave {
-    constructor(scene, playerbb){
+    constructor(scene, playerbb, tipo = 'vermelha') {
+        
         this.mesh = CSG.toMesh(csgObj, new THREE.Matrix4(), material);
         this.mesh.castShadow = true;
 
         this.mesh.position.set(0, 2, -15);
 
+        this.playerbb = playerbb; 
         this.bb = new THREE.Box3().setFromObject(this.mesh);
         this.bbHelper = new THREE.Box3Helper(this.bb, 'white');
         this.bbHelper.visible = true; 
         
+        this.tipo = tipo;
+        this.adquirida = false;
+        this.colocada = false;
         this.playerbb = playerbb; 
+
+        if (tipo == 'vermelha') {
+            material.color.setHex(0xff0000);
+        } else {
+            material.color.setHex(0xffff00);
+        }
 
         scene.add(this.bbHelper);
         scene.add(this.mesh);
@@ -50,13 +61,22 @@ class Chave {
     }
 
     update(){
+        if (this.adquirida || !this.mesh) return;
+
         this.mesh.rotateX(0.01);
         this.mesh.rotateY(0.01);
         this.mesh.rotateZ(0.01);
 
         if(this.bb.intersectsBox(this.playerbb)){
             console.log("Colisão detectada com a chave!");
+            this.adquirida = true;
             this.destroy();
+
+            if (this.tipo === 'vermelha') {
+                gameController.chave1 = true;
+            } else {
+                gameController.chave2 = true;
+            }
         }
     }
 
@@ -74,6 +94,16 @@ class Chave {
             this.mesh.parent.remove(this.mesh);
             this.bbHelper.parent.remove(this.bbHelper);
         }
+    }
+
+    colocar(posicao) {
+        if (this.adquirida && !this.colocada) {
+            this.mesh.position.copy(posicao);
+            this.mesh.visible = true;
+            this.colocada = true;
+            return true;
+        }
+        return false;
     }
 }
 

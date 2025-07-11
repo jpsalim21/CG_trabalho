@@ -30,20 +30,18 @@ class Elevador {
         this.scene.add(this.bbHelper);
         this.scene.add(this.mesh);
 
+        this.ativo = false;
+        this.alturaInicial = position.y;
+        this.alturaAlvo = 4;
 
         this.updateFunction = this.waiting.bind(this);
         this.render();
     }
 
-    update(){
-        this.updateFunction();
+    ativar() {
+        this.ativo = true;
+        this.updateFunction = this.moving.bind(this);
     }
-
-    render(){
-        this.update();
-        requestAnimationFrame(() => this.render());
-    }
-
 
     waiting(){
         this.bb.setFromObject(this.falseMesh);
@@ -56,13 +54,22 @@ class Elevador {
     moving(){
         this.bb.setFromObject(this.falseMesh);
         if(this.bb.intersectsBox(this.player.bb)) {
-            this.mesh.position.y += 0.1; // move o elevador para cima
-            if (this.mesh.position.y >= 6) { // altura máxima do elevador
-                this.updateFunction = this.nada.bind(this); // volta para a função de espera
+            if(this.mesh.position.y < this.alturaAlvo) {
+            this.mesh.position.y += 0.1;
             }
-        } else {
+        }else {
             this.updateFunction = this.waiting.bind(this); // volta para a função de espera se o jogador sair do elevador
         }
+    }
+
+        
+    update(){
+        this.updateFunction();
+    }
+
+    render(){
+        this.update();
+        requestAnimationFrame(() => this.render());
     }
 
     nada(){

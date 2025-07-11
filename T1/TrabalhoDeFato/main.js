@@ -13,10 +13,10 @@ import { Elevador } from "./elevador.js";
 const scene = new THREE.Scene();
 let renderer = initRenderer(); // inicializa o renderizador com um rosa muito massa
 
-inicializaCenario(scene); // inicializa o chão
-
-
 const player = new PlayerController(scene, renderer);
+
+inicializaCenario(scene, player);
+
 player.start();
 
 const chave1 = new Chave(scene, player.bb); // cria a chave

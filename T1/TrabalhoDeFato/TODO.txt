@@ -1,11 +1,9 @@
 Mari:
     Terminar área 1:
         Fazer elevador com a chave
-    Fazer área 2:
-        pilares voadores
+        
     chave:
         Aparecer após a área 1 ser limpa (Dica: use o gameController pra lidar com isso)
-        Pilar na frente da área 2
         Aparecer no pilar quando o jogador aproximar com ela
 
 Salim:

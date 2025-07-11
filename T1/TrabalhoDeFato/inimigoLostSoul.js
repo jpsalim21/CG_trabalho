@@ -9,7 +9,7 @@ const texturePath = "../assets/skul/";
 
 
 class InimigoLostSoul extends InimigoBase {
-    constructor(scene, vida, ataque, player, observer, velocidade = 15) {
+    constructor(scene, vida, ataque, player, observer, velocidade = 10) {
         super(scene, vida, ataque, player, observer);
         this.player = player;
         this.velocidade = velocidade;
@@ -31,8 +31,9 @@ class InimigoLostSoul extends InimigoBase {
 
         this.timeOnState = 0;
 
-
         this.loadModel();
+
+        this.scene.add(this.object);
     }
 
     loadModel() {
@@ -77,8 +78,8 @@ class InimigoLostSoul extends InimigoBase {
 
     setup() {
         super.setup();
-
-        this.object.position.set(-10, 5, 0);
+        
+        // this.object.position.set(-10, 5, 0);
 
         this.bb = new THREE.Box3().setFromObject(this.mesh);
         this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
@@ -124,6 +125,8 @@ class InimigoLostSoul extends InimigoBase {
         }
 
         requestAnimationFrame(animateFadeOut);
+        super.morrer();
+        gameController.inimigoMorreu(this);
     }
 
     destructor(){

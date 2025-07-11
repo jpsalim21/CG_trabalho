@@ -1,6 +1,12 @@
 import * as THREE from "three";
 import {setDefaultMaterial} from "../libs/util/util.js";
-import { CSG } from '../libs/other/CSGMesh.js';
+import { Chave } from './chave.js';
+import { Elevador } from './elevador.js';
+import { InimigoLostSoul } from './inimigoLostSoul.js';
+import { AreaTrigger } from './areaTrigger.js';
+import { PlataformaChave} from './plataformaChave.js';
+import { PortaArea } from "./portaArea.js";
+import gameController from './gamecontroller.js';
 
 //materiais
 const material = setDefaultMaterial('rgb(37, 72, 45)');
@@ -33,14 +39,22 @@ const topGeometry = new THREE.BoxGeometry(100, 2, 6);
 const chao = []; // array para armazenar os objetos do chão
 const paredes = []; // array para armazenar as paredes
 
-function inicializaCenario(scene) {
+let plataformaChave1 = null;
+let chave1Obj = null;
+let porta = null;
+let pilarChave = null;
+let elevador = null;
+let block15 = null;
+
+function inicializaCenario(scene, player) {
+
     // Cria o chão
     const ground = new THREE.Mesh(planeGeometry, material);
     ground.position.set(0, 0, 0); // posiciona o chão no centro da cena
     ground.rotation.x = -0.5 * Math.PI; // rotaciona para ficar horizontal
     chao.push(ground); // adiciona o chão ao array de chão
 
-    //box 1
+    // área 1
     const box1 = new THREE.Object3D();
 
     const box11 = new THREE.Mesh(boxGeometry1, box1Material);
@@ -68,7 +82,7 @@ function inicializaCenario(scene) {
     ramp1.visible = false;
     chao.push(ramp1);
 
-    //colunas
+    // colunas na área 1
     const column = new THREE.Mesh(columnGeometry, columnMaterial);
 
     for (let i = 0; i < 14; i++) {
@@ -109,8 +123,30 @@ function inicializaCenario(scene) {
     box1.add(ramp1);
     box1.position.set(-150, 0, -150);
 
-    
-    //box 2
+    // chave vermelha mostrada quando matar todos os inimigos
+    chave1Obj = new Chave(scene, player.bb, 'vermelha');
+    chave1Obj.mesh.visible = false;
+    box1.add(chave1Obj.mesh);
+
+    // plataforma da chave na área 1
+    plataformaChave1 = new PlataformaChave(scene, new THREE.Vector3(0, 3, 0), chave1Obj);
+    box1.add(plataformaChave1.plataforma);
+    paredes.push(plataformaChave1.plataforma);
+
+
+    // add inimigos na área 1
+    const areaTrigger1 = new AreaTrigger(scene, new THREE.Vector3(-150, 0, -150), new THREE.Vector3(100, 10, 100), player);
+
+    for (let i = 0; i < 3; i++) {
+        const inimigo = new InimigoLostSoul( scene,  20, 5, player, areaTrigger1, 10);
+        inimigo.object.position.set(-180 + i * 20, 8, -180 + i * 20); 
+        scene.add(inimigo.object);
+        console.log("Inimigo criado na área 1:", inimigo);
+        gameController.addInimigoArea1(inimigo);
+    }
+  
+
+    // área 2
     const box2 = new THREE.Object3D();
 
     const box21 = new THREE.Mesh(boxGeometry9, box2Material);
@@ -133,6 +169,7 @@ function inicializaCenario(scene) {
     box2.add(box23);
     box2.position.set(0, 0, -150);
 
+    // blocos de diferentes alturas
     const block = new THREE.Mesh(new THREE.BoxGeometry(5, 25, 5), box2Material);
     let block1 = block.clone();
     block1.position.set(-25, 9, 5);
@@ -162,8 +199,8 @@ function inicializaCenario(scene) {
     block13.position.set(-30, 14, 45);
     let block14 = block.clone();
     block14.position.set(-40, 7, -45);
-    let block15 = block.clone();
-    block15.position.set(0, 5, 0);
+    block15 = block.clone();
+    block15.position.set(0, -15, 0);
     box2.add(block1);
     box2.add(block2);
     box2.add(block3);
@@ -177,6 +214,8 @@ function inicializaCenario(scene) {
     box2.add(block11);
     box2.add(block12);
     box2.add(block13);
+    box2.add(block14);
+    box2.add(block15);
     paredes.push(block1);
     paredes.push(block2);
     paredes.push(block3);
@@ -190,22 +229,41 @@ function inicializaCenario(scene) {
     paredes.push(block11);
     paredes.push(block12); 
     paredes.push(block13);
+    paredes.push(block14);
+    paredes.push(block15);
 
     // pilar para a chave
-    const pillarGeometry = new THREE.BoxGeometry(2, 2, 2);
-    let pillar = new THREE.Mesh(pillarGeometry, wallMaterial);
-    pillar.position.set(-3, 1, -95);
-    paredes.push(pillar);
-    scene.add(pillar);
+    const pilarGeometria = new THREE.BoxGeometry(2, 2, 2);
+    pilarChave = new THREE.Mesh(pilarGeometria, wallMaterial);
+    pilarChave.position.set(-3, 1, -95);
+    paredes.push(pilarChave);
+    scene.add(pilarChave);
 
-    //porta da área 2
-    const doorGeometry = new THREE.BoxGeometry(0.1, 4, 10);
-    let door = new THREE.Mesh(doorGeometry, wallMaterial);
-    door.position.set(5, 2, -100);
-    door.rotation.y = Math.PI / 2;
-    paredes.push(door);
-    scene.add(door);
+    // porta da área 2
+    const portaGeometria = new THREE.BoxGeometry(0.1, 4, 10);
+    porta = new THREE.Mesh(portaGeometria, wallMaterial);
+    porta.position.set(5, 2, -100);
+    porta.rotation.y = Math.PI / 2;
+    paredes.push(porta);
+    scene.add(porta);
     
+    // elevador da área 2
+    elevador = new Elevador(scene, new THREE.Vector3(5, 0, -110), player);
+
+    const areaPorta = new PortaArea(scene, porta, pilarChave, elevador, chave1Obj);
+
+    // add inimigos na área 2
+    const areaTrigger2 = new AreaTrigger( scene, new THREE.Vector3(0, 0, -150), new THREE.Vector3(100, 10, 100), player );
+
+    for (let i = 0; i < 3; i++) {
+        const inimigo = new InimigoLostSoul( scene, 20, 5, player, areaTrigger2, 10);
+        inimigo.object.position.set( -40 + i * 20, 8, -190 + i * 20);
+        scene.add(inimigo.object); 
+        console.log("Inimigo criado na área 2:", inimigo);
+        gameController.addInimigoArea2(inimigo);
+
+    }
+
     //box 3
     const box31 = new THREE.Mesh(boxGeometry4, box3Material);
     box31.position.set(120, 2, -150);
@@ -351,4 +409,4 @@ function addChao(objeto){
     chao.push(objeto);
 }
 
-export { inicializaCenario, getParedes, getChao, addChao };
+export { inicializaCenario, getParedes, getChao, addChao, plataformaChave1, chave1Obj, porta, pilarChave, elevador, block15};
