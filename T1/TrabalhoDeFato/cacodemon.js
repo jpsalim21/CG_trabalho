@@ -13,6 +13,11 @@ class Cacodemon extends InimigoBase {
         this.rodando = true;
         this.player = player;
 
+        //variacoes de movimento para nao ficarem se juntando
+        this.angularSpeed = 0.08 + Math.random() * 0.04; // velocidade angular entre 0.08 e 0.12
+        this.initialAngle = Math.random() * Math.PI * 2; // angulo inicial aleatório (0 a 360°)
+        this.maxAngle = (Math.PI / 2) + (Math.random() * Math.PI / 2); // limite de ângulo entre 90° e 180°
+
         // pool de projéteis exclusivo para o Cacodemon
         this.bulletPool = new BulletPool(scene, 0xffff00); 
         this.shootInterval = 5; // atira a cada 5 segundos
@@ -49,9 +54,11 @@ class Cacodemon extends InimigoBase {
             (gltf) => {
                 this.mesh = gltf.scene;
 
-                console.log('Modelo carregado:', this.mesh);
-                console.log('Posição inicial do mesh:', this.mesh.position);
-                console.log('Escala inicial do mesh:', this.mesh.scale);
+                this.mesh.traverse(child => {
+                    if (child.isMesh && child.material) {
+                        child.material.transparent = true; // habilita transparência
+                    }
+                });
 
                 // escala do modelo
                 this.mesh.scale.set(0.009, 0.009, 0.009); 
@@ -81,8 +88,8 @@ class Cacodemon extends InimigoBase {
         this.sprite.scale.set(2, 0.4, 1); // tamanho ajustado da barra de vida
 
         this.bb = new THREE.Box3().setFromObject(this.mesh);
-        this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
-        this.scene.add(this.bbHelper);
+        //this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
+        //this.scene.add(this.bbHelper);
 
         this.enterIdle();
         this.rodando = true;
@@ -166,6 +173,7 @@ class Cacodemon extends InimigoBase {
 
         this.timeOnState = 0;
         this.dirSignal = Math.random() < 0.5 ? -1 : 1; // direção inicial (esquerda ou direita)
+        this.angle = this.initialAngle; // ângulo inicial aleatório
         this.updateFunction = this.triggered.bind(this);
         this.estado = 'triggered';
 
@@ -201,7 +209,7 @@ class Cacodemon extends InimigoBase {
         direcao.normalize();
 
         // atualiza o ângulo com limite para criar um arco
-        const angleSpeed = this.velocidade * delta * 0.08; // velocidade angular
+        const angleSpeed = this.angularSpeed * delta // velocidade angular
         this.angle += this.dirSignal * angleSpeed;
 
         // limita o ângulo entre -maxAngle e +maxAngle (ex.: ±90°)
@@ -245,16 +253,14 @@ class Cacodemon extends InimigoBase {
 
     morrer() {
         if (!this.rodando) return; 
-
+    
         this.rodando = false;
-        const mesh = this.mesh; // armazena referência antes de limpar
+        const mesh = this.mesh;
         if (!mesh) {
-            this.destructor(); // chama o destructor se o mesh já for null
+            this.destructor();
             return;
         }
-
-        console.log('Iniciando animação de morte'); // Depuração
-        const that = this; // Preserva o contexto
+    
         let start = null;
         const initialOpacities = [];
         mesh.traverse(child => {
@@ -262,54 +268,36 @@ class Cacodemon extends InimigoBase {
                 initialOpacities.push(child.material.opacity ?? 1);
             }
         });
-
-        const duration = 0.3; // mantém o delay reduzido
+    
+        const duration = 0.7; // ajustado para 0.7 segundos, igual ao Lost Soul
         function animateFadeOut(timestamp) {
-            try {
-                if (!start) start = timestamp;
-                const elapsed = (timestamp - start) / 1000;
-                const t = Math.min(elapsed / duration, 1);
-
-                let i = 0;
-                mesh.traverse(child => {
-                    if (child.isMesh && child.material) {
-                        child.material.opacity = initialOpacities[i] * (1 - t);
-                        i++;
-                    }
-                });
-
-                console.log(`Animação em progresso: t = ${t}`); // depuração do progresso
-
-                if (t < 1) {
-                    requestAnimationFrame(animateFadeOut);
-                } else {
-                    console.log('Animação concluída, removendo mesh'); // depuração
-                    // remove o mesh do parent (provavelmente this.object)
-                    if (mesh.parent) {
-                        mesh.parent.remove(mesh);
-                        console.log('Mesh removido do parent:', mesh.parent);
-                    }
-                    // remove o object da cena, se ainda estiver
-                    if (that.scene && that.object.parent === that.scene) {
-                        that.scene.remove(that.object);
-                        console.log('Object removido da cena');
-                    }
-                    that.destructor(); // chama o destructor
+            if (!start) start = timestamp;
+            const elapsed = (timestamp - start) / 1000;
+            const t = Math.min(elapsed / duration, 1);
+    
+            let i = 0;
+            mesh.traverse(child => {
+                if (child.isMesh && child.material) {
+                    child.material.opacity = initialOpacities[i] * (1 - t);
+                    i++;
                 }
-            } catch (error) {
-                console.error('Erro na animação:', error);
+            });
+    
+            if (t < 1) {
+                requestAnimationFrame(animateFadeOut);
+            } else {
                 if (mesh.parent) {
                     mesh.parent.remove(mesh);
-                    console.log('Mesh removido do parent devido a erro');
                 }
                 if (that.scene && that.object.parent === that.scene) {
                     that.scene.remove(that.object);
-                    console.log('Object removido da cena devido a erro');
                 }
-                that.destructor(); // garante a limpeza
+                that.destructor();
+                GameController.instance.inimigoMorreu(that);
             }
         }
-
+    
+        const that = this; // Preserva o contexto
         requestAnimationFrame(animateFadeOut);
     }
 

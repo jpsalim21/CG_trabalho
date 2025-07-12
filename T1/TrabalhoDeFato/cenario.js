@@ -6,6 +6,7 @@ import { AreaTrigger } from './areaTrigger.js';
 import { PlataformaChave} from './plataformaChave.js';
 import { PortaArea } from "./portaArea.js";
 import { GameController } from "./gamecontroller.js";
+import { Cacodemon } from "./cacodemon.js";
 
 //materiais
 const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});
@@ -281,18 +282,15 @@ function inicializaCenario(scene, player) {
     const areaTrigger2 = new AreaTrigger( scene, new THREE.Vector3(0, 0, -150), new THREE.Vector3(100, 10, 100), player );
 
 
-    const inimigo1 = new InimigoLostSoul( scene, 50, 5, player, areaTrigger2, 10);
-    inimigo1.object.position.set(0, 21, -135);
+    const inimigo1 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(0, 21, -135));
     console.log("Inimigo criado na área 2:", inimigo1);
     GameController.instance.addInimigoArea2(inimigo1);
-
-    const inimigo2 = new InimigoLostSoul( scene, 50, 5, player, areaTrigger2, 10);
-    inimigo2.object.position.set(20, 21, -185);
+    
+    const inimigo2 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(20, 21, -185));
     console.log("Inimigo criado na área 2:", inimigo2);
     GameController.instance.addInimigoArea2(inimigo2);
-
-    const inimigo3 = new InimigoLostSoul( scene, 50, 5, player, areaTrigger2, 10);
-    inimigo3.object.position.set(-40, 21, -125);
+    
+    const inimigo3 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(-40, 21, -125));
     console.log("Inimigo criado na área 2:", inimigo3);
     GameController.instance.addInimigoArea2(inimigo3);
 

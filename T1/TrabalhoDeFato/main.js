@@ -5,7 +5,6 @@ import { inicializaCenario } from "./cenario.js";
 import { Chave } from "./chave.js";
 import { InimigoBase } from "./inimigoBase.js";
 import { InimigoLostSoul } from "./inimigoLostSoul.js";
-import { Cacodemon } from "./cacodemon.js";
 import { AreaTrigger } from "./areaTrigger.js";
 import { Elevador } from "./elevador.js";
 import { GameController } from "./gamecontroller.js";
@@ -23,17 +22,6 @@ const player = new PlayerController(scene, renderer);
 inicializaCenario(scene, player);
 
 player.start();
-
-/*
-const areaTrigger = new AreaTrigger(
-	scene,
-	new THREE.Vector3(-160, 0, 0),
-	new THREE.Vector3(10, 10, 10),
-	player
-);
-
-new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(-160, 6, 0));
-*/
 
 // Iluminação
 
