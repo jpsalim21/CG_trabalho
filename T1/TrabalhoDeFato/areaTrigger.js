@@ -52,7 +52,6 @@ class AreaTrigger {
     }
 
     trigger(){
-        console.log("Trigger activated!");
         this.listeners.forEach(listener => {
             if (listener instanceof InimigoBase) {
                 listener.enterTriggered();

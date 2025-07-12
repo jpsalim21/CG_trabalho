@@ -1,43 +1,49 @@
 import * as THREE from "three";
 
+import { GameController } from "./gamecontroller.js";
+
 class PortaArea {
-    constructor(scene, portaMesh, blocoChave, elevador, chave) {
+    constructor(scene, portaMesh, blocoChave, player, chave) {
         this.scene = scene;
         this.porta = portaMesh;
         this.blocoChave = blocoChave;
-        this.elevador = elevador;
         this.chave = chave;
         this.chaveColocada = false;
         this.portaAberta = false;
         this.velocidade = 1;
+        this.player = player;
         
-        this.bbBlocoChave = new THREE.Box3().setFromObject(blocoChave);
+        this.bbBlocoChave = new THREE.Box3(
+            new THREE.Vector3(blocoChave.position.x - 3, blocoChave.position.y - 1, blocoChave.position.z - 3),
+            new THREE.Vector3(blocoChave.position.x + 3, blocoChave.position.y + 3, blocoChave.position.z + 3)
+        );
         this.bbBlocoChaveHelper = new THREE.Box3Helper(this.bbBlocoChave, 0x00ff00);
         scene.add(this.bbBlocoChaveHelper);
         
         this.render();
     }
 
-    update(player) {
+    update() {
         if (this.portaAberta) return;
         
         // Verifica se o jogador está perto do pilar da chave
-        if (player.bb.intersectsBox(this.bbBlocoChave)) {
-            if (gameController.chave1 && !this.chaveColocada) {
+        if (this.bbBlocoChave.intersectsBox(this.player.bb)) {
+            if (GameController.instance.chave1 && !this.chaveColocada) {
                 this.chaveColocada = true;
-                this.abrirPorta();
-                this.chave.colocar(this.blocoChave.position + 1);
+                this.portaAberta = true;
+                const position = this.blocoChave.position.clone();
+                position.y += 3; 
+                this.chave.colocar(position);
             }
         }
     }
 
-
     abrirPorta() {
         this.portaAberta = true;
-        this.elevador.ativar();
     }
 
     render() {
+        this.update();
         if (this.portaAberta && this.porta.position.y > -2) {
             this.porta.position.y -= this.velocidade * 0.016;
         }

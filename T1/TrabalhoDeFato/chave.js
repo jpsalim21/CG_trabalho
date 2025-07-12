@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { CSG } from '../libs/other/CSGMesh.js';    
+import { GameController } from "./gamecontroller.js";
 
 const vermelha = new THREE.MeshPhongMaterial({color: 'rgb(196, 18, 18)', shininess: 100});
 const amarela = new THREE.MeshPhongMaterial({color: 'rgb(255, 255, 65)', shininess: 100});
@@ -31,7 +32,7 @@ csgObj = csgObj.subtract(cilCSG3);
 
 class Chave {
     constructor(scene, playerbb, tipo = 'vermelha') {
-        
+        this.scene = scene;
         this.mesh = CSG.toMesh(csgObj, new THREE.Matrix4(), vermelha);
         this.mesh.castShadow = true;
 
@@ -54,26 +55,24 @@ class Chave {
         }
 
         scene.add(this.bbHelper);
-        scene.add(this.mesh);
         this.render();
     }
 
     update(){
-        if (this.adquirida || !this.mesh) return;
-
         this.mesh.rotateX(0.01);
         this.mesh.rotateY(0.01);
         this.mesh.rotateZ(0.01);
+        
+        if (this.adquirida || !this.mesh) return;
 
         if(this.bb.intersectsBox(this.playerbb)){
-            console.log("Colisão detectada com a chave!");
             this.adquirida = true;
             this.destroy();
 
             if (this.tipo === 'vermelha') {
-                gameController.chave1 = true;
+                GameController.instance.chave1 = true;
             } else {
-                gameController.chave2 = true;
+                GameController.instance.chave2 = true;
             }
         }
     }
@@ -85,23 +84,19 @@ class Chave {
 
     destroy(){
         if (this.mesh && this.bbHelper) {
-            this.mesh.geometry.dispose();
-            this.mesh.material.dispose();
-            this.bbHelper.geometry.dispose();
-            this.bbHelper.material.dispose();
-            this.mesh.parent.remove(this.mesh);
+            this.mesh.visible = false;
             this.bbHelper.parent.remove(this.bbHelper);
         }
     }
 
     colocar(posicao) {
         if (this.adquirida && !this.colocada) {
+            this.scene.add(this.mesh);
             this.mesh.position.copy(posicao);
+            console.log("Chave visível:", this.mesh.position);
             this.mesh.visible = true;
             this.colocada = true;
-            return true;
         }
-        return false;
     }
 }
 

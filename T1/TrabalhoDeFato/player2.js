@@ -422,8 +422,6 @@ class PlayerController extends EventDispatcher {
 
             normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(intersects[0].object.matrixWorld)).normalize(); // Aplica a matriz normal para obter a direção correta
 
-            console.log("Colidiu com parede: ", normal.x, normal.y, normal.z);
-
             let dNova = direcao3.clone().projectOnPlane(normal); // Projeta a direção no plano para não atravessar paredes
 
             dNova = dNova.applyQuaternion(quaternion.clone().invert()); // Inverte para retornar à direção original
@@ -443,8 +441,6 @@ class PlayerController extends EventDispatcher {
         if (wallIntersects.length > 0) {
             let normal = wallIntersects[0].face.normal.clone();
             normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(wallIntersects[0].object.matrixWorld)).normalize(); // Aplica a matriz normal para obter a direção correta
-
-            console.log("Colidiu com parede: ", normal.x, normal.y, normal.z);
 
             let dNova = direcao3.clone().projectOnPlane(normal); // Projeta a direção no plano para não atravessar paredes
 
@@ -486,15 +482,12 @@ class PlayerController extends EventDispatcher {
 
     // trocando as arma
     switchWeapon(newWeaponIndex) {
-        console.log("Tentando trocar para arma:", newWeaponIndex);
         if (this.activeWeapon === newWeaponIndex || !this.weapons[newWeaponIndex]) {
-            console.log("Troca cancelada: arma já ativa ou não existe");
             return;
         }
         // esconde a arma antiga
         if (this.weapons[this.activeWeapon]) {
             this.weapons[this.activeWeapon].object.visible = false;
-            console.log("Escondendo arma:", this.activeWeapon);
         }
         // pra animação da chaingun, se for o caso
         if (this.activeWeapon === 1 && this.weapons[1] && this.weapons[1].actions) {
@@ -506,7 +499,6 @@ class PlayerController extends EventDispatcher {
         // mostra a nova arma
         this.activeWeapon = newWeaponIndex;
         this.weapons[this.activeWeapon].object.visible = true;
-        console.log("Mostrando arma:", this.activeWeapon);
     }
 
     // novo método para lidar com as teclas '1' e '2'

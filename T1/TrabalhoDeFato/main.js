@@ -8,6 +8,7 @@ import { InimigoLostSoul } from "./inimigoLostSoul.js";
 import { Cacodemon } from "./cacodemon.js";
 import { AreaTrigger } from "./areaTrigger.js";
 import { Elevador } from "./elevador.js";
+import { GameController } from "./gamecontroller.js";
 
 const scene = new THREE.Scene();
 let renderer = initRenderer();
@@ -15,15 +16,15 @@ renderer.setClearColor(0x70AFDA);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+new GameController();
+
 const player = new PlayerController(scene, renderer);
 
 inicializaCenario(scene, player);
 
 player.start();
 
-const chave1 = new Chave(scene, player.bb); // cria a chave
-//const inimigo = new InimigoBase(scene, 100, 10); // cria o inimigo
-
+/*
 const areaTrigger = new AreaTrigger(
 	scene,
 	new THREE.Vector3(-160, 0, 0),
@@ -32,10 +33,7 @@ const areaTrigger = new AreaTrigger(
 );
 
 new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(-160, 6, 0));
-
-new InimigoLostSoul(scene, 20, 5, player, areaTrigger);
-
-new Elevador(scene, new THREE.Vector3(50, 0, 50), player);
+*/
 
 // Iluminação
 

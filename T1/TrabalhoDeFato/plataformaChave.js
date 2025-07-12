@@ -13,6 +13,7 @@ class PlataformaChave {
         this.plataforma.position.copy(position);
         this.plataforma.add(chave.mesh);
         chave.mesh.position.set(0, 3, 0); // Ajusta a posição da chave na plataforma
+        this.chave.bb.setFromObject(this.chave.mesh);
         this.plataforma.castShadow = true;
         scene.add(this.plataforma);
         

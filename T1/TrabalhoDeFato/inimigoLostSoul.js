@@ -1,9 +1,8 @@
 import { InimigoBase } from "./inimigoBase.js";
 import { OBJLoader } from '../../build/jsm/loaders/OBJLoader.js';
 import * as THREE from 'three';
-import { BulletPool } from "./disparo.js";
 import { getParedes, getChao } from "./cenario.js";
-import gameController from "./gamecontroller.js";
+import { GameController } from "./gamecontroller.js";
 
 const path = "../assets/skullMelhor.obj";
 const texturePath = "../assets/skul/";
@@ -127,7 +126,7 @@ class InimigoLostSoul extends InimigoBase {
         }
 
         requestAnimationFrame(animateFadeOut);
-        gameController.inimigoMorreu(this);
+        GameController.instance.inimigoMorreu(this);
     }
 
     destructor(){
@@ -159,7 +158,6 @@ class InimigoLostSoul extends InimigoBase {
         if (bullet) {
             bullet.reset();
             this.tomarDano(10);
-            console.log("Colidiu com pelo menos uma bounding box!");
         }
     }
 

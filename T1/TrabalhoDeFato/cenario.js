@@ -5,7 +5,7 @@ import { InimigoLostSoul } from './inimigoLostSoul.js';
 import { AreaTrigger } from './areaTrigger.js';
 import { PlataformaChave} from './plataformaChave.js';
 import { PortaArea } from "./portaArea.js";
-import gameController from './gamecontroller.js';
+import { GameController } from "./gamecontroller.js";
 
 //materiais
 const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});
@@ -146,7 +146,7 @@ function inicializaCenario(scene, player) {
         const inimigo = new InimigoLostSoul( scene,  20, 5, player, areaTrigger1, 10);
         inimigo.object.position.set(-180 + i * 10, 8, -180 + i * 10); 
         console.log("Inimigo criado na área 1:", inimigo);
-        gameController.addInimigoArea1(inimigo);
+        GameController.instance.addInimigoArea1(inimigo);
     }
   
 
@@ -255,9 +255,9 @@ function inicializaCenario(scene, player) {
     paredes.push(block15);
 
     // pilar para a chave
-    const pilarGeometria = new THREE.BoxGeometry(2, 2, 2);
+    const pilarGeometria = new THREE.BoxGeometry(4, 2, 4);
     pilarChave = new THREE.Mesh(pilarGeometria, wallMaterial);
-    pilarChave.position.set(-3, 1, -95);
+    pilarChave.position.set(4, 1, -65);
     pilarChave.castShadow = true;
     paredes.push(pilarChave);
     chao.push(pilarChave);
@@ -275,7 +275,7 @@ function inicializaCenario(scene, player) {
     // elevador da área 2
     elevador = new Elevador(scene, new THREE.Vector3(5, 0, -110), player);
 
-    const areaPorta = new PortaArea(scene, porta, pilarChave, elevador, chave1Obj);
+    const areaPorta = new PortaArea(scene, porta, pilarChave, player, chave1Obj);
 
     // add inimigos na área 2
     const areaTrigger2 = new AreaTrigger( scene, new THREE.Vector3(0, 0, -150), new THREE.Vector3(100, 10, 100), player );
@@ -284,17 +284,17 @@ function inicializaCenario(scene, player) {
     const inimigo1 = new InimigoLostSoul( scene, 50, 5, player, areaTrigger2, 10);
     inimigo1.object.position.set(0, 21, -135);
     console.log("Inimigo criado na área 2:", inimigo1);
-    gameController.addInimigoArea2(inimigo1);
+    GameController.instance.addInimigoArea2(inimigo1);
 
     const inimigo2 = new InimigoLostSoul( scene, 50, 5, player, areaTrigger2, 10);
     inimigo2.object.position.set(20, 21, -185);
     console.log("Inimigo criado na área 2:", inimigo2);
-    gameController.addInimigoArea2(inimigo2);
+    GameController.instance.addInimigoArea2(inimigo2);
 
     const inimigo3 = new InimigoLostSoul( scene, 50, 5, player, areaTrigger2, 10);
     inimigo3.object.position.set(-40, 21, -125);
     console.log("Inimigo criado na área 2:", inimigo3);
-    gameController.addInimigoArea2(inimigo3);
+    GameController.instance.addInimigoArea2(inimigo3);
 
     //box 3
     const box31 = new THREE.Mesh(boxGeometry4, box3Material);

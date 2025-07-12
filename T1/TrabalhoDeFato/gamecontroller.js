@@ -79,5 +79,4 @@ class GameController {
     }
 }
 
-const gameController = new GameController();
-export default gameController;
+export { GameController };
