@@ -40,8 +40,6 @@ class Chave {
 
         this.playerbb = playerbb; 
         this.bb = new THREE.Box3().setFromObject(this.mesh);
-        this.bbHelper = new THREE.Box3Helper(this.bb, 'white');
-        this.bbHelper.visible = true; 
         
         this.tipo = tipo;
         this.adquirida = false;
@@ -56,7 +54,6 @@ class Chave {
             this.mesh.material = amarela;   
         }
 
-        scene.add(this.bbHelper);
         this.render();
     }
 
@@ -69,13 +66,13 @@ class Chave {
 
         if(this.bb.intersectsBox(this.playerbb) && this.ativa){
             this.adquirida = true;
-            this.destroy();
-
+            
             if (this.tipo === 'vermelha') {
                 GameController.instance.chave1 = true;
             } else {
                 GameController.instance.chave2 = true;
             }
+            this.destroy();
         }
     }
 
@@ -85,9 +82,8 @@ class Chave {
     }
 
     destroy(){
-        if (this.mesh && this.bbHelper) {
+        if (this.mesh) {
             this.mesh.visible = false;
-            this.bbHelper.parent.remove(this.bbHelper);
         }
     }
 

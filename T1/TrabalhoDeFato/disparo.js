@@ -23,11 +23,7 @@ class Bullet {
         this.direcao = new THREE.Vector3(0, 0, 1);
 
         this.bb = new THREE.Box3().setFromObject(this.mesh);
-        this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
 
-        this.bbHelper.visible = true;
-
-        scene.add(this.bbHelper);
         scene.add(this.mesh);
     }
 

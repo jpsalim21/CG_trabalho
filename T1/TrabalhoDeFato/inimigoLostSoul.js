@@ -79,12 +79,8 @@ class InimigoLostSoul extends InimigoBase {
 
     setup() {
         super.setup();
-        
-        // this.object.position.set(-10, 5, 0);
 
         this.bb = new THREE.Box3().setFromObject(this.mesh);
-        this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
-        this.scene.add(this.bbHelper);
 
         this.enterIdle();
 

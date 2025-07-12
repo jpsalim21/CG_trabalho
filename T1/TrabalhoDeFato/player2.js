@@ -188,8 +188,6 @@ class PlayerController extends EventDispatcher {
 
 
         this.bb = new THREE.Box3().setFromObject(this.playerMesh);
-        this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
-        scene.add(this.bbHelper);
         //#endregion
 
 
@@ -248,7 +246,6 @@ class PlayerController extends EventDispatcher {
         }
     
         this.bb.setFromObject(this.playerMesh);
-        this.bbHelper.position.copy(this.playerMesh.position);
         this.grounded = this.isOnGround();
     
         if (this.grounded) {

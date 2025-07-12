@@ -30,8 +30,6 @@ class Elevador {
         
 
         this.bb = new THREE.Box3().setFromObject(this.falseMesh);
-        this.bbHelper = new THREE.Box3Helper(this.bb, 'blue');
-        this.scene.add(this.bbHelper);
         this.scene.add(this.mesh);
 
         this.ativo = false;

@@ -17,8 +17,6 @@ class PortaArea {
             new THREE.Vector3(blocoChave.position.x - 3, blocoChave.position.y - 1, blocoChave.position.z - 3),
             new THREE.Vector3(blocoChave.position.x + 3, blocoChave.position.y + 3, blocoChave.position.z + 3)
         );
-        this.bbBlocoChaveHelper = new THREE.Box3Helper(this.bbBlocoChave, 0x00ff00);
-        scene.add(this.bbBlocoChaveHelper);
         
         this.render();
     }
