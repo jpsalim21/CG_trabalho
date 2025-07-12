@@ -142,19 +142,7 @@ function inicializaCenario(scene, player) {
     box1.add(plataformaChave1.plataforma);
     paredes.push(plataformaChave1.plataforma);
     chao.push(plataformaChave1.plataforma);
-
-
-    // add inimigos na área 1
-    const areaTrigger1 = new AreaTrigger(scene, new THREE.Vector3(-150, 0, -150), new THREE.Vector3(100, 10, 100), player);
-
-    for (let i = 0; i < 5; i++) {
-        const inimigo = new InimigoLostSoul( scene,  20, 5, player, areaTrigger1, 10);
-        inimigo.object.position.set(-180 + i * 10, 8, -180 + i * 10); 
-        console.log("Inimigo criado na área 1:", inimigo);
-        GameController.instance.addInimigoArea1(inimigo);
-    }
   
-
     // área 2
     const box2 = new THREE.Object3D();
 
@@ -225,6 +213,7 @@ function inicializaCenario(scene, player) {
     let block14 = block.clone();
     block14.position.set(-40, 7, -45);
     block14.castShadow = true;
+
     box2.add(block1);
     box2.add(block2);
     box2.add(block3);
@@ -239,6 +228,7 @@ function inicializaCenario(scene, player) {
     box2.add(block12);
     box2.add(block13);
     box2.add(block14);
+
     paredes.push(block1);
     paredes.push(block2);
     paredes.push(block3);
@@ -302,23 +292,7 @@ function inicializaCenario(scene, player) {
     paredes.push(plataformaChave2.plataforma);
     chao.push(plataformaChave2.plataforma);
 
-    // add inimigos na área 2
-    const areaTrigger2 = new AreaTrigger( scene, new THREE.Vector3(0, 0, -150), new THREE.Vector3(100, 10, 100), player );
-
-
-    const inimigo1 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(0, 21, -135));
-    console.log("Inimigo criado na área 2:", inimigo1);
-    GameController.instance.addInimigoArea2(inimigo1);
-    
-    const inimigo2 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(20, 21, -185));
-    console.log("Inimigo criado na área 2:", inimigo2);
-    GameController.instance.addInimigoArea2(inimigo2);
-    
-    const inimigo3 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(-40, 21, -125));
-    console.log("Inimigo criado na área 2:", inimigo3);
-    GameController.instance.addInimigoArea2(inimigo3);
-
-    //box 3
+    // box 3
     const box31 = new THREE.Mesh(boxGeometry4, box3Material);
     box31.position.set(120, 2, -150);
     box31.castShadow = true;
@@ -404,29 +378,55 @@ function inicializaCenario(scene, player) {
 
     chao.forEach(element => { element.receiveShadow = true; });
 
-    //Adiciona os objetos na cena
+    //adiciona os objetos na cena
     scene.add(ground);
     scene.add(box1);
     scene.add(box2);
-    // scene.add(box21);
-    // scene.add(box22);
-    // scene.add(box23);
     scene.add(box31);
     scene.add(box32);
     scene.add(box33);
     scene.add(box41);
     scene.add(box42);
     scene.add(box43);
-    // scene.add(escada2);
     scene.add(escada3);
     scene.add(escada4);
-    // scene.add(ramp2);
     scene.add(ramp3);
     scene.add(ramp4);
     scene.add(parede1);
     scene.add(parede2);    
     scene.add(parede3);
     scene.add(parede4);
+
+    addInimigos(scene, player);
+
+}
+
+function addInimigos(scene, player) {
+
+    // add inimigos na área 1
+    const areaTrigger1 = new AreaTrigger(scene, new THREE.Vector3(-150, 0, -150), new THREE.Vector3(100, 10, 100), player);
+
+    for (let i = 0; i < 5; i++) {
+        const inimigo = new InimigoLostSoul( scene,  20, 5, player, areaTrigger1, 10);
+        inimigo.object.position.set(-180 + i * 10, 8, -180 + i * 10); 
+        console.log("Inimigo criado na área 1:", inimigo);
+        GameController.instance.addInimigoArea1(inimigo);
+    }
+
+    // add inimigos na área 2
+    const areaTrigger2 = new AreaTrigger( scene, new THREE.Vector3(0, 0, -150), new THREE.Vector3(100, 10, 100), player );
+
+    const inimigo1 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(0, 21, -135));
+    console.log("Inimigo criado na área 2:", inimigo1);
+    GameController.instance.addInimigoArea2(inimigo1);
+    
+    const inimigo2 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(20, 21, -185));
+    console.log("Inimigo criado na área 2:", inimigo2);
+    GameController.instance.addInimigoArea2(inimigo2);
+    
+    const inimigo3 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(-40, 21, -125));
+    console.log("Inimigo criado na área 2:", inimigo3);
+    GameController.instance.addInimigoArea2(inimigo3);
 }
 
 //Só pra gente puxar os objetos para a colisão
