@@ -117,7 +117,6 @@ class Elevador {
     }
         
     update(){
-        console.log("Elevador update");
         this.updateFunction(this.clock.getDelta());
     }
 
