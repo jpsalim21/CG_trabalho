@@ -254,6 +254,21 @@ function inicializaCenario(scene, player) {
     paredes.push(block13);
     paredes.push(block14);
 
+    chao.push(block1);
+    chao.push(block2);
+    chao.push(block3);
+    chao.push(block4);
+    chao.push(block5);
+    chao.push(block6);
+    chao.push(block7);
+    chao.push(block8);
+    chao.push(block9);
+    chao.push(block10);
+    chao.push(block11);
+    chao.push(block12);
+    chao.push(block13);
+    chao.push(block14);
+
     // pilar para a chave
     const pilarGeometria = new THREE.BoxGeometry(4, 2, 4);
     pilarChave = new THREE.Mesh(pilarGeometria, wallMaterial);
