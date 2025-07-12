@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import {setDefaultMaterial} from "../libs/util/util.js";
 import { Chave } from './chave.js';
 import { Elevador } from './elevador.js';
 import { InimigoLostSoul } from './inimigoLostSoul.js';
@@ -9,14 +8,14 @@ import { PortaArea } from "./portaArea.js";
 import gameController from './gamecontroller.js';
 
 //materiais
-const material = setDefaultMaterial('rgb(37, 72, 45)');
-const planeMaterial = setDefaultMaterial('rgb(58, 7, 7)');
-const box1Material = setDefaultMaterial('rgb(77, 155, 132)');
-const box2Material  = setDefaultMaterial('rgb(155, 77, 77)');
-const box3Material  = setDefaultMaterial('rgb(77, 132, 155)');
-const box4Material  = setDefaultMaterial('rgb(132, 77, 155)');
-const wallMaterial  = setDefaultMaterial ('rgb(255, 255, 255)');
-const columnMaterial = setDefaultMaterial('rgb(158, 158, 158)');
+const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});
+const planeMaterial = new THREE.MeshLambertMaterial({color:'rgb(58, 7, 7)'});
+const box1Material = new THREE.MeshLambertMaterial({color: 'rgb(77, 155, 132)'});
+const box2Material  = new THREE.MeshLambertMaterial({color:'rgb(155, 77, 77)'});
+const box3Material  = new THREE.MeshLambertMaterial({color:'rgb(77, 132, 155)'});
+const box4Material  = new THREE.MeshLambertMaterial({color:'rgb(132, 77, 155)'});
+const wallMaterial  = new THREE.MeshLambertMaterial({color:'rgb(255, 255, 255)'});
+const columnMaterial = new THREE.MeshLambertMaterial({color:'rgb(158, 158, 158)'});
 
 //geometrias
 const planeGeometry = new THREE.PlaneGeometry(500, 500); 
@@ -59,16 +58,19 @@ function inicializaCenario(scene, player) {
 
     const box11 = new THREE.Mesh(boxGeometry1, box1Material);
     box11.position.set(-45, 2, 0);
+    box11.castShadow = true;
     chao.push(box11);
     paredes.push(box11);
 
     const box12 = new THREE.Mesh(boxGeometry2, box1Material);
     box12.position.set(-25, 2, -15);
+    box12.castShadow = true;
     chao.push(box12);
     paredes.push(box12);
 
     const box13 = new THREE.Mesh(boxGeometry3, box1Material);
     box13.position.set(20, 2, 0);
+    box13.castShadow = true;
     chao.push(box13);
     paredes.push(box13);
 
@@ -88,6 +90,7 @@ function inicializaCenario(scene, player) {
     for (let i = 0; i < 14; i++) {
         let column1 = column.clone();
         column1.position.set(-47 + i*7.2, 14, -48);
+        column1.castShadow = true;
         box1.add(column1);
         paredes.push(column1);
     }
@@ -98,6 +101,7 @@ function inicializaCenario(scene, player) {
     for (let i = 0; i < 13; i++) {
         let column2 = column.clone();
         column2.position.set(-47, 14, 47 - i*7.2);
+        column2.castShadow = true;
         box1.add(column2);
         paredes.push(column2);
     }
@@ -108,6 +112,7 @@ function inicializaCenario(scene, player) {
     for (let i = 0; i < 13; i++) {
         let column3 = column.clone();
         column3.position.set(47, 14, 47 - i*7.2);
+        column3.castShadow = true;
         box1.add(column3);
         paredes.push(column3);
     }
@@ -132,15 +137,15 @@ function inicializaCenario(scene, player) {
     plataformaChave1 = new PlataformaChave(scene, new THREE.Vector3(0, 3, 0), chave1Obj);
     box1.add(plataformaChave1.plataforma);
     paredes.push(plataformaChave1.plataforma);
+    chao.push(plataformaChave1.plataforma);
 
 
     // add inimigos na área 1
     const areaTrigger1 = new AreaTrigger(scene, new THREE.Vector3(-150, 0, -150), new THREE.Vector3(100, 10, 100), player);
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
         const inimigo = new InimigoLostSoul( scene,  20, 5, player, areaTrigger1, 10);
-        inimigo.object.position.set(-180 + i * 20, 8, -180 + i * 20); 
-        scene.add(inimigo.object);
+        inimigo.object.position.set(-180 + i * 10, 8, -180 + i * 10); 
         console.log("Inimigo criado na área 1:", inimigo);
         gameController.addInimigoArea1(inimigo);
     }
@@ -151,16 +156,19 @@ function inicializaCenario(scene, player) {
 
     const box21 = new THREE.Mesh(boxGeometry9, box2Material);
     box21.position.set(-25, 2, 0);
+    box21.castShadow = true;
     chao.push(box21);
     paredes.push(box21);
 
     const box22 = new THREE.Mesh(boxGeometry10, box2Material);
     box22.position.set(5, 2, -5);
+    box22.castShadow = true;
     chao.push(box22);
     paredes.push(box22);
 
     const box23 = new THREE.Mesh(boxGeometry11, box2Material);
     box23.position.set(30, 2, 0);
+    box23.castShadow = true;
     chao.push(box23);
     paredes.push(box23);
 
@@ -173,34 +181,49 @@ function inicializaCenario(scene, player) {
     const block = new THREE.Mesh(new THREE.BoxGeometry(5, 25, 5), box2Material);
     let block1 = block.clone();
     block1.position.set(-25, 9, 5);
+    block1.castShadow = true;
     let block2 = block.clone();
     block2.position.set(40, 9, 35);
+    block2.castShadow = true;
     let block3 = block.clone();
     block3.position.set(20, 16, -15);
+    block3.castShadow = true;
     let block4 = block.clone();
     block4.position.set(0, 5, -45);
+    block4.castShadow = true;
     let block5 = block.clone();
     block5.position.set(0, 5, 15);
+    block5.castShadow = true;
     let block6 = block.clone();
     block6.position.set(30, 3, 15);
+    block6.castShadow = true;
     let block7 = block.clone();
     block7.position.set(-20, 16, -15);
+    block7.castShadow = true;
     let block8 = block.clone();
     block8.position.set(40, 16, -40);
+    block8.castShadow = true;
     let block9 = block.clone();
     block9.position.set(-10, 15, 35);
+    block9.castShadow = true;
     let block10 = block.clone();
     block10.position.set(20, 5, -35);
+    block10.castShadow = true;
     let block11 = block.clone();
     block11.position.set(-40, 5, -5);
+    block11.castShadow = true;
     let block12 = block.clone();
     block12.position.set(-40, 5, 25);
+    block12.castShadow = true;
     let block13 = block.clone();
     block13.position.set(-30, 14, 45);
+    block13.castShadow = true;
     let block14 = block.clone();
     block14.position.set(-40, 7, -45);
+    block14.castShadow = true;
     block15 = block.clone();
     block15.position.set(0, -15, 0);
+    block15.castShadow = true;
     box2.add(block1);
     box2.add(block2);
     box2.add(block3);
@@ -236,7 +259,9 @@ function inicializaCenario(scene, player) {
     const pilarGeometria = new THREE.BoxGeometry(2, 2, 2);
     pilarChave = new THREE.Mesh(pilarGeometria, wallMaterial);
     pilarChave.position.set(-3, 1, -95);
+    pilarChave.castShadow = true;
     paredes.push(pilarChave);
+    chao.push(pilarChave);
     scene.add(pilarChave);
 
     // porta da área 2
@@ -244,6 +269,7 @@ function inicializaCenario(scene, player) {
     porta = new THREE.Mesh(portaGeometria, wallMaterial);
     porta.position.set(5, 2, -100);
     porta.rotation.y = Math.PI / 2;
+    porta.castShadow = true;
     paredes.push(porta);
     scene.add(porta);
     
@@ -255,28 +281,38 @@ function inicializaCenario(scene, player) {
     // add inimigos na área 2
     const areaTrigger2 = new AreaTrigger( scene, new THREE.Vector3(0, 0, -150), new THREE.Vector3(100, 10, 100), player );
 
-    for (let i = 0; i < 3; i++) {
-        const inimigo = new InimigoLostSoul( scene, 20, 5, player, areaTrigger2, 10);
-        inimigo.object.position.set( -40 + i * 20, 8, -190 + i * 20);
-        scene.add(inimigo.object); 
-        console.log("Inimigo criado na área 2:", inimigo);
-        gameController.addInimigoArea2(inimigo);
 
-    }
+    const inimigo1 = new InimigoLostSoul( scene, 50, 5, player, areaTrigger2, 10);
+    inimigo1.object.position.set(0, 21, -135);
+    console.log("Inimigo criado na área 2:", inimigo1);
+    gameController.addInimigoArea2(inimigo1);
+
+    const inimigo2 = new InimigoLostSoul( scene, 50, 5, player, areaTrigger2, 10);
+    inimigo2.object.position.set(20, 21, -185);
+    console.log("Inimigo criado na área 2:", inimigo2);
+    gameController.addInimigoArea2(inimigo2);
+
+    const inimigo3 = new InimigoLostSoul( scene, 50, 5, player, areaTrigger2, 10);
+    inimigo3.object.position.set(-40, 21, -125);
+    console.log("Inimigo criado na área 2:", inimigo3);
+    gameController.addInimigoArea2(inimigo3);
 
     //box 3
     const box31 = new THREE.Mesh(boxGeometry4, box3Material);
     box31.position.set(120, 2, -150);
+    box31.castShadow = true;
     chao.push(box31);
     paredes.push(box31);
     
     const box32 = new THREE.Mesh(boxGeometry5, box3Material);
     box32.position.set(155, 2, -165);
+    box32.castShadow = true;
     chao.push(box32);
     paredes.push(box32);
     
     const box33 = new THREE.Mesh(boxGeometry6, box3Material);
     box33.position.set(185, 2, -150);
+    box33.castShadow = true;
     chao.push(box33);
     paredes.push(box33);
     
@@ -287,16 +323,19 @@ function inicializaCenario(scene, player) {
     //box4
     const box41 = new THREE.Mesh(boxGeometry7, box4Material);
     box41.position.set(-82.5, 2, 150);
+    box41.castShadow = true;
     chao.push(box41);
     paredes.push(box41);
     
     const box42 = new THREE.Mesh(boxGeometry8, box4Material);
     box42.position.set(0, 2, 165);
+    box42.castShadow = true;
     chao.push(box42);
     paredes.push(box42);
     
     const box43 = new THREE.Mesh(boxGeometry7, box4Material);
     box43.position.set(82.5, 2, 150);
+    box43.castShadow = true;
     chao.push(box43);
     paredes.push(box43);
     
@@ -327,22 +366,28 @@ function inicializaCenario(scene, player) {
     //Cria as paredes
     const parede1 = new THREE.Mesh(wallGeometry, wallMaterial); 
     parede1.position.set(0, 25, -250);
+    parede1.castShadow = true;
     paredes.push(parede1); 
 
     const parede2 = new THREE.Mesh(wallGeometry, wallMaterial); 
     parede2.position.set(0, 25, 250); 
     parede2.rotation.x = Math.PI;    
+    parede1.castShadow = true;
     paredes.push(parede2);
 
     const parede3 = new THREE.Mesh(wallGeometry, wallMaterial); 
     parede3.position.set(-250, 25, 0);
     parede3.rotation.y = Math.PI / 2;
+    parede1.castShadow = true;
     paredes.push(parede3); 
 
     const parede4 = new THREE.Mesh(wallGeometry, wallMaterial); 
     parede4.position.set(250, 25, 0); 
     parede4.rotation.y = Math.PI / -2;
+    parede1.castShadow = true;
     paredes.push(parede4);
+
+    chao.forEach(element => { element.receiveShadow = true; });
 
     //Adiciona os objetos na cena
     scene.add(ground);
@@ -398,6 +443,7 @@ function createEscada(){
       degrau.position.x = 0;
       degrau.position.y = (i + 0.5) * alturaDegrau;
       degrau.position.z = (i + 0.5) * profundidadeDegrau;
+      degrau.castShadow = true;
       
       escada.add(degrau);
     }

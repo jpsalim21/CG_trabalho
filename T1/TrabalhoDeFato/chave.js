@@ -1,10 +1,8 @@
 import * as THREE from 'three';
 import { CSG } from '../libs/other/CSGMesh.js';    
 
-const material = new THREE.MeshPhongMaterial({
-    color: 'rgb(196, 18, 18)',
-    shininess: 100,
-});
+const vermelha = new THREE.MeshPhongMaterial({color: 'rgb(196, 18, 18)', shininess: 100});
+const amarela = new THREE.MeshPhongMaterial({color: 'rgb(255, 255, 65)', shininess: 100});
 const cubeMesh = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3));
 const cilMesh = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 4, 32));
 const cilMesh2 = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 4, 32));
@@ -34,7 +32,7 @@ csgObj = csgObj.subtract(cilCSG3);
 class Chave {
     constructor(scene, playerbb, tipo = 'vermelha') {
         
-        this.mesh = CSG.toMesh(csgObj, new THREE.Matrix4(), material);
+        this.mesh = CSG.toMesh(csgObj, new THREE.Matrix4(), vermelha);
         this.mesh.castShadow = true;
 
         this.mesh.position.set(0, 2, -15);
@@ -50,9 +48,9 @@ class Chave {
         this.playerbb = playerbb; 
 
         if (tipo == 'vermelha') {
-            material.color.setHex(0xff0000);
+            this.mesh.material = vermelha;
         } else {
-            material.color.setHex(0xffff00);
+            this.mesh.material = amarela;   
         }
 
         scene.add(this.bbHelper);
