@@ -9,10 +9,11 @@ class PlataformaChave {
         this.velocidade = 0.5;
         this.ativo = false;
         
-        this.plataforma = new THREE.Mesh(new THREE.BoxGeometry(2,2,2), new THREE.MeshPhongMaterial({ color: 0x888888 }));
+        this.plataforma = new THREE.Mesh(new THREE.BoxGeometry(2,2,2), new THREE.MeshLambertMaterial({ color: 0x888888 }));
         this.plataforma.position.copy(position);
         this.plataforma.add(chave.mesh);
         chave.mesh.position.set(0, 3, 0); // Ajusta a posição da chave na plataforma
+        this.plataforma.castShadow = true;
         scene.add(this.plataforma);
         
         this.render();

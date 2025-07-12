@@ -1,16 +1,2 @@
-Mari:
-    Terminar área 1:
-        Fazer elevador com a chave
-        
-    chave:
-        Aparecer após a área 1 ser limpa (Dica: use o gameController pra lidar com isso)
-        Aparecer no pilar quando o jogador aproximar com ela
 
-Leo:
-    Inimigo terrestre
-        Importar obj
-        Criar comportamento (máquina de estado)
-        Colisão com cenario
-    Arma 1:
-        Corrigir posição e formato
 
