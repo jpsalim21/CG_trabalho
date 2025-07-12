@@ -54,3 +54,46 @@ canvas {
   height: 100vh;
   pointer-events: none; /* se não quiser capturar eventos no canvas */
 }
+
+#temporary-messages-container {
+  position: fixed;
+  top: 20%;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 102;
+  pointer-events: none;
+}
+
+.temporary-message {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  text-align: center;
+  animation: messageFade 3s forwards;
+}
+
+@keyframes messageFade {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}

@@ -69,8 +69,10 @@ class Chave {
             
             if (this.tipo === 'vermelha') {
                 GameController.instance.chave1 = true;
+                showTemporaryMessage("Chave vermelha adquirida! Use-a para desbloquear a área 2.", 5000);
             } else {
                 GameController.instance.chave2 = true;
+                showTemporaryMessage("Chave amarela adquirida! Parabéns, você ganhou!", 10000);
             }
             this.destroy();
         }

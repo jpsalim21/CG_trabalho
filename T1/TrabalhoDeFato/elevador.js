@@ -75,7 +75,7 @@ class Elevador {
 
     descer(delta){
         if(this.mesh.position.y > this.alturaInicial){
-            this.mesh.position.y -= 2 * delta; // Desce a uma velocidade de 0.5 unidades por segundo
+            this.mesh.position.y -= 2 * delta;
             this.bb.setFromObject(this.falseMesh);
         } else {
             this.enterEsperar();

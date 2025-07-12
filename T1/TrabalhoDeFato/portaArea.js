@@ -44,6 +44,7 @@ class PortaArea {
         this.update();
         if (this.portaAberta && this.porta.position.y > -2.1) {
             this.porta.position.y -= this.velocidade * 0.016;
+            showTemporaryMessage("Área 2 desbloqueada, mate todos os inimigos para pegar a chave amarela.", 5000);
         }
         requestAnimationFrame(() => this.render());
     }

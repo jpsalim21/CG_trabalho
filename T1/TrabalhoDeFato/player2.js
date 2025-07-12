@@ -1,8 +1,4 @@
-import {
-	Euler,
-	EventDispatcher,
-    TextureLoader
-} from 'three';
+import {Euler, EventDispatcher, TextureLoader} from 'three';
 import { onWindowResize } from "../libs/util/util.js";
 import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
@@ -53,7 +49,7 @@ class PlayerController extends EventDispatcher {
         this.clock = new THREE.Clock();
      
         // cria a arma "lançador"
-        let launcherGeometry = new THREE.CylinderGeometry(0.6, 0.6, 1.5, 16);
+        let launcherGeometry = new THREE.CylinderGeometry(0.6, 0.6, 1.5, 32);
         const launcher = new THREE.Mesh(launcherGeometry, armaMaterial); 
         launcher.position.set(0, -1.0, -1.5); 
         launcher.rotation.x = -Math.PI / 2;

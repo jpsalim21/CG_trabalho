@@ -46,3 +46,42 @@ dirLight2.shadow.radius = 2;
 scene.add(ambientLight);
 scene.add(dirLight);
 scene.add(dirLight2);
+
+// objetivos
+class MessageSystem {
+  constructor() {
+    this.container = document.getElementById('temporary-messages-container');
+    this.messageQueue = [];
+    this.isShowing = false;
+  }
+
+  showMessage(text, duration = 5000) {
+    this.messageQueue.push({ text, duration });
+    if (!this.isShowing) this.processQueue();
+  }
+
+  processQueue() {
+    if (this.messageQueue.length === 0) {
+      this.isShowing = false;
+      return;
+    }
+
+    this.isShowing = true;
+    const { text, duration } = this.messageQueue.shift();
+    
+    const messageElement = document.createElement('div');
+    messageElement.className = 'temporary-message';
+    messageElement.textContent = text;
+    
+    this.container.appendChild(messageElement);
+    
+    setTimeout(() => {
+      messageElement.remove();
+      setTimeout(() => this.processQueue(), 300); // delay
+    }, duration);
+  }
+}
+
+const messageSystem = new MessageSystem();
+window.showTemporaryMessage = (text, duration) => messageSystem.showMessage(text, duration);
+
