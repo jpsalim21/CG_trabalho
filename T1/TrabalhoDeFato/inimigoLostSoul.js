@@ -127,10 +127,8 @@ class InimigoLostSoul extends InimigoBase {
 
     destructor(){
         this.observer.removeListener(this);
-        this.scene.remove(this.bbHelper);
         this.scene.remove(this.mesh);
         this.mesh = null;
-        this.bbHelper = null;
         this.bulletPool = null;
         this.clock = null;
     }
