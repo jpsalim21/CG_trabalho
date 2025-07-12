@@ -21,8 +21,10 @@ class PlataformaChave {
     }
 
     ativar() {
+        console.log("Plataforma ativada");
         this.ativo = true;
         this.chave.mesh.visible = true;
+        this.chave.ativa = true;
     }
 
     update() {

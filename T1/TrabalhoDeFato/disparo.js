@@ -60,7 +60,7 @@ class Bullet {
     isColliding(){
         this.raycaster.set(this.mesh.getWorldPosition(new THREE.Vector3()), this.direcao);
         const paredes = this.pool.listaParede;
-        const intersects = this.raycaster.intersectObjects(paredes);
+        const intersects = this.raycaster.intersectObjects(paredes, false);
         if (intersects.length > 0) {
             this.reset();
         }

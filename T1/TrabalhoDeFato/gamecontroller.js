@@ -42,8 +42,9 @@ class GameController {
     }
 
     verificarArea1() {
-        if (this.inimigosArea1.length === 0 && !this.chave1) {
+        if (this.inimigosArea1.length === 0) {
             // Ativar plataforma com chave vermelha
+            console.log("Todos os inimigos da área 1 foram derrotados");
             this.ativarPlataformaChave1();
         }
     }

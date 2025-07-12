@@ -273,7 +273,7 @@ function inicializaCenario(scene, player) {
     scene.add(porta);
     
     // elevador da área 2
-    elevador = new Elevador(scene, new THREE.Vector3(5, 0, -110), player);
+    elevador = new Elevador(scene, new THREE.Vector3(5, 0, -106), player);
 
     const areaPorta = new PortaArea(scene, porta, pilarChave, player, chave1Obj);
 

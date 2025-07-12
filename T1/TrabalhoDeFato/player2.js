@@ -319,7 +319,7 @@ class PlayerController extends EventDispatcher {
         position.y += 2.0; 
         this.rayGround.set(position, new THREE.Vector3(0, -1, 0)); 
         
-        const intersects = this.rayGround.intersectObjects(getChao());
+        const intersects = this.rayGround.intersectObjects(getChao(), false);
         
         this.alturaChao = intersects.length > 0 ? intersects[0].point.y + 0.1 : 0.1;
         

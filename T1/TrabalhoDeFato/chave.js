@@ -46,7 +46,9 @@ class Chave {
         this.tipo = tipo;
         this.adquirida = false;
         this.colocada = false;
-        this.playerbb = playerbb; 
+        this.playerbb = playerbb;
+        
+        this.ativa = false;
 
         if (tipo == 'vermelha') {
             this.mesh.material = vermelha;
@@ -65,7 +67,7 @@ class Chave {
         
         if (this.adquirida || !this.mesh) return;
 
-        if(this.bb.intersectsBox(this.playerbb)){
+        if(this.bb.intersectsBox(this.playerbb) && this.ativa){
             this.adquirida = true;
             this.destroy();
 

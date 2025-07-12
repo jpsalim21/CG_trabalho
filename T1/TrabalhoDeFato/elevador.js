@@ -36,7 +36,7 @@ class Elevador {
 
         this.ativo = false;
         this.alturaInicial = position.y;
-        this.alturaAlvo = 1;
+        this.alturaAlvo = -6;
 
         this.clock = new THREE.Clock();
         this.clock.start();
