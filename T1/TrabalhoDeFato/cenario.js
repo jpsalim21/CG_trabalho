@@ -41,14 +41,15 @@ const paredes = []; // array para armazenar as paredes
 
 let plataformaChave1 = null;
 let chave1Obj = null;
+let plataformaChave2 = null;
+let chave2Obj = null;
 let porta = null;
 let pilarChave = null;
 let elevador = null;
-let block15 = null;
 
 function inicializaCenario(scene, player) {
 
-    // Cria o chão
+    // cria o chão
     const ground = new THREE.Mesh(planeGeometry, material);
     ground.position.set(0, 0, 0); // posiciona o chão no centro da cena
     ground.rotation.x = -0.5 * Math.PI; // rotaciona para ficar horizontal
@@ -98,6 +99,7 @@ function inicializaCenario(scene, player) {
     let columnTop = new THREE.Mesh(topGeometry, columnMaterial);
     let column1Top = columnTop.clone();
     column1Top.position.set(0, 25, -48);
+    column1Top.castShadow = true;
     box1.add(column1Top);
     for (let i = 0; i < 13; i++) {
         let column2 = column.clone();
@@ -109,6 +111,7 @@ function inicializaCenario(scene, player) {
     let column2Top = columnTop.clone();
     column2Top.position.set(-47, 25, 0);
     column2Top.rotation.y = Math.PI / 2;
+    column2Top.castShadow = true;
     box1.add(column2Top);
     for (let i = 0; i < 13; i++) {
         let column3 = column.clone();
@@ -120,6 +123,7 @@ function inicializaCenario(scene, player) {
     let column3Top = columnTop.clone();
     column3Top.position.set(47, 25, 0);
     column3Top.rotation.y = Math.PI / -2;
+    column3Top.castShadow = true;
     box1.add(column3Top);
     
     box1.add(box11);
@@ -129,7 +133,7 @@ function inicializaCenario(scene, player) {
     box1.add(ramp1);
     box1.position.set(-150, 0, -150);
 
-    // chave vermelha mostrada quando matar todos os inimigos
+    // chave vermelha mostrada quando matar todos os inimigos da área 2
     chave1Obj = new Chave(scene, player.bb, 'vermelha');
     chave1Obj.mesh.visible = false;
 
@@ -221,9 +225,6 @@ function inicializaCenario(scene, player) {
     let block14 = block.clone();
     block14.position.set(-40, 7, -45);
     block14.castShadow = true;
-    block15 = block.clone();
-    block15.position.set(0, -15, 0);
-    block15.castShadow = true;
     box2.add(block1);
     box2.add(block2);
     box2.add(block3);
@@ -238,7 +239,6 @@ function inicializaCenario(scene, player) {
     box2.add(block12);
     box2.add(block13);
     box2.add(block14);
-    box2.add(block15);
     paredes.push(block1);
     paredes.push(block2);
     paredes.push(block3);
@@ -253,7 +253,6 @@ function inicializaCenario(scene, player) {
     paredes.push(block12); 
     paredes.push(block13);
     paredes.push(block14);
-    paredes.push(block15);
 
     // pilar para a chave
     const pilarGeometria = new THREE.BoxGeometry(4, 2, 4);
@@ -277,6 +276,16 @@ function inicializaCenario(scene, player) {
     elevador = new Elevador(scene, new THREE.Vector3(5, 0, -106), player);
 
     const areaPorta = new PortaArea(scene, porta, pilarChave, player, chave1Obj);
+
+    // chave amarela mostrada quando matar todos os inimigos
+    chave2Obj = new Chave(scene, player.bb, 'amarela');
+    chave2Obj.mesh.visible = false;
+
+    // plataforma da chave na área 2
+    plataformaChave2 = new PlataformaChave(scene, new THREE.Vector3(0, 3, 0), chave2Obj);
+    box2.add(plataformaChave2.plataforma);
+    paredes.push(plataformaChave2.plataforma);
+    chao.push(plataformaChave2.plataforma);
 
     // add inimigos na área 2
     const areaTrigger2 = new AreaTrigger( scene, new THREE.Vector3(0, 0, -150), new THREE.Vector3(100, 10, 100), player );
@@ -340,12 +349,6 @@ function inicializaCenario(scene, player) {
     escada4.position.set(0, 0, 100);
     
     // Cria as rampas
-
-    // const ramp2 = new THREE.Mesh(rampGeometry, wallMaterial);
-    // ramp2.rotation.x = -Math.atan(10/4); 
-    // ramp2.position.set(0, 2, -105); 
-    // ramp2.visible = true;
-    // chao.push(ramp2);
 
     const ramp3 = new THREE.Mesh(rampGeometry, wallMaterial);
     ramp3.rotation.x = -Math.atan(30/4); 
@@ -456,4 +459,4 @@ function addParedes(objeto){
     paredes.push(objeto);
 }
 
-export { inicializaCenario, getParedes, getChao, addChao, addParedes, plataformaChave1, chave1Obj, porta, pilarChave, elevador, block15};
+export { inicializaCenario, getParedes, getChao, addChao, addParedes, plataformaChave1, chave1Obj, plataformaChave2, chave2Obj, porta, pilarChave, elevador};

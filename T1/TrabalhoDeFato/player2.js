@@ -3,7 +3,7 @@ import {
 	EventDispatcher,
     TextureLoader
 } from 'three';
-import { onWindowResize, setDefaultMaterial } from "../libs/util/util.js";
+import { onWindowResize } from "../libs/util/util.js";
 import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "./cenario.js";
@@ -20,7 +20,7 @@ const _unlockEvent = { type: 'unlock' };
 
 const _PI_2 = Math.PI / 2;
 
-const armaMaterial = setDefaultMaterial('rgb(108, 108, 108)');
+const armaMaterial = new THREE.MeshLambertMaterial({color: 'rgb(108, 108, 108)'});
 
 const playerGeo = new THREE.BoxGeometry(1.5, 2.5, 1.5);
 

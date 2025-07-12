@@ -18,7 +18,7 @@ class Cacodemon extends InimigoBase {
         this.initialAngle = Math.random() * Math.PI * 2; // angulo inicial aleatório (0 a 360°)
         this.maxAngle = (Math.PI / 2) + (Math.random() * Math.PI / 2); // limite de ângulo entre 90° e 180°
 
-        // pool de projéteis exclusivo para o Cacodemon
+        // pool de projéteis amarelos para o Cacodemon
         this.bulletPool = new BulletPool(scene, 0xffff00); 
         this.shootInterval = 5; // atira a cada 5 segundos
         this.lastShotTime = 0;
@@ -260,7 +260,7 @@ class Cacodemon extends InimigoBase {
             this.destructor();
             return;
         }
-    
+        
         let start = null;
         const initialOpacities = [];
         mesh.traverse(child => {
@@ -293,7 +293,8 @@ class Cacodemon extends InimigoBase {
                     that.scene.remove(that.object);
                 }
                 that.destructor();
-                GameController.instance.inimigoMorreu(that);
+                GameController.instance.inimigoMorreu(this);
+
             }
         }
     

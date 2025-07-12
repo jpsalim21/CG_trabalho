@@ -19,6 +19,11 @@ class Elevador {
         position.y -= 10.1;
 
         this.mesh.position.copy(position);
+
+        let elevadorchao = new THREE.Mesh(new THREE.BoxGeometry(10, 0.1, 10),  material);
+        elevadorchao.position.set(5, 0, -106);
+        elevadorchao.receiveShadow = true;
+        scene.add(elevadorchao);
         
         addChao(this.mesh); // adiciona o elevador ao chão
         addParedes(this.mesh); // adiciona o elevador às paredes

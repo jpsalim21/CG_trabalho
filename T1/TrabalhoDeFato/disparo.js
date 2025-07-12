@@ -1,9 +1,7 @@
 import * as THREE from  'three';
 import { getParedes } from './cenario.js';
-import {setDefaultMaterial} from "../libs/util/util.js";
 
 const geometria = new THREE.SphereGeometry(0.8, 16, 16);
-const material = setDefaultMaterial();
 
 const posInicial = new THREE.Vector3(0, -10, 0);
 const teto = 150;
@@ -11,7 +9,7 @@ const chao = -5;
 
 class Bullet {
     constructor(posicao, pool, scene) {
-        this.mesh = new THREE.Mesh(geometria, material);
+        this.mesh = new THREE.Mesh(geometria, new THREE.MeshLambertMaterial({color: pool.color}) );
         this.mesh.position.copy(posicao);
         this.velocidade = 90;
         this.movendo = false;
@@ -74,10 +72,11 @@ class Bullet {
 
 //Pool para quantidade de balas que o jogador pode disparar
 class BulletPool {
-    constructor(scene) {
+    constructor(scene, color = 0xff0000) { //cor padrão é vermelha
         this.bullets = [];
         this.bulletsInUse = [];
         this.poolSize = 10;
+        this.color = color;
 
         this.scene = scene;
         this.clock = new THREE.Clock();
@@ -104,7 +103,7 @@ class BulletPool {
         requestAnimationFrame(() => this.render());
     }
 
-    // Um método para pegar uma bala da pool ou criar uma nova se não houver nenhuma disponível
+    // pegar uma bala da pool ou criar uma nova se não houver nenhuma disponível
     getBullet() {
         if (this.bullets.length > 0) {
             return this.bullets.pop();
@@ -113,7 +112,7 @@ class BulletPool {
         }
     }
 
-    // Método chamado quando o jogador atira
+    // quando o jogador atira
     atirar(posicao, alvo) {
         let delta = this.clock.getElapsedTime();
         if(delta < 0.5) return;
@@ -123,7 +122,7 @@ class BulletPool {
         this.clock.start();
     }
 
-    // Método que a bala chama quando ela precisa ser resetada
+    // quando a bala precisa ser resetada
     resetBullet(bullet) {
         this.bullets.push(bullet);
         this.bulletsInUse.splice(this.bulletsInUse.indexOf(bullet), 1);

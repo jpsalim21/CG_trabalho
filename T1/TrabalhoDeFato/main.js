@@ -2,11 +2,6 @@ import * as THREE from "three";
 import { initRenderer, initDefaultBasicLight } from "../libs/util/util.js";
 import { PlayerController } from "./player2.js";
 import { inicializaCenario } from "./cenario.js";
-import { Chave } from "./chave.js";
-import { InimigoBase } from "./inimigoBase.js";
-import { InimigoLostSoul } from "./inimigoLostSoul.js";
-import { AreaTrigger } from "./areaTrigger.js";
-import { Elevador } from "./elevador.js";
 import { GameController } from "./gamecontroller.js";
 
 const scene = new THREE.Scene();

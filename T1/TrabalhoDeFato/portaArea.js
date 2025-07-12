@@ -42,7 +42,7 @@ class PortaArea {
 
     render() {
         this.update();
-        if (this.portaAberta && this.porta.position.y > -2) {
+        if (this.portaAberta && this.porta.position.y > -2.1) {
             this.porta.position.y -= this.velocidade * 0.016;
         }
         requestAnimationFrame(() => this.render());
