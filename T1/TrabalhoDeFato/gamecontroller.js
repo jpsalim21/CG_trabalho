@@ -31,8 +31,11 @@ class GameController {
             this.verificarArea1();
         }
 
+        console.log("Inimigo: ", inimigo);
         const index2 = this.inimigosArea2.indexOf(inimigo);
+        console.log(index2, "index2");
         if (index2 !== -1) {
+            console.log("Inimigo removido da area 2");
             this.inimigosArea2.splice(index2, 1);
             this.verificarArea2();
         }

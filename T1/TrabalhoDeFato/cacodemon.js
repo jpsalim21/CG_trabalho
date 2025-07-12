@@ -3,6 +3,7 @@ import { GLTFLoader } from '../../build/jsm/loaders/GLTFLoader.js';
 import { InimigoBase } from './inimigoBase.js';
 import { BulletPool } from './disparo.js';
 import { getParedes, getChao } from './cenario.js'; 
+import { GameController } from './gamecontroller.js';
 
 const path = '../assets/cacodemon.glb';
 
@@ -250,10 +251,10 @@ class Cacodemon extends InimigoBase {
             this.morrer();
         }
     }
-
+    
     morrer() {
         if (!this.rodando) return; 
-    
+        
         this.rodando = false;
         const mesh = this.mesh;
         if (!mesh) {
@@ -268,13 +269,14 @@ class Cacodemon extends InimigoBase {
                 initialOpacities.push(child.material.opacity ?? 1);
             }
         });
-    
+        
+        const metodoDestructor = this.destructor.bind(this);
         const duration = 0.7; // ajustado para 0.7 segundos, igual ao Lost Soul
         function animateFadeOut(timestamp) {
             if (!start) start = timestamp;
             const elapsed = (timestamp - start) / 1000;
             const t = Math.min(elapsed / duration, 1);
-    
+            
             let i = 0;
             mesh.traverse(child => {
                 if (child.isMesh && child.material) {
@@ -282,27 +284,20 @@ class Cacodemon extends InimigoBase {
                     i++;
                 }
             });
-    
+            
             if (t < 1) {
+                console.log("Tomei dano ", this);
                 requestAnimationFrame(animateFadeOut);
             } else {
-                if (mesh.parent) {
-                    mesh.parent.remove(mesh);
-                }
-                if (that.scene && that.object.parent === that.scene) {
-                    that.scene.remove(that.object);
-                }
-                that.destructor();
-                GameController.instance.inimigoMorreu(this);
-
+                metodoDestructor();
             }
         }
     
-        const that = this; // Preserva o contexto
         requestAnimationFrame(animateFadeOut);
     }
 
     destructor() {
+        GameController.instance.inimigoMorreu(this);
         this.observer.removeListener(this);
         if (this.bbHelper && this.scene) this.scene.remove(this.bbHelper);
         if (this.mesh && this.scene) this.scene.remove(this.mesh);
