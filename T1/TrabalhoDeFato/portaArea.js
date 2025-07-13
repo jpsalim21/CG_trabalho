@@ -28,6 +28,7 @@ class PortaArea {
         if (this.bbBlocoChave.intersectsBox(this.player.bb)) {
             if (GameController.instance.chave1 && !this.chaveColocada) {
                 this.chaveColocada = true;
+                showTemporaryMessage("Área 2 desbloqueada, mate todos os inimigos para conseguir a chave amarela.");
                 this.portaAberta = true;
                 const position = this.blocoChave.position.clone();
                 position.y += 3; 
@@ -36,15 +37,10 @@ class PortaArea {
         }
     }
 
-    abrirPorta() {
-        this.portaAberta = true;
-    }
-
     render() {
         this.update();
         if (this.portaAberta && this.porta.position.y > -2.1) {
             this.porta.position.y -= this.velocidade * 0.016;
-            showTemporaryMessage("Área 2 desbloqueada, mate todos os inimigos para pegar a chave amarela.", 5000);
         }
         requestAnimationFrame(() => this.render());
     }
