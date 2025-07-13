@@ -16,7 +16,7 @@ const _unlockEvent = { type: 'unlock' };
 
 const _PI_2 = Math.PI / 2;
 
-const armaMaterial = new THREE.MeshLambertMaterial({color: 'rgb(108, 108, 108)'});
+const armaMaterial = new THREE.MeshLambertMaterial({color: 'rgb(108, 108, 108)', shininess: 1000, reflectivity: 1});
 
 const playerGeo = new THREE.BoxGeometry(1.5, 2.5, 1.5);
 
