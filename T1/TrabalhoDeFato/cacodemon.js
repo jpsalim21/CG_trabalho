@@ -131,7 +131,7 @@ class Cacodemon extends InimigoBase {
         const bullet = objects.find(obj => this.bb.intersectsBox(obj.bb));
         if (bullet && this.rodando) { // verifica se ainda está rodando
             bullet.reset(); // faz a bala desaparecer ao colidir
-            this.tomarDano(20);
+            this.tomarDano(10);
             console.log("Cacodemon atingido!");
         }
     }
@@ -198,8 +198,8 @@ class Cacodemon extends InimigoBase {
         this.timeOnState = 0;
         this.dirSignal = Math.random() < 0.5 ? -1 : 1; // direção inicial (esquerda ou direita)
 
-        const playerPos = this.player.getCamPosition();
-        const vectorToEnemy = this.object.position.clone().sub(playerPos);
+        this.playerPos = this.player.getCamPosition();
+        const vectorToEnemy = this.object.position.clone().sub(this.playerPos);
     
         this.angle = Math.atan2(vectorToEnemy.z, vectorToEnemy.x);
         
@@ -211,8 +211,7 @@ class Cacodemon extends InimigoBase {
         if (!this.rodando) return; // evita processamento se já morreu
 
         this.timeOnState += delta;
-        let playerPos = this.player.getCamPosition().clone();
-        playerPos.y = this.object.position.y;
+        this.playerPos.y = this.object.position.y;
 
         // atualiza o ângulo com limite para criar um arco
         const angleSpeed = this.angularSpeed * delta; // velocidade angular
@@ -228,8 +227,8 @@ class Cacodemon extends InimigoBase {
         }
 
         let radius = this.distanceFromPlayer;
-        let x = playerPos.x + radius * Math.cos(this.angle);
-        let z = playerPos.z + radius * Math.sin(this.angle);
+        let x = this.playerPos.x + radius * Math.cos(this.angle);
+        let z = this.playerPos.z + radius * Math.sin(this.angle);
         
         let targetPosition = new THREE.Vector3(x, this.object.position.y, z);
         
