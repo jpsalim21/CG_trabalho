@@ -3,7 +3,7 @@ import { onWindowResize } from "../libs/util/util.js";
 import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "./cenario.js";
-import { SpriteMixer } from '../libs/sprites/SpriteMixer.js';
+import { SpriteMixer } from './sprites/SpriteMixer.js';
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
@@ -64,7 +64,7 @@ class PlayerController extends EventDispatcher {
         //cria chaingun
         this.spriteMixer = SpriteMixer();
         const loader = new TextureLoader();
-        loader.load('../assets/textures/chaingun.png', (texture) => {
+        loader.load('./assets/textures/chaingun.png', (texture) => {
             const chaingunSprite = this.spriteMixer.ActionSprite(texture, 3, 1);
             chaingunSprite.position.set(0, -0.5 , -2.0);
             chaingunSprite.scale.set(0.8, 0.8, 0.8);

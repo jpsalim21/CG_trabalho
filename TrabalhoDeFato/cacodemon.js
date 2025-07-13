@@ -5,7 +5,7 @@ import { BulletPool } from './disparo.js';
 import { getParedes, getChao } from './cenario.js';
 import { GameController } from './gamecontroller.js';
 
-const path = '../assets/cacodemon.glb';
+const path = './assets/cacodemon.glb';
 const GRAVIDADE = 25;
 
 class Cacodemon extends InimigoBase {

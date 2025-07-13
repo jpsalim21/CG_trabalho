@@ -4,8 +4,8 @@ import * as THREE from 'three';
 import { getParedes, getChao } from "./cenario.js";
 import { GameController } from "./gamecontroller.js";
 
-const path = "../assets/skullMelhor.obj";
-const texturePath = "../assets/skul/";
+const path = "./assets/skullMelhor.obj";
+const texturePath = "./assets/skul/";
 
 
 class InimigoLostSoul extends InimigoBase {
