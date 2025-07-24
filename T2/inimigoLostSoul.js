@@ -35,6 +35,8 @@ class InimigoLostSoul extends InimigoBase {
         this.timeOnState = 0;
         this.maxTime = 5;
 
+        this.sinOffset = Math.random() * 2 * Math.PI;
+
         this.loadModel();
 
         this.scene.add(this.object);
@@ -207,7 +209,7 @@ class InimigoLostSoul extends InimigoBase {
     }
 
     idle(delta){
-        let seno = Math.sin(this.clockIdle.getElapsedTime() * 2);
+        let seno = Math.sin(this.clockIdle.getElapsedTime() * 2 + this.sinOffset);
 
         this.object.position.y = this.altura + seno;
         this.bb.setFromObject(this.mesh);
@@ -251,7 +253,7 @@ class InimigoLostSoul extends InimigoBase {
         this.object.lookAt(alvo);
         this.updateFunction = this.attack.bind(this);
         this.estado = "attack";
-        this.maxTime = 2 + Math.random() * 2; // Tempo aleatório entre 4 e 10 segundos
+        this.maxTime = 1 + Math.random() * 2; // Tempo aleatório entre 1 e 3 segundos
     }
 
     attack(delta){
@@ -261,7 +263,7 @@ class InimigoLostSoul extends InimigoBase {
             return;
         }
         const dir = new THREE.Vector3(0, 0, 1);
-        this.wallCollision(dir, delta, 2.0);
+        this.wallCollision(dir, delta, 5.0);
         this.groundCollision();
     }
     //#endregion
