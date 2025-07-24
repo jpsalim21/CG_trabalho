@@ -20,6 +20,9 @@ class InimigoLostSoul extends InimigoBase {
         this.rayWall = new THREE.Raycaster();
         this.rayWall.far = 0.5;
         this.rayWall.near = 0.1;
+        this.rayGround = new THREE.Raycaster();
+        this.rayGround.far = 1.0;
+        this.rayGround.near = 0.1;
 
         this.updateFunction = null;
         this.estado = null;
@@ -178,6 +181,19 @@ class InimigoLostSoul extends InimigoBase {
         this.object.position.add(direcao.multiplyScalar(this.velocidade * delta * scale));
     }
 
+    groundCollision(){
+        this.rayGround.set(this.object.position, new THREE.Vector3(0, -1, 0));
+        const objects = getChao();
+        const intersectedObjects = this.rayGround.intersectObjects(objects, true);
+
+        if (intersectedObjects.length > 0) {
+            const groundY = intersectedObjects[0].point.y;
+            if (this.object.position.y - 2.0 < groundY) {
+                this.object.position.y = groundY + 2.0;
+            }
+        }
+    }
+
     //#region MÁQUINA DE ESTADOS
 
     enterIdle(){
@@ -223,6 +239,7 @@ class InimigoLostSoul extends InimigoBase {
         
         const dir = new THREE.Vector3(0, 0, 1);
         this.wallCollision(dir, delta, 1.0);
+        this.groundCollision();
     }
 
     enterAttack(){
@@ -245,6 +262,7 @@ class InimigoLostSoul extends InimigoBase {
         }
         const dir = new THREE.Vector3(0, 0, 1);
         this.wallCollision(dir, delta, 2.0);
+        this.groundCollision();
     }
     //#endregion
 
