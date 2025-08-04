@@ -50,8 +50,10 @@ class Chave {
 
         if (tipo == 'vermelha') {
             this.mesh.material = vermelha;
+            GameController.instance.iChave1 = this;
         } else {
             this.mesh.material = amarela;   
+            GameController.instance.iChave2 = this;
         }
 
         this.render();
@@ -72,7 +74,7 @@ class Chave {
                 showTemporaryMessage("Chave vermelha adquirida! Use-a para desbloquear a área 2.", 5000);
             } else {
                 GameController.instance.chave2 = true;
-                showTemporaryMessage("Chave amarela adquirida! Parabéns, você ganhou!", 10000);
+                showTemporaryMessage("Chave amarela adquirida! Use-a para desbloquear a área 3", 5000);
             }
             this.destroy();
         }
@@ -97,6 +99,12 @@ class Chave {
             this.mesh.visible = true;
             this.colocada = true;
         }
+    }
+
+    pegaPorController(){
+        this.adquirida = true;
+        this.mesh.visible = false;
+        this.colocada = false;
     }
 }
 

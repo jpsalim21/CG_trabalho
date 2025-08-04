@@ -34,7 +34,7 @@ Sons:
     Soldier - atacar / for atingido / iniciar movimentação;
     Sistema - música de fundo / plataforma mover / porta abrir;
 Player:
-    ● Ao pressionar a tecla SHIFT movimentação do personagem deve ser acelerada (3x);
+    ● Ao pressionar a tecla SHIFT movimentação do personagem deve ser acelerada (3x); OK
     ● O cilindro (arma 1) será modificado por um 'rocket launcher'. Deve-se criar uma pequena animação para cada disparo. Fica a cargo do
     grupo encontrar um asset adequado para substituir o cilindro (pode ser um asset 3D ou os sprites correspondentes do Doom);
     ● Inclua alguma forma gráfica de visualizar o HP do usuário, que inicialmente será 200. Os danos causados por inimigos são:

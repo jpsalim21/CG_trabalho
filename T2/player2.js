@@ -4,6 +4,7 @@ import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "./cenario.js";
 import { SpriteMixer } from './sprites/SpriteMixer.js';
+import { GameController } from './gamecontroller.js';
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
@@ -216,6 +217,17 @@ class PlayerController extends EventDispatcher {
                     this.velVertical = this.pulo;
                     this.cameraHolder.position.y += 0.1;
                 }
+                break;
+            case "shift":
+                if (isPressed) {
+                    this.speed = 80; // Aumenta a velocidade ao pressionar Shift
+                }
+                else {
+                    this.speed = 40; // Restaura a velocidade normal ao soltar Shift
+                }
+                break;
+            case "c":
+                GameController.instance.pegarTodasChaves();
                 break;
         }
 

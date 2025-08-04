@@ -9,6 +9,14 @@ class GameController {
         this.inimigosArea1 = [];
         this.inimigosArea2 = [];
 
+        this.chave1 = false;
+        this.chave2 = false;
+        this.chave3 = false;
+
+        this.iChave1 = null;
+        this.iChave2 = null;
+        this.iChave3 = null;
+
         GameController.instance = this;
     }
 
@@ -59,6 +67,16 @@ class GameController {
 
     resumeGame() {
         console.log("Jogo retomado");
+    }
+
+    pegarTodasChaves() {
+        console.log("Todas as chaves foram pegas");
+        this.chave1 = true;
+        this.iChave1.pegaPorController();
+        this.chave2 = true;
+        this.iChave2.pegaPorController();
+        this.chave3 = true;
+        this.iChave3.pegaPorController();
     }
 
 }
