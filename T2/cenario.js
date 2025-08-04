@@ -4,6 +4,7 @@ import { Elevador } from './elevador.js';
 import { InimigoLostSoul } from './inimigoLostSoul.js';
 import { AreaTrigger } from './areaTrigger.js';
 import { PlataformaChave} from './plataformaChave.js';
+import { BlocoChave } from './blocoChave.js';
 import { PortaArea } from "./portaArea.js";
 import { GameController } from "./gamecontroller.js";
 import { Cacodemon } from "./cacodemon.js";
@@ -138,7 +139,7 @@ function inicializaCenario(scene, player) {
     chave1Obj.mesh.visible = false;
 
     // plataforma da chave na área 1
-    plataformaChave1 = new PlataformaChave(scene, new THREE.Vector3(0, 3, 0), chave1Obj);
+    plataformaChave1 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 0), chave1Obj);
     box1.add(plataformaChave1.plataforma);
     paredes.push(plataformaChave1.plataforma);
     chao.push(plataformaChave1.plataforma);
@@ -172,46 +173,46 @@ function inicializaCenario(scene, player) {
     // blocos de diferentes alturas
     const block = new THREE.Mesh(new THREE.BoxGeometry(5, 25, 5), box2Material);
     let block1 = block.clone();
-    block1.position.set(-25, 9, 5);
+    block1.position.set(-25, 19, 5);
     block1.castShadow = true;
     let block2 = block.clone();
-    block2.position.set(40, 9, 35);
+    block2.position.set(40, 19, 35);
     block2.castShadow = true;
     let block3 = block.clone();
-    block3.position.set(20, 16, -15);
+    block3.position.set(20, 26, -15);
     block3.castShadow = true;
     let block4 = block.clone();
-    block4.position.set(0, 5, -45);
+    block4.position.set(0, 15, -45);
     block4.castShadow = true;
     let block5 = block.clone();
-    block5.position.set(0, 5, 15);
+    block5.position.set(0, 15, 15);
     block5.castShadow = true;
     let block6 = block.clone();
-    block6.position.set(30, 3, 15);
+    block6.position.set(30, 13, 15);
     block6.castShadow = true;
     let block7 = block.clone();
-    block7.position.set(-20, 16, -15);
+    block7.position.set(-20, 26, -15);
     block7.castShadow = true;
     let block8 = block.clone();
-    block8.position.set(40, 16, -40);
+    block8.position.set(40, 26, -40);
     block8.castShadow = true;
     let block9 = block.clone();
-    block9.position.set(-10, 15, 35);
+    block9.position.set(-10, 25, 35);
     block9.castShadow = true;
     let block10 = block.clone();
-    block10.position.set(20, 5, -35);
+    block10.position.set(20, 15, -35);
     block10.castShadow = true;
     let block11 = block.clone();
-    block11.position.set(-40, 5, -5);
+    block11.position.set(-40, 25, -5);
     block11.castShadow = true;
     let block12 = block.clone();
-    block12.position.set(-40, 5, 25);
+    block12.position.set(-40, 15, 25);
     block12.castShadow = true;
     let block13 = block.clone();
-    block13.position.set(-30, 14, 45);
+    block13.position.set(-30, 24, 45);
     block13.castShadow = true;
     let block14 = block.clone();
-    block14.position.set(-40, 7, -45);
+    block14.position.set(-40, 17, -45);
     block14.castShadow = true;
 
     box2.add(block1);
@@ -287,10 +288,8 @@ function inicializaCenario(scene, player) {
     chave2Obj.mesh.visible = false;
 
     // plataforma da chave na área 2
-    plataformaChave2 = new PlataformaChave(scene, new THREE.Vector3(0, 3, 0), chave2Obj);
-    box2.add(plataformaChave2.plataforma);
-    paredes.push(plataformaChave2.plataforma);
-    chao.push(plataformaChave2.plataforma);
+    plataformaChave2 = new BlocoChave(scene, block5, chave2Obj);
+    scene.add(plataformaChave2);
 
     // box 3
     const box31 = new THREE.Mesh(boxGeometry4, box3Material);

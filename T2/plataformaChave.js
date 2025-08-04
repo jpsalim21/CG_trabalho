@@ -6,7 +6,7 @@ class PlataformaChave {
         this.position = position;
         this.chave = chave;
         this.alturaAlvo = 5;
-        this.velocidade = 0.5;
+        this.velocidade = 0.8;
         this.ativo = false;
         
         this.plataforma = new THREE.Mesh(new THREE.BoxGeometry(2,2,2), new THREE.MeshLambertMaterial({ color: 0x888888 }));
