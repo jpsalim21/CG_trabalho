@@ -6,7 +6,7 @@ import { AreaTrigger } from './areaTrigger.js';
 import { PlataformaChave} from './plataformaChave.js';
 import { PortaArea } from "./portaArea.js";
 import { GameController } from "./gamecontroller.js";
-import { Cacodemon } from "./cacodemon.js";
+import { Cacodemon } from "./inimigoCacodemon.js";
 
 //materiais
 const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});

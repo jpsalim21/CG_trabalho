@@ -81,8 +81,6 @@ class Cacodemon extends InimigoBase {
         this.sprite.scale.set(2, 0.4, 1); // tamanho ajustado da barra de vida
 
         this.bb = new THREE.Box3().setFromObject(this.mesh);
-        //this.bbHelper = new THREE.Box3Helper(this.bb, 0xffff00);
-        //this.scene.add(this.bbHelper);
 
         this.enterIdle();
         this.rodando = true;

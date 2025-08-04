@@ -5,6 +5,7 @@ import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "./cenario.js";
 import { SpriteMixer } from './sprites/SpriteMixer.js';
 import { GameController } from './gamecontroller.js';
+import { testaColisao } from './inimigocontroller.js';
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
@@ -187,6 +188,9 @@ class PlayerController extends EventDispatcher {
         this.bb = new THREE.Box3().setFromObject(this.playerMesh);
         //#endregion
 
+        this.hpMax = 200;
+        this.hp = this.hpMax;
+        this.godMode = false;
 
         this.connect(); 
     }
@@ -229,6 +233,16 @@ class PlayerController extends EventDispatcher {
             case "c":
                 GameController.instance.pegarTodasChaves();
                 break;
+            case "g":
+                if(this.godMode) {
+                    this.godMode = false;
+                    showTemporaryMessage("Modo Deus desativado. Você pode ser atingido por inimigos.", 5000);
+                }
+                else {
+                    this.godMode = true;
+                    showTemporaryMessage("Modo Deus ativado. Você não sofrerá dano.", 5000);
+                }
+                break;
         }
 
         if (this.teclas[0]) {
@@ -254,14 +268,7 @@ class PlayerController extends EventDispatcher {
         }
     
         this.bb.setFromObject(this.playerMesh);
-        this.grounded = this.isOnGround();
-    
-        if (this.grounded) {
-            this.velVertical = 0;
-        } else {
-            this.velVertical -= GRAVIDADE * delta;
-            this.cameraHolder.translateY(this.velVertical * delta);
-        }
+        this.grounded = this.isOnGround(delta);
     
         const moveDistance = this.speed * delta;
         let direcao = this.velocity.clone();
@@ -271,6 +278,8 @@ class PlayerController extends EventDispatcher {
         this.cameraHolder.translateX(direcao.x);
         this.cameraHolder.translateZ(direcao.y);
         
+        this.hurtbox();
+
         // tratando duas armas
         if (this.atirar) {
             // se for a chaingun
@@ -319,7 +328,7 @@ class PlayerController extends EventDispatcher {
         this.render();
     }
     // Verifica se o jogador está no chão, por meio de um raycast
-    isOnGround(){
+    isOnGround(delta){
         const position = this.cameraHolder.position.clone();
         position.y += 2.0; 
         this.rayGround.set(position, new THREE.Vector3(0, -1, 0)); 
@@ -334,6 +343,12 @@ class PlayerController extends EventDispatcher {
             this.cameraHolder.position.y = this.alturaChao;
         }
 
+        if (isGround) {
+            this.velVertical = 0;
+        } else {
+            this.velVertical -= GRAVIDADE * delta;
+            this.cameraHolder.translateY(this.velVertical * delta);
+        }
         return isGround;
     }
     fireLauncher() {
@@ -456,6 +471,12 @@ class PlayerController extends EventDispatcher {
         }
     }
     //#endregion
+    hurtbox(){
+        if (this.godMode) return; // Se estiver no modo Deus, não faz nada
+
+        let dano = testaColisao(this.bb);
+        console.log("Dano recebido:", dano);
+    }
 
     getBulletPool() {
         return this.arma; // Retorna a pool de balas
