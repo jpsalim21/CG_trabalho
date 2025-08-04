@@ -1,2 +1,50 @@
+Correções do trabalho anterior:
+Adicionar o pilar em cima da chave
+Colocar o pilar pra começar a subir mais baixo
 
+Plano base:
+    Piso intertravado
+    Skybox
+Área 1:
+    Textura bloco
+    Textura pilar
+    Textura parte de cima do pilar
+    Displacement map do pilar
+Área 2:
+    Textura bloco
+    Textura pilares (metálica)
+    Textura elevador
+    Textura porta
+    OBS: Mínimo de 5 texturas
+Área 3:
+    Montar hangar (CSG ou modelagem)
+    Sistema de chave
+    Inimigo Soldado
+    Textura do chão (criar algo um plano mais acima q o chão normal)
+    Iluminação diferente
+Área 4:
+    Discutir oq será feito
+    Criar inimigo Pain Elemental
+Sons:
+    Desligar o som com tecla Q
+    Player - for atingido / atirar com a chainGun / atirar com o rocket Launcher / pegar uma chave / abrir uma porta;
+    Cacodemon - atacar / morrer / for atingido / estiver perto / iniciar movimentação (player entrou na área);
+    Lost soul - atacar / for atingido;
+    Pain Elemental - atacar / for atingido / iniciar movimentação;
+    Soldier - atacar / for atingido / iniciar movimentação;
+    Sistema - música de fundo / plataforma mover / porta abrir;
+Player:
+    ● Ao pressionar a tecla SHIFT movimentação do personagem deve ser acelerada (3x);
+    ● O cilindro (arma 1) será modificado por um 'rocket launcher'. Deve-se criar uma pequena animação para cada disparo. Fica a cargo do
+    grupo encontrar um asset adequado para substituir o cilindro (pode ser um asset 3D ou os sprites correspondentes do Doom);
+    ● Inclua alguma forma gráfica de visualizar o HP do usuário, que inicialmente será 200. Os danos causados por inimigos são:
+    lost soul → 5 / cacodemon → 8 / soldier → 2. Podemos ajustar estes valores ao longo das semanas.
+    ● Pressionando 'G' habilita/desabilita o modo 'god like', no qual o usuário não sofrerá dano;
+    ● Pressionando 'C', o usuário receberá todas as chaves. Quando essa tecla for pressionada, exiba uma mensagem na interface ou ilustre
+    que as chaves foram obtidas graficamente.
+    Se o player morrer, deve-se apresentar uma mensagem na tela e reiniciar o sistema em seguida.
 
+Extra:
+    Github pages
+    Loading screen
+    Start screen
