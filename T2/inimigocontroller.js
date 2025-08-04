@@ -16,13 +16,14 @@ function getInimigosColisao() {
     return listaInimigos;
 }
 
-function testaColisao(playerBb){
+function testaColisao(player){
     listaInimigos.forEach(element => {
-        if(element.bb.intersectsBox(playerBb)){
-            return element.ataque;
+        if(element.bb.intersectsBox(player.bb)) {
+            let foda = element.ataque;
+            console.log(foda);
+            return foda;
         }
     });
-    return 0; // Retorna 0 se não houver colisão
 }
 
 

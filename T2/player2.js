@@ -474,8 +474,10 @@ class PlayerController extends EventDispatcher {
     hurtbox(){
         if (this.godMode) return; // Se estiver no modo Deus, não faz nada
 
-        let dano = testaColisao(this.bb);
+        let dano = testaColisao(this);
         console.log("Dano recebido:", dano);
+        if (dano > 0) {
+        }
     }
 
     getBulletPool() {
