@@ -1,3 +1,5 @@
 /T1/camera_control/*.css
 assets
 !/T1/assets
+
+!/T2/assets
