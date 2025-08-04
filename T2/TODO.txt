@@ -16,7 +16,7 @@ Plano base:
     Textura elevador
     Textura porta
     OBS: Mínimo de 5 texturas
-Área 3:
+Área 3: - Leo
     Montar hangar (CSG ou modelagem)
     Sistema de chave
     Inimigo Soldado
