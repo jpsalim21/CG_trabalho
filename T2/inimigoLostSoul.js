@@ -3,6 +3,7 @@ import { OBJLoader } from '../../build/jsm/loaders/OBJLoader.js';
 import * as THREE from 'three';
 import { getParedes, getChao } from "./cenario.js";
 import { GameController } from "./gamecontroller.js";
+import { removeInimigoColisao, addInimigoColisao } from "./inimigocontroller.js";
 
 const path = "./assets/skullMelhor.obj";
 const texturePath = "./assets/skul/";
@@ -10,7 +11,7 @@ const texturePath = "./assets/skul/";
 
 class InimigoLostSoul extends InimigoBase {
     constructor(scene, vida, ataque, player, observer, velocidade = 10) {
-        super(scene, vida, ataque, player, observer);
+        super(scene, vida, 10, player, observer);
         this.player = player;
         this.velocidade = velocidade;
         this.rodando = true;
@@ -62,14 +63,14 @@ class InimigoLostSoul extends InimigoBase {
                     metalness: 0.5,
                     roughness: 1.0,
                 });
-
+                
                 object.traverse((child) => {
                     if (child.isMesh) {
                         child.material = material;
                         child.material.transparent = true;
                     }
                 });
-
+                
                 this.mesh = object;
                 this.setup();
             },
@@ -81,14 +82,14 @@ class InimigoLostSoul extends InimigoBase {
             }
         )
     }
-
+    
     setup() {
         super.setup();
-
+        
         this.bb = new THREE.Box3().setFromObject(this.mesh);
+        addInimigoColisao(this);
 
         this.enterIdle();
-
 
         this.rodando = true;
     }
@@ -131,6 +132,7 @@ class InimigoLostSoul extends InimigoBase {
     }
 
     destructor(){
+        removeInimigoColisao(this);
         this.observer.removeListener(this);
         this.scene.remove(this.mesh);
         this.mesh = null;

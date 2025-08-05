@@ -76,7 +76,7 @@ class GameController {
         this.chave2 = true;
         this.iChave2.pegaPorController();
         this.chave3 = true;
-        this.iChave3.pegaPorController();
+        //this.iChave3.pegaPorController();
     }
 
 }
