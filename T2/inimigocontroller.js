@@ -1,6 +1,10 @@
 import * as THREE from "three";
 
+
+const tempoInvencivel = 1;
 let listaInimigos = [];
+let clock = new THREE.Clock();
+clock.start();
 
 function addInimigoColisao(inimigo) {
     listaInimigos.push(inimigo);
@@ -17,13 +21,16 @@ function getInimigosColisao() {
 }
 
 function testaColisao(player){
-    listaInimigos.forEach(element => {
-        if(element.bb.intersectsBox(player.bb)) {
-            let foda = element.ataque;
-            console.log(foda);
-            return foda;
+    let elapsed = clock.getElapsedTime();
+    if(elapsed < tempoInvencivel) return 0;
+
+    for(let i = 0; i < listaInimigos.length; i++){
+        if(listaInimigos[i].bb.intersectsBox(player.bb)){
+            clock.start();
+            return listaInimigos[i].ataque;
         }
-    });
+    }
+    return 0;
 }
 
 
