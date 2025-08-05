@@ -1,6 +1,5 @@
 import * as THREE from "three";
 
-
 const tempoInvencivel = 1;
 let listaInimigos = [];
 let clock = new THREE.Clock();

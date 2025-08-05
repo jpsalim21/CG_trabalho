@@ -1,5 +1,6 @@
 import * as THREE from  'three';
 import { getParedes } from './cenario.js';
+import { addInimigoColisao, removeInimigoColisao } from './inimigocontroller.js';
 
 const geometria = new THREE.SphereGeometry(0.8, 16, 16);
 
@@ -15,6 +16,7 @@ class Bullet {
         this.movendo = false;
         this.mesh.visible = false;
         this.pool = pool;
+        this.ataque = 10;
 
         this.raycaster = new THREE.Raycaster();
         this.raycaster.far = 1;
@@ -72,11 +74,16 @@ class Bullet {
 
 //Pool para quantidade de balas que o jogador pode disparar
 class BulletPool {
-    constructor(scene, color = 0xff0000) { //cor padrão é vermelha
+    constructor(scene, jogador = true) { //cor padrão é vermelha
         this.bullets = [];
         this.bulletsInUse = [];
         this.poolSize = 10;
-        this.color = color;
+
+        if(jogador) {
+            this.color = 0xff0000; // Vermelho
+        } else {
+            this.color = 0xffff00; // Amarelo
+        }
 
         this.scene = scene;
         this.clock = new THREE.Clock();
@@ -88,7 +95,9 @@ class BulletPool {
         this.listaParede = getParedes();
 
         for (let i = 0; i < this.poolSize; i++) {
-            this.bullets.push(new Bullet(posInicial, this, this.scene));
+            let b = new Bullet(posInicial, this, this.scene);
+            this.bullets.push(b);
+            addInimigoColisao(b);
         }
         this.render();
     }
@@ -108,7 +117,9 @@ class BulletPool {
         if (this.bullets.length > 0) {
             return this.bullets.pop();
         } else {
-            return new Bullet(posInicial, this, this.scene);
+            let b = new Bullet(posInicial, this, this.scene);
+            addInimigoColisao(b);
+            return b;
         }
     }
 

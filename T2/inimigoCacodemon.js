@@ -21,7 +21,7 @@ class Cacodemon extends InimigoBase {
         this.maxAngle = (Math.PI / 2) + (Math.random() * Math.PI / 2); // limite de ângulo entre 90° e 180°
 
         // pool de projéteis amarelos para o Cacodemon
-        this.bulletPool = new BulletPool(scene, 0xffff00);
+        this.bulletPool = new BulletPool(scene, false);
         this.shootInterval = 5; // atira a cada 5 segundos
         this.lastShotTime = 0;
 
