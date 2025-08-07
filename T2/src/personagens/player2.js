@@ -3,9 +3,9 @@ import { onWindowResize } from "../../../libs/util/util.js";
 import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "../cenario/cenario.js";
-import { SpriteMixer } from '../../sprites/SpriteMixer.js';
 import { GameController } from '../controller/gamecontroller.js';
 import { testaColisao } from './inimigocontroller.js';
+import { SpriteMixer } from '../../sprites/SpriteMixer.js';
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
