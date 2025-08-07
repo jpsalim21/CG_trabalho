@@ -1,4 +1,4 @@
-import { plataformaChave1, plataformaChave2} from "./cenario.js";
+import { plataformaChave1, plataformaChave2} from "../cenario/cenario.js";
 
 class GameController {
     constructor(){

@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { GLTFLoader } from '../../build/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader } from '../../../build/jsm/loaders/GLTFLoader.js';
 import { InimigoBase } from './inimigoBase.js';
 import { BulletPool } from './disparo.js';
-import { getParedes, getChao } from './cenario.js';
-import { GameController } from './gamecontroller.js';
+import { getParedes, getChao } from '../cenario/cenario.js';
+import { GameController } from '../controller/gamecontroller.js';
 
 const path = './assets/cacodemon.glb';
 const GRAVIDADE = 25;

@@ -1,13 +1,13 @@
 import * as THREE from "three";
 import { Chave } from './chave.js';
 import { Elevador } from './elevador.js';
-import { InimigoLostSoul } from './inimigoLostSoul.js';
+import { InimigoLostSoul } from '../personagens/inimigoLostSoul.js';
 import { AreaTrigger } from './areaTrigger.js';
 import { PlataformaChave} from './plataformaChave.js';
 import { BlocoChave } from './blocoChave.js';
 import { PortaArea } from "./portaArea.js";
-import { GameController } from "./gamecontroller.js";
-import { Cacodemon } from "./inimigoCacodemon.js";
+import { GameController } from "../controller/gamecontroller.js";
+import { Cacodemon } from "../personagens/inimigoCacodemon.js";
 
 //materiais
 const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});
@@ -289,7 +289,6 @@ function inicializaCenario(scene, player) {
 
     // plataforma da chave na área 2
     plataformaChave2 = new BlocoChave(scene, block5, chave2Obj);
-    scene.add(plataformaChave2);
 
     // box 3
     const box31 = new THREE.Mesh(boxGeometry4, box3Material);

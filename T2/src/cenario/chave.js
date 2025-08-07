@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import { CSG } from '../libs/other/CSGMesh.js';    
-import { GameController } from "./gamecontroller.js";
+import { CSG } from '../../../libs/other/CSGMesh.js';    
+import { GameController } from "../controller/gamecontroller.js";
 
 const vermelha = new THREE.MeshPhongMaterial({color: 'rgb(196, 18, 18)', shininess: 100});
 const amarela = new THREE.MeshPhongMaterial({color: 'rgb(255, 255, 65)', shininess: 100});

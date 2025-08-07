@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { addChao, addParedes} from './cenario.js';
+import { addChao, addParedes} from '../cenario/cenario.js';
 
 const geometry = new THREE.BoxGeometry(10, 20, 10);
 const geometriaMaior = new THREE.BoxGeometry(20, 20, 20);

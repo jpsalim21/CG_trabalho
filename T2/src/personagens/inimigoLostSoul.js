@@ -1,8 +1,8 @@
 import { InimigoBase } from "./inimigoBase.js";
-import { OBJLoader } from '../../build/jsm/loaders/OBJLoader.js';
+import { OBJLoader } from '../../../build/jsm/loaders/OBJLoader.js';
 import * as THREE from 'three';
-import { getParedes, getChao } from "./cenario.js";
-import { GameController } from "./gamecontroller.js";
+import { getParedes, getChao } from "../cenario/cenario.js";
+import { GameController } from "../controller/gamecontroller.js";
 import { removeInimigoColisao, addInimigoColisao } from "./inimigocontroller.js";
 
 const path = "./assets/skullMelhor.obj";

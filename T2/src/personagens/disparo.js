@@ -1,5 +1,5 @@
 import * as THREE from  'three';
-import { getParedes } from './cenario.js';
+import { getParedes } from '../cenario/cenario.js';
 import { addInimigoColisao, removeInimigoColisao } from './inimigocontroller.js';
 
 const geometria = new THREE.SphereGeometry(0.8, 16, 16);

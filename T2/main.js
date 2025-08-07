@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { initRenderer, initDefaultBasicLight } from "../libs/util/util.js";
-import { PlayerController } from "./player2.js";
-import { inicializaCenario } from "./cenario.js";
-import { GameController } from "./gamecontroller.js";
+import { PlayerController } from "./src/personagens/player2.js";
+import { inicializaCenario } from "./src/cenario/cenario.js";
+import { GameController } from "./src/controller/gamecontroller.js";
 
 const scene = new THREE.Scene();
 let renderer = initRenderer();

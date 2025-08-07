@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import { GameController } from "./gamecontroller.js";
+import { GameController } from "../controller/gamecontroller.js";
 
 class PortaArea {
     constructor(scene, portaMesh, blocoChave, player, chave) {

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { InimigoBase } from "./inimigoBase.js";
+import { InimigoBase } from "../personagens/inimigoBase.js";
 
 
 class AreaTrigger {
