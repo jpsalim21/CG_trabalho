@@ -57,8 +57,60 @@ function inicializaCenario(scene, player) {
     chao.push(ground); // adiciona o chão ao array de chão
 
     // área 1
-    const box1 = new THREE.Object3D();
+    let a1 = createArea1(scene, player);
+    scene.add(a1);
+  
+    // área 2
+    let a2 = createArea2(scene, player);
+    scene.add(a2);
 
+    // box 3
+    let a3 = createArea3(scene, player);
+    scene.add(a3);
+    
+    // box 4
+    let a4 = createArea4(scene, player);
+    scene.add(a4);
+
+    //Cria as paredes
+    const parede1 = new THREE.Mesh(wallGeometry, wallMaterial); 
+    parede1.position.set(0, 25, -250);
+    parede1.castShadow = true;
+    paredes.push(parede1); 
+
+    const parede2 = new THREE.Mesh(wallGeometry, wallMaterial); 
+    parede2.position.set(0, 25, 250); 
+    parede2.rotation.x = Math.PI;    
+    parede1.castShadow = true;
+    paredes.push(parede2);
+
+    const parede3 = new THREE.Mesh(wallGeometry, wallMaterial); 
+    parede3.position.set(-250, 25, 0);
+    parede3.rotation.y = Math.PI / 2;
+    parede1.castShadow = true;
+    paredes.push(parede3); 
+
+    const parede4 = new THREE.Mesh(wallGeometry, wallMaterial); 
+    parede4.position.set(250, 25, 0); 
+    parede4.rotation.y = Math.PI / -2;
+    parede1.castShadow = true;
+    paredes.push(parede4);
+
+    chao.forEach(element => { element.receiveShadow = true; });
+
+    //adiciona os objetos na cena
+    scene.add(ground);
+    scene.add(parede1);
+    scene.add(parede2);    
+    scene.add(parede3);
+    scene.add(parede4);
+
+    addInimigos(scene, player);
+
+}
+
+function createArea1(scene, player){
+    const box1 = new THREE.Object3D();
     const box11 = new THREE.Mesh(boxGeometry1, box1Material);
     box11.position.set(-45, 2, 0);
     box11.castShadow = true;
@@ -87,7 +139,13 @@ function inicializaCenario(scene, player) {
     ramp1.visible = false;
     chao.push(ramp1);
 
-    // colunas na área 1
+    box1.add(box11);
+    box1.add(box12);
+    box1.add(box13);
+    box1.add(escada1);
+    box1.add(ramp1);
+    box1.position.set(-150, 0, -150);
+
     const column = new THREE.Mesh(columnGeometry, columnMaterial);
 
     for (let i = 0; i < 14; i++) {
@@ -126,13 +184,6 @@ function inicializaCenario(scene, player) {
     column3Top.rotation.y = Math.PI / -2;
     column3Top.castShadow = true;
     box1.add(column3Top);
-    
-    box1.add(box11);
-    box1.add(box12);
-    box1.add(box13);
-    box1.add(escada1);
-    box1.add(ramp1);
-    box1.position.set(-150, 0, -150);
 
     // chave vermelha mostrada quando matar todos os inimigos da área 2
     chave1Obj = new Chave(scene, player.bb, 'vermelha');
@@ -143,8 +194,10 @@ function inicializaCenario(scene, player) {
     box1.add(plataformaChave1.plataforma);
     paredes.push(plataformaChave1.plataforma);
     chao.push(plataformaChave1.plataforma);
-  
-    // área 2
+    return box1;
+}
+
+function createArea2(scene, player){
     const box2 = new THREE.Object3D();
 
     const box21 = new THREE.Mesh(boxGeometry9, box2Material);
@@ -289,51 +342,65 @@ function inicializaCenario(scene, player) {
 
     // plataforma da chave na área 2
     plataformaChave2 = new BlocoChave(scene, block5, chave2Obj);
+    return box2;
+}
 
-    // box 3
+function createArea3(scene, player){
+    const box3 = new THREE.Object3D();
     const box31 = new THREE.Mesh(boxGeometry4, box3Material);
     box31.position.set(120, 2, -150);
     box31.castShadow = true;
+    box3.add(box31);
     chao.push(box31);
     paredes.push(box31);
     
     const box32 = new THREE.Mesh(boxGeometry5, box3Material);
     box32.position.set(155, 2, -165);
     box32.castShadow = true;
+    box3.add(box32);
     chao.push(box32);
     paredes.push(box32);
     
     const box33 = new THREE.Mesh(boxGeometry6, box3Material);
     box33.position.set(185, 2, -150);
     box33.castShadow = true;
+    box3.add(box33);
     chao.push(box33);
     paredes.push(box33);
     
     const escada3 = createEscada();
     escada3.position.set(155, 0, -100);
     escada3.rotation.y = Math.PI;
-    
-    //box4
+    box3.add(escada3);
+    return box3;
+}
+
+function createArea4(scene, player){
+    const box4 = new THREE.Object3D();
     const box41 = new THREE.Mesh(boxGeometry7, box4Material);
     box41.position.set(-82.5, 2, 150);
     box41.castShadow = true;
+    box4.add(box41);
     chao.push(box41);
     paredes.push(box41);
     
     const box42 = new THREE.Mesh(boxGeometry8, box4Material);
     box42.position.set(0, 2, 165);
     box42.castShadow = true;
+    box4.add(box42);
     chao.push(box42);
     paredes.push(box42);
     
     const box43 = new THREE.Mesh(boxGeometry7, box4Material);
     box43.position.set(82.5, 2, 150);
     box43.castShadow = true;
+    box4.add(box43);
     chao.push(box43);
     paredes.push(box43);
     
     const escada4 = createEscada();
     escada4.position.set(0, 0, 100);
+    box4.add(escada4);
     
     // Cria as rampas
 
@@ -341,6 +408,7 @@ function inicializaCenario(scene, player) {
     ramp3.rotation.x = -Math.atan(30/4); 
     ramp3.position.set(155, 2, -115); 
     ramp3.visible = false;
+    box4.add(ramp3);
     chao.push(ramp3);
 
     const ramp4 = new THREE.Mesh(rampGeometry, wallMaterial);
@@ -348,55 +416,9 @@ function inicializaCenario(scene, player) {
     ramp4.rotation.x = Math.atan(30/4);
     ramp4.position.set(0, 2, 115); 
     ramp4.visible = false;
+    box4.add(ramp4);
     chao.push(ramp4);
-
-    //Cria as paredes
-    const parede1 = new THREE.Mesh(wallGeometry, wallMaterial); 
-    parede1.position.set(0, 25, -250);
-    parede1.castShadow = true;
-    paredes.push(parede1); 
-
-    const parede2 = new THREE.Mesh(wallGeometry, wallMaterial); 
-    parede2.position.set(0, 25, 250); 
-    parede2.rotation.x = Math.PI;    
-    parede1.castShadow = true;
-    paredes.push(parede2);
-
-    const parede3 = new THREE.Mesh(wallGeometry, wallMaterial); 
-    parede3.position.set(-250, 25, 0);
-    parede3.rotation.y = Math.PI / 2;
-    parede1.castShadow = true;
-    paredes.push(parede3); 
-
-    const parede4 = new THREE.Mesh(wallGeometry, wallMaterial); 
-    parede4.position.set(250, 25, 0); 
-    parede4.rotation.y = Math.PI / -2;
-    parede1.castShadow = true;
-    paredes.push(parede4);
-
-    chao.forEach(element => { element.receiveShadow = true; });
-
-    //adiciona os objetos na cena
-    scene.add(ground);
-    scene.add(box1);
-    scene.add(box2);
-    scene.add(box31);
-    scene.add(box32);
-    scene.add(box33);
-    scene.add(box41);
-    scene.add(box42);
-    scene.add(box43);
-    scene.add(escada3);
-    scene.add(escada4);
-    scene.add(ramp3);
-    scene.add(ramp4);
-    scene.add(parede1);
-    scene.add(parede2);    
-    scene.add(parede3);
-    scene.add(parede4);
-
-    addInimigos(scene, player);
-
+    return box4;
 }
 
 function addInimigos(scene, player) {

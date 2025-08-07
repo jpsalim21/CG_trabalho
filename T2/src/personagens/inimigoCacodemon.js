@@ -4,6 +4,7 @@ import { InimigoBase } from './inimigoBase.js';
 import { BulletPool } from './disparo.js';
 import { getParedes, getChao } from '../cenario/cenario.js';
 import { GameController } from '../controller/gamecontroller.js';
+import { loadGLTF } from '../Mesh/extractor.js';
 
 const path = './assets/cacodemon.glb';
 const GRAVIDADE = 25;
@@ -52,26 +53,21 @@ class Cacodemon extends InimigoBase {
         this.loadModel();
     }
 
-    loadModel() {
-        const loader = new GLTFLoader();
-        loader.load(
-            path,
-            (gltf) => {
-                this.mesh = gltf.scene;
-                this.mesh.traverse(child => {
-                    if (child.isMesh && child.material) {
-                        child.material.transparent = true; // habilita transparência
-                    }
-                });
-                // escala do modelo
-                this.mesh.scale.set(0.009, 0.009, 0.009);
-                // atualmente sem rotacao
-                this.mesh.rotation.set(0, 0, 0);
-                this.setup();
-            },
-            (xhr) => { console.log((xhr.loaded / xhr.total * 100) + '% loaded'); },
-            (error) => { console.error('Erro ao carregar o modelo:', error); }
-        );
+    async loadModel() {
+        try {
+            this.mesh = await loadGLTF(path);
+            this.mesh.traverse((child) => {
+                if (child.isMesh) {
+                    child.material.transparent = true; // habilita transparência
+                }
+            });
+            this.mesh.scale.set(0.009, 0.009, 0.009); // escala do modelo
+            this.mesh.rotation.set(0, 0, 0); // atualmente sem rotação
+            this.setup();
+        } catch (error) {
+            console.error('Error loading model:', error);
+            return;
+        }
     }
 
     setup() {

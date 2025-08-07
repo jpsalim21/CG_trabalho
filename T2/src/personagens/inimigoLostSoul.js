@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { getParedes, getChao } from "../cenario/cenario.js";
 import { GameController } from "../controller/gamecontroller.js";
 import { removeInimigoColisao, addInimigoColisao } from "./inimigocontroller.js";
+import { loadOBJ } from "../Mesh/extractor.js";
 
 const path = "./assets/skullMelhor.obj";
 const texturePath = "./assets/skul/";
@@ -43,44 +44,15 @@ class InimigoLostSoul extends InimigoBase {
         this.scene.add(this.object);
     }
 
-    loadModel() {
-        const loader = new OBJLoader();
-        const texLoader = new THREE.TextureLoader();
-
-        const texture = texLoader.load(`${texturePath}skull_blood_BaseColor.png`);
-        const normalMap = texLoader.load(`${texturePath}skull_blood_Normal.png`);
-        const roughnessMap = texLoader.load(`${texturePath}skull_Roughness.png`);
-        const metalnessMap = texLoader.load(`${texturePath}skull_blood_Metallic.png`);
-
-        loader.load(
-            path,
-            (object) => {
-                const material = new THREE.MeshStandardMaterial({
-                    map: texture,
-                    normalMap: normalMap,
-                    roughnessMap: roughnessMap,
-                    metalnessMap: metalnessMap,
-                    metalness: 0.5,
-                    roughness: 1.0,
-                });
-                
-                object.traverse((child) => {
-                    if (child.isMesh) {
-                        child.material = material;
-                        child.material.transparent = true;
-                    }
-                });
-                
-                this.mesh = object;
-                this.setup();
-            },
-            (xhr) => {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-            },
-            (error) => {
-                console.error('An error happened while loading the model:', error);
-            }
-        )
+    async loadModel() {
+        try {
+            this.mesh = await loadOBJ(path, texturePath, "skull_blood_BaseColor.png", "skull_blood_Normal.png", "skull_Roughness.png", "skull_blood_Metallic.png");
+            this.scene.add(this.mesh);
+            this.setup();
+        } catch (error) {
+            console.error('Error loading model:', error);
+            return;
+        }
     }
     
     setup() {
