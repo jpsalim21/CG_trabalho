@@ -7,7 +7,7 @@ const loaderOBJ = new OBJLoader();
 const texLoader = new THREE.TextureLoader();
 const spriteMixer = SpriteMixer();
 
-function loadOBJ(path, texturePath, tex, normal, rough, metal, metalness = 0.5, roughness = 1.0) {
+function loadOBJ(path, texturePath, tex, normal = "", rough = "", metal = "", metalness = 0.5, roughness = 1.0) {
     return new Promise((resolve, reject) => {
         const texture = texLoader.load(texturePath + tex);
         const normalMap = texLoader.load(texturePath + normal);
@@ -36,7 +36,7 @@ function loadOBJ(path, texturePath, tex, normal, rough, metal, metalness = 0.5, 
                 resolve(object);
             },
             (xhr) => {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded ' + texturePath + tex);
             },
             (error) => {
                 console.error('An error happened while loading the model:', error);

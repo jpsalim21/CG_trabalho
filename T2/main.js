@@ -3,6 +3,7 @@ import { initRenderer, initDefaultBasicLight } from "../libs/util/util.js";
 import { PlayerController } from "./src/personagens/player2.js";
 import { inicializaCenario } from "./src/cenario/cenario.js";
 import { GameController } from "./src/controller/gamecontroller.js";
+import { loadOBJ } from "./src/Mesh/extractor.js";
 
 const scene = new THREE.Scene();
 let renderer = initRenderer();
@@ -84,4 +85,3 @@ class MessageSystem {
 
 const messageSystem = new MessageSystem();
 window.showTemporaryMessage = (text, duration) => messageSystem.showMessage(text, duration);
-

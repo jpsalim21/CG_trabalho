@@ -6,6 +6,7 @@ import { getChao, getParedes } from "../cenario/cenario.js";
 import { GameController } from '../controller/gamecontroller.js';
 import { testaColisao } from './inimigocontroller.js';
 import { SpriteMixer } from '../../sprites/SpriteMixer.js';
+import { loadOBJ } from "../Mesh/extractor.js";
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
@@ -51,17 +52,7 @@ class PlayerController extends EventDispatcher {
         this.clock = new THREE.Clock();
      
         // cria a arma "lançador"
-        let launcherGeometry = new THREE.CylinderGeometry(0.6, 0.6, 1.5, 32);
-        const launcher = new THREE.Mesh(launcherGeometry, armaMaterial); 
-        launcher.position.set(0, -1.0, -1.5); 
-        launcher.rotation.x = -Math.PI / 2;
-        this.weapons[2] = {
-            object: launcher,
-            cooldown: 0.5,
-            lastShotTime: 0, // tempo do último disparo
-        };
-        this.camera.add(launcher); 
-        launcher.visible = (this.activeWeapon === 2); 
+        this.getLauncher();
 
         //cria chaingun
         this.spriteMixer = SpriteMixer();
@@ -193,6 +184,23 @@ class PlayerController extends EventDispatcher {
         this.godMode = false;
 
         this.connect(); 
+    }
+
+    async getLauncher(){
+        try {
+            let launcher = await loadOBJ('./assets/rocketlauncher/wephomura6.obj', "./assets/rocketlauncher/", "texhomu_11.png");
+            launcher.position.set(0, -2.7, 3.5);
+            this.camera.add(launcher);
+            this.weapons[2] = {
+                object: launcher,
+                cooldown: 0.5,
+                lastShotTime: 0,
+            }
+            launcher.visible = (this.activeWeapon === 2);
+        } catch (error) {
+            console.error('Error loading model:', error);
+            return;
+        }
     }
 
     //#region Funções de movimento
