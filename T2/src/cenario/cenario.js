@@ -8,7 +8,7 @@ import { BlocoChave } from './blocoChave.js';
 import { PortaArea } from "./portaArea.js";
 import { GameController } from "../controller/gamecontroller.js";
 import { Cacodemon } from "../personagens/inimigoCacodemon.js";
-import { CubeTextureLoaderSingleFile } from '../../../libs/util/cubeTextureLoaderSingleFile.js';
+import { setMaterial } from "../Mesh/extractor.js";
 
 //materiais
 const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});
@@ -157,9 +157,14 @@ function createArea1(scene, player){
     box1.add(escada1);
     box1.add(ramp1);
     box1.position.set(-150, 0, -150);
-
-    const column = new THREE.Mesh(columnGeometry, columnMaterial);
-
+    
+    let matCil = [
+        setMaterial('./assets/intertravado.jpg', 1, 1), // Textura dos lados
+        setMaterial('./assets/intertravado.jpg', 1, 1),
+        setMaterial('./assets/intertravado.jpg', 1, 1)
+    ]
+    const column = new THREE.Mesh(columnGeometry, matCil);
+    
     for (let i = 0; i < 14; i++) {
         let column1 = column.clone();
         column1.position.set(-47 + i*7.2, 14, -48);
@@ -167,6 +172,7 @@ function createArea1(scene, player){
         box1.add(column1);
         paredes.push(column1);
     }
+
     let columnTop = new THREE.Mesh(topGeometry, columnMaterial);
     let column1Top = columnTop.clone();
     column1Top.position.set(0, 25, -48);
@@ -284,7 +290,6 @@ function createArea2(scene, player){
     box2.add(block2);
     box2.add(block3);
     box2.add(block4);
-    box2.add(block5);    
     box2.add(block6);
     box2.add(block7);
     box2.add(block8);
@@ -353,7 +358,20 @@ function createArea2(scene, player){
     chave2Obj.mesh.visible = false;
 
     // plataforma da chave na área 2
-    plataformaChave2 = new BlocoChave(scene, block5, chave2Obj);
+    plataformaChave2 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 15), chave2Obj);
+    plataformaChave2.plataforma.add(block5);
+    block5.position.set(0, 18, 0);
+    box2.add(plataformaChave2.plataforma);
+    paredes.push(plataformaChave2.plataforma);
+    chao.push(plataformaChave2.plataforma);
+
+    /*
+    // plataforma da chave na área 1
+    plataformaChave1 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 0), chave1Obj);
+    box1.add(plataformaChave1.plataforma);
+    paredes.push(plataformaChave1.plataforma);
+    chao.push(plataformaChave1.plataforma);
+    */
 
     return box2;
 }
