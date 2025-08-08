@@ -8,6 +8,7 @@ import { BlocoChave } from './blocoChave.js';
 import { PortaArea } from "./portaArea.js";
 import { GameController } from "../controller/gamecontroller.js";
 import { Cacodemon } from "../personagens/inimigoCacodemon.js";
+import { CubeTextureLoaderSingleFile } from '../../../libs/util/cubeTextureLoaderSingleFile.js';
 
 //materiais
 const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});
@@ -49,6 +50,8 @@ let pilarChave = null;
 let elevador = null;
 
 function inicializaCenario(scene, player) {
+    // Cria o céu
+    createSkybox(scene);
 
     // cria o chão
     const ground = new THREE.Mesh(planeGeometry, material);
@@ -107,6 +110,15 @@ function inicializaCenario(scene, player) {
 
     addInimigos(scene, player);
 
+}
+
+function createSkybox(scene){
+    const texLoader = new THREE.TextureLoader();
+    let tex = texLoader.load('./assets/panorama1.jpg');
+    console.log("Skybox texture loaded:", tex);
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    tex.colorSpace = THREE.SRGBColorSpace;
+    scene.background = tex;
 }
 
 function createArea1(scene, player){
@@ -342,7 +354,7 @@ function createArea2(scene, player){
 
     // plataforma da chave na área 2
     plataformaChave2 = new BlocoChave(scene, block5, chave2Obj);
-    
+
     return box2;
 }
 
