@@ -1,18 +1,12 @@
 Correções do trabalho anterior:
-OK Adicionar o pilar em cima da chave
-OK Colocar o pilar pra começar a subir mais baixo
 Corrigir Cacodemon
-Reposicionar Cacodemon
 
-Plano base:
-OK  Piso intertravado
-OK  Skybox
-Área 1:
+Área 1: Salim
     Textura bloco
     Textura pilar
     Textura parte de cima do pilar
     Displacement map do pilar
-Área 2:
+Área 2: Mari
     Textura bloco
     Textura pilares (metálica)
     Textura elevador
@@ -24,10 +18,10 @@ OK  Skybox
     Inimigo Soldado
     Textura do chão (criar algo um plano mais acima q o chão normal)
     Iluminação diferente
-Área 4:
+Área 4: Salim
     Discutir oq será feito
     Criar inimigo Pain Elemental
-Sons:
+Sons: Mari
     Desligar o som com tecla Q
     Player - for atingido / atirar com a chainGun / atirar com o rocket Launcher / pegar uma chave / abrir uma porta;
     Cacodemon - atacar / morrer / for atingido / estiver perto / iniciar movimentação (player entrou na área);

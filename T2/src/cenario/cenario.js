@@ -365,14 +365,6 @@ function createArea2(scene, player){
     paredes.push(plataformaChave2.plataforma);
     chao.push(plataformaChave2.plataforma);
 
-    /*
-    // plataforma da chave na área 1
-    plataformaChave1 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 0), chave1Obj);
-    box1.add(plataformaChave1.plataforma);
-    paredes.push(plataformaChave1.plataforma);
-    chao.push(plataformaChave1.plataforma);
-    */
-
     return box2;
 }
 
@@ -467,15 +459,15 @@ function addInimigos(scene, player) {
     // add inimigos na área 2
     const areaTrigger2 = new AreaTrigger( scene, new THREE.Vector3(0, 0, -150), new THREE.Vector3(100, 10, 100), player );
 
-    const inimigo1 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(0, 21, -135));
+    const inimigo1 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(0, 40, -135));
     console.log("Inimigo criado na área 2:", inimigo1);
     GameController.instance.addInimigoArea2(inimigo1);
     
-    const inimigo2 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(20, 21, -185));
+    const inimigo2 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(20, 40, -185));
     console.log("Inimigo criado na área 2:", inimigo2);
     GameController.instance.addInimigoArea2(inimigo2);
     
-    const inimigo3 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(-40, 21, -125));
+    const inimigo3 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(-40, 40   , -125));
     console.log("Inimigo criado na área 2:", inimigo3);
     GameController.instance.addInimigoArea2(inimigo3);
 }
