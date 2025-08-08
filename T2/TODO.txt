@@ -1,16 +1,12 @@
 Correções do trabalho anterior:
-Adicionar o pilar em cima da chave
-Colocar o pilar pra começar a subir mais baixo
+Corrigir Cacodemon
 
-Plano base:
-    Piso intertravado
-    Skybox
-Área 1:
+Área 1: Salim
     Textura bloco
     Textura pilar
     Textura parte de cima do pilar
     Displacement map do pilar
-Área 2:
+Área 2: Mari
     Textura bloco
     Textura pilares (metálica)
     Textura elevador
@@ -22,10 +18,10 @@ Plano base:
     Inimigo Soldado
     Textura do chão (criar algo um plano mais acima q o chão normal)
     Iluminação diferente
-Área 4:
+Área 4: Salim
     Discutir oq será feito
     Criar inimigo Pain Elemental
-Sons:
+Sons: Mari
     Desligar o som com tecla Q
     Player - for atingido / atirar com a chainGun / atirar com o rocket Launcher / pegar uma chave / abrir uma porta;
     Cacodemon - atacar / morrer / for atingido / estiver perto / iniciar movimentação (player entrou na área);
@@ -35,14 +31,14 @@ Sons:
     Sistema - música de fundo / plataforma mover / porta abrir;
 Player:
 OK  Ao pressionar a tecla SHIFT movimentação do personagem deve ser acelerada (3x); OK
-    ● O cilindro (arma 1) será modificado por um 'rocket launcher'. Deve-se criar uma pequena animação para cada disparo. Fica a cargo do
+(Falta animacao)  ● O cilindro (arma 1) será modificado por um 'rocket launcher'. Deve-se criar uma pequena animação para cada disparo. Fica a cargo do
     grupo encontrar um asset adequado para substituir o cilindro (pode ser um asset 3D ou os sprites correspondentes do Doom);
     ● Inclua alguma forma gráfica de visualizar o HP do usuário, que inicialmente será 200. Os danos causados por inimigos são:
     lost soul → 5 / cacodemon → 8 / soldier → 2. Podemos ajustar estes valores ao longo das semanas.
 OK  ● Pressionando 'G' habilita/desabilita o modo 'god like', no qual o usuário não sofrerá dano;
 OK  ● Pressionando 'C', o usuário receberá todas as chaves. Quando essa tecla for pressionada, exiba uma mensagem na interface ou ilustre
     que as chaves foram obtidas graficamente.
-    Se o player morrer, deve-se apresentar uma mensagem na tela e reiniciar o sistema em seguida.
+        Se o player morrer, deve-se apresentar uma mensagem na tela e reiniciar o sistema em seguida.
 
 Extra:
     Github pages

@@ -8,6 +8,7 @@ import { BlocoChave } from './blocoChave.js';
 import { PortaArea } from "./portaArea.js";
 import { GameController } from "../controller/gamecontroller.js";
 import { Cacodemon } from "../personagens/inimigoCacodemon.js";
+import { setMaterial } from "../Mesh/extractor.js";
 
 //materiais
 const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});
@@ -49,6 +50,8 @@ let pilarChave = null;
 let elevador = null;
 
 function inicializaCenario(scene, player) {
+    // Cria o céu
+    createSkybox(scene);
 
     // cria o chão
     const ground = new THREE.Mesh(planeGeometry, material);
@@ -127,6 +130,15 @@ function inicializaCenario(scene, player) {
 
 }
 
+function createSkybox(scene){
+    const texLoader = new THREE.TextureLoader();
+    let tex = texLoader.load('./assets/panorama1.jpg');
+    console.log("Skybox texture loaded:", tex);
+    tex.mapping = THREE.EquirectangularReflectionMapping;
+    tex.colorSpace = THREE.SRGBColorSpace;
+    scene.background = tex;
+}
+
 function createArea1(scene, player){
     const box1 = new THREE.Object3D();
     const box11 = new THREE.Mesh(boxGeometry1, box1Material);
@@ -163,9 +175,14 @@ function createArea1(scene, player){
     box1.add(escada1);
     box1.add(ramp1);
     box1.position.set(-150, 0, -150);
-
-    const column = new THREE.Mesh(columnGeometry, columnMaterial);
-
+    
+    let matCil = [
+        setMaterial('./assets/intertravado.jpg', 1, 1), // Textura dos lados
+        setMaterial('./assets/intertravado.jpg', 1, 1),
+        setMaterial('./assets/intertravado.jpg', 1, 1)
+    ]
+    const column = new THREE.Mesh(columnGeometry, matCil);
+    
     for (let i = 0; i < 14; i++) {
         let column1 = column.clone();
         column1.position.set(-47 + i*7.2, 14, -48);
@@ -173,6 +190,7 @@ function createArea1(scene, player){
         box1.add(column1);
         paredes.push(column1);
     }
+
     let columnTop = new THREE.Mesh(topGeometry, columnMaterial);
     let column1Top = columnTop.clone();
     column1Top.position.set(0, 25, -48);
@@ -290,7 +308,6 @@ function createArea2(scene, player){
     box2.add(block2);
     box2.add(block3);
     box2.add(block4);
-    box2.add(block5);    
     box2.add(block6);
     box2.add(block7);
     box2.add(block8);
@@ -371,8 +388,13 @@ function createArea2(scene, player){
     chave2Obj.mesh.visible = false;
 
     // plataforma da chave na área 2
-    plataformaChave2 = new BlocoChave(scene, block5, chave2Obj);
-    
+    plataformaChave2 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 15), chave2Obj);
+    plataformaChave2.plataforma.add(block5);
+    block5.position.set(0, 18, 0);
+    box2.add(plataformaChave2.plataforma);
+    paredes.push(plataformaChave2.plataforma);
+    chao.push(plataformaChave2.plataforma);
+
     return box2;
 }
 
@@ -467,15 +489,15 @@ function addInimigos(scene, player) {
     // add inimigos na área 2
     const areaTrigger2 = new AreaTrigger( scene, new THREE.Vector3(0, 0, -150), new THREE.Vector3(100, 10, 100), player );
 
-    const inimigo1 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(0, 21, -135));
+    const inimigo1 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(0, 40, -135));
     console.log("Inimigo criado na área 2:", inimigo1);
     GameController.instance.addInimigoArea2(inimigo1);
     
-    const inimigo2 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(20, 21, -185));
+    const inimigo2 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(20, 40, -185));
     console.log("Inimigo criado na área 2:", inimigo2);
     GameController.instance.addInimigoArea2(inimigo2);
     
-    const inimigo3 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(-40, 21, -125));
+    const inimigo3 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(-40, 40   , -125));
     console.log("Inimigo criado na área 2:", inimigo3);
     GameController.instance.addInimigoArea2(inimigo3);
 }

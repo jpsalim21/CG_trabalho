@@ -9,7 +9,7 @@ class PlataformaChave {
         this.velocidade = 0.8;
         this.ativo = false;
         
-        this.plataforma = new THREE.Mesh(new THREE.BoxGeometry(2,2,2), new THREE.MeshLambertMaterial({ color: 0x888888 }));
+        this.plataforma = new THREE.Mesh(new THREE.BoxGeometry(3.5,2,3.5), new THREE.MeshLambertMaterial({ color: 0x888888 }));
         this.plataforma.position.copy(position);
         this.plataforma.add(chave.mesh);
         chave.mesh.position.set(0, 3, 0);
