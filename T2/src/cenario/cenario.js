@@ -98,6 +98,24 @@ function inicializaCenario(scene, player) {
 
     chao.forEach(element => { element.receiveShadow = true; });
 
+    // texturas
+    var textureLoader = new THREE.TextureLoader();
+
+    var floor  = textureLoader.load('../../assets/textures/intertravado.jpg');
+        floor.colorSpace = THREE.SRGBColorSpace;
+        floor.wrapS = floor.wrapT = THREE.RepeatWrapping;
+        floor.repeat.set(100, 100);
+    ground.material.map = floor;
+
+    var wallTexture = textureLoader.load('./assets/textures/stonewall3.jpg');
+        wallTexture.colorSpace = THREE.SRGBColorSpace;
+        wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
+        wallTexture.repeat.set(20, 2);
+    parede1.material.map = wallTexture;
+    parede2.material.map = wallTexture;
+    parede3.material.map = wallTexture;
+    parede4.material.map = wallTexture;
+
     //adiciona os objetos na cena
     scene.add(ground);
     scene.add(parede1);
@@ -312,6 +330,18 @@ function createArea2(scene, player){
     chao.push(block12);
     chao.push(block13);
     chao.push(block14);
+
+    // texturas
+    // var textureLoader = new THREE.TextureLoader();
+
+    // var metalWall = textureLoader.load('./assets/textures/metalparede.jpg');
+    //     metalWall.colorSpace = THREE.SRGBColorSpace;
+    //     metalWall.wrapS = metalWall.wrapT = THREE.RepeatWrapping;
+    //     metalWall.repeat.set(1, 1);
+    // box21.material = [metalWall, metalWall, , , metalWall, metalWall];
+    // box22.material = [metalWall, metalWall, , , metalWall, metalWall];
+    // box23.material = [metalWall, metalWall, , , metalWall, metalWall];
+    
 
     // pilar para a chave
     const pilarGeometria = new THREE.BoxGeometry(4, 2, 4);
