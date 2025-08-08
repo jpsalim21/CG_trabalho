@@ -342,6 +342,7 @@ function createArea2(scene, player){
 
     // plataforma da chave na área 2
     plataformaChave2 = new BlocoChave(scene, block5, chave2Obj);
+    
     return box2;
 }
 
