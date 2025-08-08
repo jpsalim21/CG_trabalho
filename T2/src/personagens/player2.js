@@ -189,7 +189,8 @@ class PlayerController extends EventDispatcher {
     async getLauncher(){
         try {
             let launcher = await loadOBJ('./assets/rocketlauncher/wephomura6.obj', "./assets/rocketlauncher/", "texhomu_11.png");
-            launcher.position.set(0, -2.7, 3.5);
+            launcher.scale.set(0.5, 0.5, 0.5);
+            launcher.position.set(0, -1.3, 0);
             this.camera.add(launcher);
             this.weapons[2] = {
                 object: launcher,
