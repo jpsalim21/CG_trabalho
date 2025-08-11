@@ -3,9 +3,9 @@ import { onWindowResize } from "../../../libs/util/util.js";
 import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "../cenario/cenario.js";
+import { SpriteMixer } from '../../sprites/SpriteMixer.js';
 import { GameController } from '../controller/gamecontroller.js';
 import { testaColisao } from './inimigocontroller.js';
-import { SpriteMixer } from '../../sprites/SpriteMixer.js';
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
@@ -74,8 +74,8 @@ class PlayerController extends EventDispatcher {
             this.weapons[1] = {
                 object: chaingunSprite,
                 actions: {
-                    idle: this.spriteMixer.Action(chaingunSprite, 0, 0, 100),
-                    shoot: this.spriteMixer.Action(chaingunSprite, 1, 4, 80) // movimento de tiro, começando no frame 1 e terminando no frame 4, com 80ms por frame
+                    idle: this.spriteMixer.Action(chaingunSprite, 100, 0, 0, 0, 0), // frame (0,0) - primeira coluna
+                    shoot: this.spriteMixer.Action(chaingunSprite, 80, 0, 1, 0, 2) // frames (0,1) a (0,2) - animação de tiro
                 },
                 isShooting: false
             };
@@ -268,8 +268,15 @@ class PlayerController extends EventDispatcher {
         }
     
         this.bb.setFromObject(this.playerMesh);
-        this.grounded = this.isOnGround(delta);
-    
+        this.grounded = this.isOnGround();
+        /*
+        if (this.grounded) {
+            this.velVertical = 0;
+        } else {
+            this.velVertical -= GRAVIDADE * delta;
+            this.cameraHolder.translateY(this.velVertical * delta);
+        }
+        */
         const moveDistance = this.speed * delta;
         let direcao = this.velocity.clone();
         direcao = direcao.normalize();
@@ -277,7 +284,6 @@ class PlayerController extends EventDispatcher {
         this.wallCollision(direcao);
         this.cameraHolder.translateX(direcao.x);
         this.cameraHolder.translateZ(direcao.y);
-        
         this.hurtbox();
 
         // tratando duas armas
@@ -308,9 +314,12 @@ class PlayerController extends EventDispatcher {
             // se o jogador SOLTOU o botão de atirar, para a animação da metralhadora
             if (this.activeWeapon === 1 && this.weapons[1] && this.weapons[1].isShooting && this.weapons[1].actions) {
                 const weapon = this.weapons[1];
+                // Para a animação de tiro
+                weapon.actions.shoot.stop();
+                // Inicia a animação idle
                 weapon.actions.idle.playLoop();
-                weapon.object.setFrame(0); // voltamos ao frame inicial
                 weapon.isShooting = false;
+                console.log("Chaingun parou de atirar - voltando para idle");
             }
         }
     }
@@ -519,14 +528,22 @@ class PlayerController extends EventDispatcher {
         }
         // pra animação da chaingun, se for o caso
         if (this.activeWeapon === 1 && this.weapons[1] && this.weapons[1].actions) {
+            // Para todas as animações da chaingun
+            this.weapons[1].actions.shoot.stop();
+            this.weapons[1].actions.idle.stop();
             this.weapons[1].isShooting = false;
-            this.weapons[1].actions.idle.playLoop();
-            this.weapons[1].object.setFrame(0);
             this.weapons[1].object.visible = false; // força a invisibilidade
+            console.log("Chaingun escondida - animações paradas");
         }
         // mostra a nova arma
         this.activeWeapon = newWeaponIndex;
         this.weapons[this.activeWeapon].object.visible = true;
+        
+        // Se for a chaingun, inicia a animação idle
+        if (this.activeWeapon === 1 && this.weapons[1] && this.weapons[1].actions) {
+            this.weapons[1].actions.idle.playLoop();
+            console.log("Chaingun selecionada - animação idle iniciada");
+        }
     }
 
     // novo método para lidar com as teclas '1' e '2'

@@ -10,11 +10,13 @@ renderer.setClearColor(0x70AFDA);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+renderer.localClippingEnabled = true; 
+
 new GameController();
 
 const player = new PlayerController(scene, renderer);
 
-inicializaCenario(scene, player);
+inicializaCenario(scene, player, renderer);
 
 player.start();
 
@@ -24,12 +26,12 @@ let lightColor = new THREE.Color('rgb(255, 255, 255)');
 let ambientLight = new THREE.AmbientLight(lightColor, 0.5);
 
 let lightPosition = new THREE.Vector3(80, 100, 80);
-let dirLight = new THREE.DirectionalLight(lightColor, 1);
+let dirLight = new THREE.DirectionalLight(lightColor, 1.0);
 dirLight.position.copy(lightPosition);
 dirLight.castShadow = false;
 
 let lightPosition2 = new THREE.Vector3(-200, 200, -200);
-let dirLight2 = new THREE.DirectionalLight(lightColor, 3);
+let dirLight2 = new THREE.DirectionalLight(lightColor, 3.0);
 dirLight2.position.copy(lightPosition2);
 dirLight2.castShadow = true;
 dirLight2.shadow.mapSize.width = 1024;
