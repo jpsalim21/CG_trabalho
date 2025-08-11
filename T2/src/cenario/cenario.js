@@ -410,12 +410,15 @@ function createArea3(scene, player, renderer){
         hangar.position.copy(hangarPosition);
         
         // Planos de corte para os portões do hangar
+        /*
         const leftClipPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), -100);  
         const rightClipPlane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 200);
 
         const hangarGateMaterialClipped = hangarGateMaterial.clone();
         hangarGateMaterialClipped.clippingPlanes = [leftClipPlane, rightClipPlane];
         hangarGateMaterialClipped.clipIntersection = false; 
+        */
+
 
         // Parede esquerda
         const wallLeft = new THREE.Mesh(hangarWallGeometry, hangarMaterial);
@@ -460,15 +463,37 @@ function createArea3(scene, player, renderer){
         roof2.receiveShadow = true;
         hangar.add(roof2);
 
+        // TESTE: Desabilitando temporariamente os occluders para debug
+        // Occluders podem estar causando problemas de renderização
+        /*
+        // 1. Crie o material invisível que bloqueia a renderização
+        const occluderMaterial = new THREE.MeshBasicMaterial({ colorWrite: false });
+
+        // 2. Defina a geometria para os oclusores. Eles precisam cobrir a área para onde os portões deslizam.
+        //    Largura: 40, Altura: 25 (mesma do portão), Profundidade: 3 (um pouco mais grosso que a parede)
+        const occluderGeometry = new THREE.BoxGeometry(40, 25, 3);
+
+        // 3. Crie e posicione os oclusores
+        const occluderLeft = new THREE.Mesh(occluderGeometry, occluderMaterial);
+        // Posição: No centro da parede esquerda, um pouco à frente do portão.
+        occluderLeft.position.set(-70, 12.5, 49.1);
+        hangar.add(occluderLeft);
+
+        const occluderRight = new THREE.Mesh(occluderGeometry, occluderMaterial);
+        // Posição: No centro da parede direita, um pouco à frente do portão.
+        occluderRight.position.set(70, 12.5, 49.1);
+        hangar.add(occluderRight);
+        */
+
         // Portão 
-        const gateLeft = new THREE.Mesh(hangarGateGeometry, hangarGateMaterialClipped);
+        const gateLeft = new THREE.Mesh(hangarGateGeometry, hangarGateMaterial);
         gateLeft.position.set(-24, 12.5, 49);
         gateLeft.castShadow = true;
         gateLeft.receiveShadow = true;
         hangar.add(gateLeft);
         paredes.push(gateLeft);
 
-        const gateRight = new THREE.Mesh(hangarGateGeometry, hangarGateMaterialClipped);
+        const gateRight = new THREE.Mesh(hangarGateGeometry, hangarGateMaterial);
         gateRight.position.set(24, 12.5, 49);
         gateRight.castShadow = true;
         gateRight.receiveShadow = true;
@@ -508,12 +533,22 @@ function createArea3(scene, player, renderer){
             }
         };
 
+        
+        // O trigger será verificado através de outro sistema
+        /*
         const originalRender = gateTrigger.update;
         function renderTrigger() {
             originalRender.call(gateTrigger);
             requestAnimationFrame(renderTrigger);
         }
         renderTrigger();
+        */
+
+        // Solução alternativa: Adicionar o trigger ao array de objetos que são verificados regularmente
+        if (!window.gameUpdateCallbacks) {
+            window.gameUpdateCallbacks = [];
+        }
+        window.gameUpdateCallbacks.push(() => gateTrigger.update());
 
         console.log("Trigger do hangar criado na posição:", triggerPosition);
         console.log("Bounding box do trigger:", gateTrigger.bb);

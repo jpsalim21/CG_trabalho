@@ -10,7 +10,7 @@ renderer.setClearColor(0x70AFDA);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-renderer.localClippingEnabled = true; 
+//renderer.localClippingEnabled = true; 
 
 new GameController();
 
@@ -38,10 +38,10 @@ dirLight2.shadow.mapSize.width = 1024;
 dirLight2.shadow.mapSize.height = 1024;
 dirLight2.shadow.camera.near = 0.5;
 dirLight2.shadow.camera.far = 600;
-dirLight2.shadow.camera.left = -250;
-dirLight2.shadow.camera.right = 250;
-dirLight2.shadow.camera.top = 250;
-dirLight2.shadow.camera.bottom = -250;
+dirLight2.shadow.camera.left = -350;
+dirLight2.shadow.camera.right = 350;
+dirLight2.shadow.camera.top = 350;
+dirLight2.shadow.camera.bottom = -350;
 dirLight2.shadow.bias = -0.001; 
 dirLight2.shadow.radius = 2;
 

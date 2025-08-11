@@ -179,6 +179,10 @@ class PlayerController extends EventDispatcher {
         //#endregion
 
         //#region Colisao
+        
+        // DEBUG: Variável para monitorar área 3
+        this.inArea3 = false;
+        
         this.playerMesh = new THREE.Mesh(playerGeo, armaMaterial);
         this.playerMesh.position.set(0, 1.25, 0);
         this.cameraHolder.add(this.playerMesh);
@@ -327,6 +331,27 @@ class PlayerController extends EventDispatcher {
     render() {
         if (this.isLocked) {
             this.update(this.clock.getDelta());
+        }
+
+        // Executa callbacks de update do jogo (como triggers)
+        if (window.gameUpdateCallbacks) {
+            window.gameUpdateCallbacks.forEach(callback => callback());
+        }
+
+        // DEBUG: Monitora posição do player para detectar quando sai da área 3
+        const pos = this.cameraHolder.position;
+        if (pos.x > 100 && pos.x < 200 && pos.z > -200 && pos.z < -100) {
+            // Está na área 3
+            if (!this.inArea3) {
+                console.log("Entrou na área 3:", pos.x, pos.y, pos.z);
+                this.inArea3 = true;
+            }
+        } else {
+            // Saiu da área 3
+            if (this.inArea3) {
+                console.log("Saiu da área 3:", pos.x, pos.y, pos.z);
+                this.inArea3 = false;
+            }
         }
 
         this.renderer.render(this.scene, this.camera);
