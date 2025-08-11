@@ -329,6 +329,15 @@ class PlayerController extends EventDispatcher {
             this.update(this.clock.getDelta());
         }
 
+        // Executa os callbacks de atualização do jogo (triggers, etc.)
+        if (window.gameUpdateCallbacks) {
+            window.gameUpdateCallbacks.forEach(callback => {
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            });
+        }
+
         this.renderer.render(this.scene, this.camera);
         requestAnimationFrame(() => this.render());
     }

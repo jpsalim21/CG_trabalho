@@ -11,11 +11,13 @@ renderer.setClearColor(0x70AFDA);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+renderer.localClippingEnabled = true; 
+
 new GameController();
 
 const player = new PlayerController(scene, renderer);
 
-inicializaCenario(scene, player);
+inicializaCenario(scene, player, renderer);
 
 player.start();
 

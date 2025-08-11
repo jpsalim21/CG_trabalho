@@ -429,14 +429,14 @@ function createArea3(scene, player, renderer){
         hangar.position.copy(hangarPosition);
         
         // Planos de corte para os portões do hangar
-        /*
+        
         const leftClipPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), -100);  
         const rightClipPlane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 200);
 
         const hangarGateMaterialClipped = hangarGateMaterial.clone();
         hangarGateMaterialClipped.clippingPlanes = [leftClipPlane, rightClipPlane];
         hangarGateMaterialClipped.clipIntersection = false; 
-        */
+        
 
 
         // Parede esquerda
@@ -505,14 +505,14 @@ function createArea3(scene, player, renderer){
         */
 
         // Portão 
-        const gateLeft = new THREE.Mesh(hangarGateGeometry, hangarGateMaterial);
+        const gateLeft = new THREE.Mesh(hangarGateGeometry, hangarGateMaterialClipped);
         gateLeft.position.set(-24, 12.5, 49);
         gateLeft.castShadow = true;
         gateLeft.receiveShadow = true;
         hangar.add(gateLeft);
         paredes.push(gateLeft);
 
-        const gateRight = new THREE.Mesh(hangarGateGeometry, hangarGateMaterial);
+        const gateRight = new THREE.Mesh(hangarGateGeometry, hangarGateMaterialClipped);
         gateRight.position.set(24, 12.5, 49);
         gateRight.castShadow = true;
         gateRight.receiveShadow = true;
