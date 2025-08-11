@@ -94,6 +94,37 @@ function setMaterial(file, repeatU = 1, repeatV = 1, color = 'rgb(255,255,255)')
     mat.map.minFilter = mat.map.magFilter = THREE.LinearFilter;
     mat.map.repeat.set(repeatU,repeatV); 
     return mat;
- }
+}
 
-export { loadOBJ, loadGLTF, setMaterial };
+function loadGLB(path, texturePath, normal = "", diffuse = "", specular = "") {
+    return new Promise((resolve, reject) => {
+        const loader = new GLTFLoader();
+        const normalMap = texLoader.load(texturePath + normal);
+        const diffuseMap = texLoader.load(texturePath + diffuse);
+        const specularMap = texLoader.load(texturePath + specular);
+
+        loader.load(
+            path,
+            (gltf) => {
+                gltf.scene.traverse((child) => {
+                    if (child.isMesh) {
+                        //child.material.map = texture;
+                        child.material.normalMap = normalMap;
+                        child.material.metalness = 0.5;
+                        child.material.roughness = 1.0;
+                    }
+                });
+                resolve(gltf.scene);
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            (error) => {
+                console.error('An error happened while loading the glTF model:', error);
+                reject(error);
+            }
+        );
+    });
+}
+
+export { loadOBJ, loadGLTF, setMaterial, loadGLB };

@@ -11,7 +11,7 @@ class InimigoBase {
         this.isEnemy = true;
 
         this.observer = observer;
-        this.observer.addListener(this);
+        //this.observer.addListener(this);
 
         this.scene = scene;
 
@@ -23,13 +23,16 @@ class InimigoBase {
         this.sprite.scale.set(2, 0.4, 1);
         this.sprite.position.set(10, 2, 10);
 
+        this.tamSprite = 2;
+        this.alturaSprite = 0.4;
+
         
         scene.add(this.sprite);
     }
 
     setup(){
         if(this.mesh){
-            this.mesh.add(this.sprite);
+            this.object.add(this.sprite);
             this.sprite.position.set(0, 4, 0);
             this.object.add(this.sprite);
             this.object.add(this.mesh);
@@ -52,7 +55,7 @@ class InimigoBase {
 
     atualizarBarraVida() {
         let porcentagemVida = this.vida / this.maxVida;
-        this.sprite.scale.set(2 * porcentagemVida, 0.4, 1);
+        this.sprite.scale.set(this.tamSprite * porcentagemVida, this.alturaSprite, 1);
     }
 
     morrer(){
