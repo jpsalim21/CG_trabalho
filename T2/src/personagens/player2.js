@@ -275,6 +275,8 @@ class PlayerController extends EventDispatcher {
         if (this.spriteMixer) {
             this.spriteMixer.update(delta);
         }
+
+        this.camShake(delta); // chama a função de tremor da câmera
     
         this.bb.setFromObject(this.playerMesh);
         this.grounded = this.isOnGround(delta);
@@ -556,6 +558,13 @@ class PlayerController extends EventDispatcher {
         } else {
             this.switchWeapon(1);
         }
+    }
+
+    camShake(){
+        const shakeX = (Math.random() - 0.5) * 1; // Tremor aleatório no eixo X
+        const shakeY = (Math.random() - 0.5) * 1; // Tremor aleatório no eixo Y
+        this.camera.position.x = 0 + shakeX;
+        this.camera.position.y = 2 + shakeY;
     }
 
 }
