@@ -637,6 +637,8 @@ function createArea3(scene, player, renderer){
 
                 console.log("Avião carregado no hangar!");
                 hangar.add(obj); 
+                
+                addPlaneCollision(obj);
             }, 
             
             function (progress) {
@@ -664,6 +666,52 @@ function createArea3(scene, player, renderer){
         return Math.max(size.x, size.y, size.z);
     }
 
+    function addPlaneCollision(planeObj) {
+        const box = new THREE.Box3().setFromObject(planeObj);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        
+        console.log("Bounding box do avião:", {
+            size: size,
+            center: center,
+            planePosition: planeObj.position
+        });
+        
+        const collisionGeometry = new THREE.BoxGeometry(
+            size.x * 0.4, 
+            size.y * 0.8, 
+            size.z * 0.4  
+        );
+        
+        // descomentando tem um auxilio visual
+        const collisionMaterial = new THREE.MeshBasicMaterial({ 
+            // color: 0xff0000,
+            // transparent: true, 
+            // opacity: 0.3,
+            // wireframe: true
+            visible: false
+        });
+        
+        const collisionMesh = new THREE.Mesh(collisionGeometry, collisionMaterial);
+        
+        const worldPosition = new THREE.Vector3();
+        planeObj.getWorldPosition(worldPosition);
+        collisionMesh.position.copy(worldPosition);
+        
+        collisionMesh.name = 'planeCollision';
+        
+        // para que seja detectado nas colisões
+        paredes.push(collisionMesh);
+        
+        planeObj.parent.parent.add(collisionMesh); // parent.parent porque o avião está no hangar que está na cena
+        
+        console.log("Colisão do avião adicionada:", {
+            worldPosition: worldPosition,
+            collisionPosition: collisionMesh.position,
+            paredesLength: paredes.length
+        });
+    }
+
     function addZombiemen(scene, player) {
         const numZombiemen = 8;
         const hangarCenter = new THREE.Vector3(150, 0, -150);
@@ -671,10 +719,39 @@ function createArea3(scene, player, renderer){
 
         const hangarTrigger = new AreaTrigger(scene, hangarCenter, new THREE.Vector3(100, 25, 100), player);
 
+        const planeExclusionCenter = new THREE.Vector3(150, 0, -160); // posição aproximada do avião
+        const planeExclusionRadius = 25; // raio de exclusão ao redor do avião
+
         for (let i = 0; i < numZombiemen; i++) {
-            const x = hangarCenter.x + (Math.random() - 0.5) * spawnAreaSize;
-            const z = hangarCenter.z + (Math.random() - 0.5) * spawnAreaSize;
-            const spawnPosition = new THREE.Vector3(x, 0, z);
+            let spawnPosition;
+            let attempts = 0;
+            const maxAttempts = 50;
+
+            // tenta encontrar uma posição válida que não esteja muito perto do avião
+            do {
+                const x = hangarCenter.x + (Math.random() - 0.5) * spawnAreaSize;
+                const z = hangarCenter.z + (Math.random() - 0.5) * spawnAreaSize;
+                spawnPosition = new THREE.Vector3(x, 0, z);
+                attempts++;
+                
+                // verifica se a posição está longe o suficiente do avião
+                const distanceToPlane = spawnPosition.distanceTo(planeExclusionCenter);
+                if (distanceToPlane > planeExclusionRadius) {
+                    break; // posição válida encontrada
+                }
+                
+            } while (attempts < maxAttempts);
+            
+            // se não encontrou uma posição válida após muitas tentativas, usa uma posição padrão segura
+            if (attempts >= maxAttempts) {
+                const angle = (i / numZombiemen) * Math.PI * 2;
+                const radius = 30;
+                spawnPosition = new THREE.Vector3(
+                    hangarCenter.x + Math.cos(angle) * radius,
+                    0,
+                    hangarCenter.z + Math.sin(angle) * radius
+                );
+            }
 
             const zombieman = new Zombieman(scene, player, spawnPosition, hangarTrigger);
             

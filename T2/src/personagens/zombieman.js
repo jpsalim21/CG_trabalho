@@ -215,19 +215,40 @@ export class Zombieman extends InimigoBase {
         let direcao = dir.clone();
         direcao.applyQuaternion(quaternion);
 
-        this.rayWall.set(this.object.position, direcao);
-
-        const objects = getParedes().concat(getChao());
-        const intersectedObjects = this.rayWall.intersectObjects(objects, true);
-
-        if (intersectedObjects.length > 0) {
-            let normal = intersectedObjects[0].face.normal;
-            normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(intersectedObjects[0].object.matrixWorld)).normalize();
-            let dNova = direcao.clone().projectOnPlane(normal);
-            direcao = dNova.normalize();
+        const newPosition = this.object.position.clone().add(direcao.clone().multiplyScalar(this.velocidade * delta * scale));
+        
+        const tempBB = this.bb.clone();
+        const offset = newPosition.clone().sub(this.object.position);
+        tempBB.translate(offset);
+        
+        const objects = getParedes();
+        let hasCollision = false;
+        
+        for (let obj of objects) {
+            if (obj.geometry) {
+                const objBB = new THREE.Box3().setFromObject(obj);
+                if (tempBB.intersectsBox(objBB)) {
+                    hasCollision = true;
+                    break;
+                }
+            }
         }
         
-        this.object.position.add(direcao.multiplyScalar(this.velocidade * delta * scale));
+        // se não há colisão por bounding box, usa raycasting para refinamento
+        if (!hasCollision) {
+            this.rayWall.set(this.object.position, direcao);
+            const intersectedObjects = this.rayWall.intersectObjects(objects, true);
+
+            if (intersectedObjects.length > 0) {
+                let normal = intersectedObjects[0].face.normal;
+                normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(intersectedObjects[0].object.matrixWorld)).normalize();
+                let dNova = direcao.clone().projectOnPlane(normal);
+                direcao = dNova.normalize();
+            }
+            
+            this.object.position.add(direcao.multiplyScalar(this.velocidade * delta * scale));
+        }
+        // se há colisão, não move
         
         this.object.position.clamp(this.hangarBounds.min, this.hangarBounds.max);
     }
@@ -312,7 +333,7 @@ export class Zombieman extends InimigoBase {
             let direcao = this.patrolTarget.clone().sub(this.object.position).normalize();
             
             const patrolSpeed = this.velocidade * 0.5; 
-            this.object.position.add(direcao.multiplyScalar(patrolSpeed * delta));
+            this.wallCollision(direcao, delta, 0.5);
             
             const animDirection = this.getDirectionRelativeToCamera(direcao);
             this.playAnimation(animDirection);
@@ -487,8 +508,7 @@ export class Zombieman extends InimigoBase {
         const animDirection = this.getDirectionRelativeToCamera(direcao);
         this.playAnimation(animDirection);
 
-        this.object.position.add(direcao.multiplyScalar(this.velocidade * delta * 1.5));
-        this.object.position.clamp(this.hangarBounds.min, this.hangarBounds.max);
+        this.wallCollision(direcao, delta, 1.5);
         this.applyGravity(delta);
     }
 
@@ -583,8 +603,7 @@ export class Zombieman extends InimigoBase {
         const animDirection = this.getDirectionRelativeToCamera(direcao);
         this.playAnimation(animDirection);
 
-        this.object.position.add(direcao.multiplyScalar(this.velocidade * delta * 0.8));
-        this.object.position.clamp(this.hangarBounds.min, this.hangarBounds.max);
+        this.wallCollision(direcao, delta, 0.8);
         this.applyGravity(delta);
     }
 
