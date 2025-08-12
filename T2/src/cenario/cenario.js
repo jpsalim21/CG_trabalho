@@ -482,38 +482,16 @@ function createArea3(scene, player, renderer){
         roof2.receiveShadow = true;
         hangar.add(roof2);
 
-        // TESTE: Desabilitando temporariamente os occluders para debug
-        // Occluders podem estar causando problemas de renderização
-        /*
-        // 1. Crie o material invisível que bloqueia a renderização
-        const occluderMaterial = new THREE.MeshBasicMaterial({ colorWrite: false });
-
-        // 2. Defina a geometria para os oclusores. Eles precisam cobrir a área para onde os portões deslizam.
-        //    Largura: 40, Altura: 25 (mesma do portão), Profundidade: 3 (um pouco mais grosso que a parede)
-        const occluderGeometry = new THREE.BoxGeometry(40, 25, 3);
-
-        // 3. Crie e posicione os oclusores
-        const occluderLeft = new THREE.Mesh(occluderGeometry, occluderMaterial);
-        // Posição: No centro da parede esquerda, um pouco à frente do portão.
-        occluderLeft.position.set(-70, 12.5, 49.1);
-        hangar.add(occluderLeft);
-
-        const occluderRight = new THREE.Mesh(occluderGeometry, occluderMaterial);
-        // Posição: No centro da parede direita, um pouco à frente do portão.
-        occluderRight.position.set(70, 12.5, 49.1);
-        hangar.add(occluderRight);
-        */
-
         // Portão 
         const gateLeft = new THREE.Mesh(hangarGateGeometry, hangarGateMaterialClipped);
-        gateLeft.position.set(-24, 12.5, 49);
+        gateLeft.position.set(-24, 12.5, 48.5);
         gateLeft.castShadow = true;
         gateLeft.receiveShadow = true;
         hangar.add(gateLeft);
         paredes.push(gateLeft);
 
         const gateRight = new THREE.Mesh(hangarGateGeometry, hangarGateMaterialClipped);
-        gateRight.position.set(24, 12.5, 49);
+        gateRight.position.set(24, 12.5, 48.5);
         gateRight.castShadow = true;
         gateRight.receiveShadow = true;
         hangar.add(gateRight);
