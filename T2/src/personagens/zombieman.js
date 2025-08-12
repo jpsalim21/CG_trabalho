@@ -49,6 +49,10 @@ export class Zombieman extends InimigoBase {
         this.sinOffset = Math.random() * 2 * Math.PI;
 
         this.currentAnimation = null;
+        this.idleState = 'waiting'; 
+        this.patrolTarget = new THREE.Vector3(); 
+        this.patrolAreaSize = 15; 
+
 
         this.load();
         this.scene.add(this.object);
@@ -245,24 +249,67 @@ export class Zombieman extends InimigoBase {
             this.currentAnimation = null;
         }
 
-        this.clockIdle.start();
-        this.updateFunction = this.idle.bind(this);
         this.estado = "idle";
+        this.updateFunction = this.idle.bind(this);
+        this.idleState = 'waiting'; // sempre começa 'esperando'
+        this.timeOnState = 0;
+        this.maxTime = 1 + Math.random() * 3; // tempo que ficará esperando
         
         if (this.actionSprite) {
-            this.actionSprite.setFrame(0, 0); 
+            this.actionSprite.setFrame(0, 0); // frame de 'parado de frente'
         }
     }
 
     idle(delta) {
         this.applyGravity(delta);
         this.bb.setFromObject(this.mesh);
-        
+
         const playerPos = this.player.getCamPosition();
         const distance = this.object.position.distanceTo(playerPos);
-        
-        if (distance < 35) {
+        if (distance < 45) { 
             this.enterChasing();
+            return;
+        }
+
+        this.timeOnState += delta;
+
+        if (this.idleState === 'waiting') {
+            // fica parado por um tempo
+            if (this.timeOnState > this.maxTime) {
+                // tempo de espera acabou, começa a patrulhar
+                this.idleState = 'patrolling';
+                
+                // define um novo alvo aleatório dentro da área de patrulha
+                const randomX = this.initialPosition.x + (Math.random() - 0.5) * this.patrolAreaSize;
+                const randomZ = this.initialPosition.z + (Math.random() - 0.5) * this.patrolAreaSize;
+                this.patrolTarget.set(randomX, this.object.position.y, randomZ);
+            }
+        } 
+        else if (this.idleState === 'patrolling') {
+            // move-se em direção ao alvo
+            const distanceToTarget = this.object.position.distanceTo(this.patrolTarget);
+
+            // se chegou perto o suficiente do alvo, para e começa a esperar
+            if (distanceToTarget < 1.0) {
+                this.idleState = 'waiting';
+                this.timeOnState = 0;
+                this.maxTime = 2 + Math.random() * 4; 
+                
+                if (this.currentAnimation && this.actions[this.currentAnimation]) {
+                    this.actions[this.currentAnimation].stop();
+                    this.currentAnimation = null;
+                }
+                this.actionSprite.setFrame(0, 0); 
+                return;
+            }
+
+            let direcao = this.patrolTarget.clone().sub(this.object.position).normalize();
+            
+            const patrolSpeed = this.velocidade * 0.5; 
+            this.object.position.add(direcao.multiplyScalar(patrolSpeed * delta));
+            
+            const animDirection = this.getDirectionRelativeToCamera(direcao);
+            this.playAnimation(animDirection);
         }
     }
 
