@@ -76,7 +76,7 @@ const hangarGateMaterial = new THREE.MeshLambertMaterial({
     map: metalEscuroTexture,
     side: THREE.DoubleSide
 });
-const floorMaterial = new THREE.MeshLambertMaterial({map: floorTexture});
+const floorMaterial = new THREE.MeshLambertMaterial({map: cementTexture});
 
 //geometrias
 const planeGeometry = new THREE.PlaneGeometry(500, 500); 
@@ -455,7 +455,8 @@ function createArea3(scene, player, renderer){
         hangarGateMaterialClipped.clippingPlanes = [leftClipPlane, rightClipPlane];
         hangarGateMaterialClipped.clipIntersection = false; 
         
-
+        // geometria para paredes estendidas 
+        const extendedWallGeometry = new THREE.BoxGeometry(120, 40, 4); // mais larga, mais alta, mais grossa
 
         // Parede esquerda
         const wallLeft = new THREE.Mesh(hangarWallGeometry, hangarMaterial);
@@ -466,14 +467,32 @@ function createArea3(scene, player, renderer){
         hangar.add(wallLeft);
         paredes.push(wallLeft);
 
+        // Parede esquerda estendida para cobrir completamente
+        const extendedWallLeft = new THREE.Mesh(extendedWallGeometry, hangarMaterial);
+        extendedWallLeft.position.set(-52, 20, 0); // um pouco mais para fora
+        extendedWallLeft.rotation.y = Math.PI / 2;
+        extendedWallLeft.castShadow = false; // não projeta sombra para evitar linhas no teto
+        extendedWallLeft.receiveShadow = false;
+        extendedWallLeft.visible = false; // invisível mas funcional
+        hangar.add(extendedWallLeft);
+
         // Parede direita
         const wallRight = new THREE.Mesh(hangarWallGeometry, hangarMaterial);
         wallRight.position.set(50, 12.5, 0);
         wallRight.rotation.y = Math.PI / 2;
-        //wallRight.castShadow = true;
+        wallRight.castShadow = true;
         wallRight.receiveShadow = true;
         hangar.add(wallRight);
         paredes.push(wallRight);
+
+        // Parede direita estendida para cobrir completamente (solução do vazamento)
+        const extendedWallRight = new THREE.Mesh(extendedWallGeometry, hangarMaterial);
+        extendedWallRight.position.set(52, 20, 0); // um pouco mais para fora
+        extendedWallRight.rotation.y = Math.PI / 2;
+        extendedWallRight.castShadow = false; // não projeta sombra para evitar linhas no teto
+        extendedWallRight.receiveShadow = false;
+        extendedWallRight.visible = false; // invisível mas funcional
+        hangar.add(extendedWallRight);
 
         // Parede de trás
         const wallBack = new THREE.Mesh(hangarBackWallGeometry, hangarMaterial);
@@ -483,13 +502,43 @@ function createArea3(scene, player, renderer){
         hangar.add(wallBack);
         paredes.push(wallBack);
 
-        // Teto 
+        // Parede de trás estendida para cobrir completamente
+        const extendedWallBack = new THREE.Mesh(extendedWallGeometry, hangarMaterial);
+        extendedWallBack.position.set(0, 20, -52); // mais para trás e mais alta
+        extendedWallBack.castShadow = false; // não projeta sombra para evitar linhas no teto
+        extendedWallBack.receiveShadow = false;
+        extendedWallBack.visible = false; // invisível mas funcional
+        hangar.add(extendedWallBack);
+
+        // Paredes auxiliares mais altas para evitar vazamentos nas junções com o teto
+        const tallWallGeometry = new THREE.BoxGeometry(100, 30, 2); // 5 unidades mais alta
+        
+        const tallWallLeft = new THREE.Mesh(tallWallGeometry, hangarMaterial);
+        tallWallLeft.position.set(-50, 15, 0); 
+        tallWallLeft.rotation.y = Math.PI / 2;
+        tallWallLeft.castShadow = false; 
+        tallWallLeft.visible = false; 
+        hangar.add(tallWallLeft);
+
+        const tallWallRight = new THREE.Mesh(tallWallGeometry, hangarMaterial);
+        tallWallRight.position.set(50, 15, 0);
+        tallWallRight.rotation.y = Math.PI / 2;
+        tallWallRight.castShadow = false;
+        tallWallRight.visible = false; 
+        hangar.add(tallWallRight);
+
+        const tallWallBack = new THREE.Mesh(tallWallGeometry, hangarMaterial);
+        tallWallBack.position.set(0, 15, -49);
+        tallWallBack.castShadow = false;
+        tallWallBack.visible = false;
+        hangar.add(tallWallBack);
+        
         const roof = new THREE.Mesh(hangarRoofGeometry, roofMaterial);
         roof.position.set(0, 25, 0);
-        roof.rotation.x = Math.PI / 2  
+        roof.rotation.x = Math.PI / 2;  
         roof.rotation.z = Math.PI;
         roof.castShadow = true;
-        roof.receiveShadow =true;
+        roof.receiveShadow = true;
         hangar.add(roof);
 
         const roof2 = new THREE.Mesh(hangarRoofGeometry2, roofMaterial);
@@ -499,6 +548,33 @@ function createArea3(scene, player, renderer){
         roof2.castShadow = true;
         roof2.receiveShadow = true;
         hangar.add(roof2);
+
+        const mainCeilingGeometry = new THREE.PlaneGeometry(102, 102); 
+        const mainCeiling = new THREE.Mesh(mainCeilingGeometry, roofMaterial);
+        mainCeiling.position.set(0, 25.1, 0); 
+        mainCeiling.rotation.x = -Math.PI / 2; 
+        mainCeiling.castShadow = true;
+        //mainCeiling.receiveShadow = true;
+        hangar.add(mainCeiling);
+
+        // tetos adicionais nas bordas para garantir cobertura total
+        const edgeCeilingGeometry = new THREE.PlaneGeometry(104, 104);
+        const edgeCeiling = new THREE.Mesh(edgeCeilingGeometry, roofMaterial);
+        edgeCeiling.position.set(0, 24.9, 0); 
+        edgeCeiling.rotation.x = -Math.PI / 2;
+        edgeCeiling.castShadow = true;
+        edgeCeiling.receiveShadow = true;
+        hangar.add(edgeCeiling);
+
+        // painéis laterais do teto para conectar com as paredes
+        const sideCeilingGeometry = new THREE.BoxGeometry(100, 2, 100);
+        const sideCeiling = new THREE.Mesh(sideCeilingGeometry, roofMaterial);
+        sideCeiling.position.set(0, 26, 0); // acima do teto principal
+        sideCeiling.castShadow = true;
+        sideCeiling.receiveShadow = true;
+        hangar.add(sideCeiling);
+        
+        console.log("Sistema de bloqueio de luz implementado");
 
         // Portão 
         const gateLeft = new THREE.Mesh(hangarGateGeometry, hangarGateMaterialClipped);
@@ -515,15 +591,39 @@ function createArea3(scene, player, renderer){
         hangar.add(gateRight);
         paredes.push(gateRight);
 
-        const ceiling = new THREE.Mesh(ceilingGeometry, hangarMaterial);
-        ceiling.position.set(0, 25, 0);
-        ceiling.castShadow = true;
-        ceiling.receiveShadow = true;
-        hangar.add(ceiling);
-
+    
         loadPlaneInHangar(hangar);
 
         addZombiemen(scene, player);
+
+        // Trigger para controle de iluminação do hangar
+        const hangarLightingTrigger = {
+            position: new THREE.Vector3(150, 12, -150), // centro do hangar
+            size: new THREE.Vector3(90, 25, 90), // área do hangar
+            bb: new THREE.Box3(
+                new THREE.Vector3(150 - 45, 0, -150 - 45),
+                new THREE.Vector3(150 + 45, 25, -150 + 45)
+            ),
+            playerInside: false,
+            
+            update: function() {
+                const playerInside = this.bb.intersectsBox(player.bb);
+                
+                if (playerInside && !this.playerInside) {
+                    // jogador entrou no hangar
+                    this.playerInside = true;
+                    if (window.lightingController) {
+                        window.lightingController.enterHangar();
+                    }
+                } else if (!playerInside && this.playerInside) {
+                    // jogador saiu do hangar
+                    this.playerInside = false;
+                    if (window.lightingController) {
+                        window.lightingController.exitHangar();
+                    }
+                }
+            }
+        };
 
         const triggerPosition = new THREE.Vector3(150, 1, -60); 
         const triggerSize = new THREE.Vector3(60, 10, 50); 
@@ -559,14 +659,17 @@ function createArea3(scene, player, renderer){
         renderTrigger();
         */
 
-        // Solução alternativa: Adicionar o trigger ao array de objetos que são verificados regularmente
+        // Solução alternativa: Adicionar os triggers ao array de objetos que são verificados regularmente
         if (!window.gameUpdateCallbacks) {
             window.gameUpdateCallbacks = [];
         }
         window.gameUpdateCallbacks.push(() => gateTrigger.update());
+        window.gameUpdateCallbacks.push(() => hangarLightingTrigger.update());
 
         console.log("Trigger do hangar criado na posição:", triggerPosition);
         console.log("Bounding box do trigger:", gateTrigger.bb);
+        console.log("Trigger de iluminação do hangar criado");
+        console.log("Bounding box do trigger de iluminação:", hangarLightingTrigger.bb);
 
         return hangar;
     }
@@ -832,17 +935,20 @@ function addInimigos(scene, player) {
     // add inimigos na área 2
     const areaTrigger2 = new AreaTrigger( scene, new THREE.Vector3(0, 0, -150), new THREE.Vector3(100, 10, 100), player );
 
-    const inimigo1 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(0, 40, -135));
-    console.log("Inimigo criado na área 2:", inimigo1);
-    GameController.instance.addInimigoArea2(inimigo1);
-    
-    const inimigo2 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(20, 40, -185));
-    console.log("Inimigo criado na área 2:", inimigo2);
-    GameController.instance.addInimigoArea2(inimigo2);
-    
-    const inimigo3 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(-40, 40   , -125));
-    console.log("Inimigo criado na área 2:", inimigo3);
-    GameController.instance.addInimigoArea2(inimigo3);
+    // Adiciona um delay para garantir que tudo esteja inicializado antes de criar os inimigos
+    setTimeout(() => {
+        const inimigo1 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(0, 45, -135)); // altura maior para segurança
+        console.log("Inimigo criado na área 2:", inimigo1);
+        GameController.instance.addInimigoArea2(inimigo1);
+        
+        const inimigo2 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(20, 45, -185)); // altura maior para segurança
+        console.log("Inimigo criado na área 2:", inimigo2);
+        GameController.instance.addInimigoArea2(inimigo2);
+        
+        const inimigo3 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(-40, 45, -125)); // altura maior para segurança
+        console.log("Inimigo criado na área 2:", inimigo3);
+        GameController.instance.addInimigoArea2(inimigo3);
+    }, 100); // 100ms de delay
 }
 
 //Só pra gente puxar os objetos para a colisão
