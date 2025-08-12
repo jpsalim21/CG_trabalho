@@ -67,9 +67,9 @@ export class Zombieman extends InimigoBase {
             this.actionSprite.material.depthTest = true;
             this.actionSprite.material.alphaTest = 0.5;
             
-            this.actionSprite.position.y = 0.9;
+            this.actionSprite.position.y = -0.3;
             this.actionSprite.setFrame(0, 0);
-            this.actionSprite.scale.set(5, 5, 1);
+            this.actionSprite.scale.set(3, 3, 1);
             
             this.actions.runDown = this.spriteMixer.Action(this.actionSprite, 100, 0, 0, 3, 0);
             this.actions.runLD = this.spriteMixer.Action(this.actionSprite, 100, 0, 1, 3, 1);
@@ -142,6 +142,12 @@ export class Zombieman extends InimigoBase {
         super.setup();
         this.bb = new THREE.Box3().setFromObject(this.mesh);
         
+        // ajusta a barra de vida para o tamanho menor do zombieman
+        if (this.sprite) {
+            this.sprite.scale.set(1.5, 0.2, 1); 
+            this.sprite.position.set(0, 2.5, 0); 
+        }
+        
         if (this.actionSprite && this.scene) {
             this.actionSprite.userData.isEnemy = true;
             this.actionSprite.userData.inimigoInstance = this;
@@ -172,7 +178,7 @@ export class Zombieman extends InimigoBase {
             
             if (this.object) {
                 this.actionSprite.position.copy(this.object.position);
-                this.actionSprite.position.y += 0.9; 
+                this.actionSprite.position.y += -0.3; 
             }
         }
 
@@ -187,7 +193,7 @@ export class Zombieman extends InimigoBase {
                 this.actionSprite.rotation.y = euler.y;
                 
                 this.actionSprite.position.copy(this.object.position);
-                this.actionSprite.position.y += 0.9;
+                this.actionSprite.position.y += -0.3;
             }
             
             this.updateFunction(delta);
@@ -450,7 +456,7 @@ export class Zombieman extends InimigoBase {
         if (this.estado === "chasing") return;
         this.estado = "chasing";
         this.timeOnState = 0;
-        this.maxTime = 1.5 + Math.random() * 2.5; 
+        this.maxTime = 0.8 + Math.random() * 1.2; 
         this.updateFunction = this.chasing.bind(this);
     }
 
@@ -465,7 +471,7 @@ export class Zombieman extends InimigoBase {
         
         this.timeOnState += delta;
         if (this.timeOnState > this.maxTime) {
-            const shootChance = distance < 15 ? 0.7 : 0.3;
+            const shootChance = distance < 15 ? 0.85 : 0.4;
             if (Math.random() < shootChance) {
                 this.enterAiming();
             } else {
@@ -643,6 +649,12 @@ export class Zombieman extends InimigoBase {
         if (typeof GameController !== 'undefined' && GameController.instance) {
             GameController.instance.inimigoMorreu(this);
         }
+    }
+
+    // sobrescreve a função da classe base para usar dimensões adequadas ao zombieman
+    atualizarBarraVida() {
+        let porcentagemVida = this.vida / this.maxVida;
+        this.sprite.scale.set(1.5 * porcentagemVida, 0.2, 1);
     }
 
     fadeAndDestroy() {
