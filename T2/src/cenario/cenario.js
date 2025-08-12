@@ -36,6 +36,24 @@ const asfaltoTexture = textureLoader.load('../../../assets/textures/asfalto.jpg'
 asfaltoTexture.wrapS = THREE.RepeatWrapping;
 asfaltoTexture.wrapT = THREE.RepeatWrapping;
 
+const metalEscuroTexture = textureLoader.load('../../../assets/textures/metalescuro.jpg');
+metalEscuroTexture.wrapS = THREE.RepeatWrapping;
+metalEscuroTexture.wrapT = THREE.RepeatWrapping;
+
+const metalTexturizadoTexture = textureLoader.load('../../../assets/textures/metaltexturizado.jpg');
+metalTexturizadoTexture.wrapS = THREE.RepeatWrapping;
+metalTexturizadoTexture.wrapT = THREE.RepeatWrapping;
+
+const brick2Texture = textureLoader.load('../../../assets/textures/tijolos.jpg');
+brick2Texture.wrapS = THREE.RepeatWrapping;
+brick2Texture.wrapT = THREE.RepeatWrapping;
+brick2Texture.repeat.set(2, 1);
+
+const telhadoTexture = textureLoader.load('../../../assets/textures/telhado.jpg');
+telhadoTexture.wrapS = THREE.RepeatWrapping;
+telhadoTexture.wrapT = THREE.RepeatWrapping;
+telhadoTexture.repeat.set(10, 10);
+
 //materiais
 const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});
 const planeMaterial = new THREE.MeshLambertMaterial({color:'rgb(58, 7, 7)'});
@@ -47,15 +65,15 @@ const wallMaterial  = new THREE.MeshLambertMaterial({color:'rgb(255, 255, 255)'}
 const columnMaterial = new THREE.MeshLambertMaterial({color:'rgb(158, 158, 158)'});
 
 const hangarMaterial = new THREE.MeshLambertMaterial({
-    map: brickTexture,
+    map: brick2Texture,
     side: THREE.DoubleSide 
 });
 const roofMaterial = new THREE.MeshLambertMaterial({
-    map: cementTexture,
+    map: telhadoTexture,
     side: THREE.DoubleSide
 });
 const hangarGateMaterial = new THREE.MeshLambertMaterial({
-    map: asfaltoTexture,
+    map: metalEscuroTexture,
     side: THREE.DoubleSide
 });
 const floorMaterial = new THREE.MeshLambertMaterial({map: floorTexture});
