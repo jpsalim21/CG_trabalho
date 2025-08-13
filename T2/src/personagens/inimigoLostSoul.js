@@ -31,8 +31,6 @@ class InimigoLostSoul extends InimigoBase {
 
         this.clockIdle = new THREE.Clock();
         this.clockIdle.start();
-        this.clock = new THREE.Clock();
-        this.clock.start();
 
         this.timeOnState = 0;
         this.maxTime = 5;
@@ -112,13 +110,12 @@ class InimigoLostSoul extends InimigoBase {
         this.clock = null;
     }
 
-    update(){
+    update(delta){
         if (!this.rodando) return;
         
         this.testeColisao();
         
         if (this.updateFunction) {
-            const delta = this.clock.getDelta();
             this.updateFunction(delta);
             this.bb.setFromObject(this.mesh);
         }

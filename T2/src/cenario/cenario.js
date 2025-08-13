@@ -8,7 +8,7 @@ import { BlocoChave } from './blocoChave.js';
 import { PortaArea } from "./portaArea.js";
 import { GameController } from "../controller/gamecontroller.js";
 import { Cacodemon } from "../personagens/inimigoCacodemon.js";
-import { setMaterial } from "../Mesh/extractor.js";
+import { setMaterial, createAdvancedMaterial, createLavaMaterial } from "../Mesh/extractor.js";
 
 //materiais
 const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});
@@ -28,8 +28,7 @@ const boxGeometry3 = new THREE.BoxGeometry(60, 4, 100);
 const boxGeometry4 = new THREE.BoxGeometry(40, 4, 100);
 const boxGeometry5 = new THREE.BoxGeometry(30, 4, 70);
 const boxGeometry6 = new THREE.BoxGeometry(30, 4, 100);
-const boxGeometry7 = new THREE.BoxGeometry(135, 4, 100);
-const boxGeometry8 = new THREE.BoxGeometry(30, 4, 70);
+const boxGeometryA4 = new THREE.BoxGeometry(180, 4, 100, 100, 1, 200);
 const boxGeometry9 = new THREE.BoxGeometry(50, 4, 100);
 const boxGeometry10 = new THREE.BoxGeometry(10, 4, 90);
 const boxGeometry11 = new THREE.BoxGeometry(40, 4, 100);
@@ -400,30 +399,28 @@ function createArea3(scene, player){
 
 function createArea4(scene, player){
     const box4 = new THREE.Object3D();
-    const box41 = new THREE.Mesh(boxGeometry7, box4Material);
-    box41.position.set(-82.5, 2, 150);
+
+    let materialTeste = createLavaMaterial(10, 10, {emissiveIntensity: 3.0, displacementScale: 0.8});
+    let materials = [
+        box4Material,
+        box4Material,
+        materialTeste,
+        box4Material,
+        box4Material,
+        box4Material
+    ]
+
+    const box41 = new THREE.Mesh(boxGeometryA4, materials);
+    box41.position.set(0, 2, 150);
     box41.castShadow = true;
     box4.add(box41);
     chao.push(box41);
     paredes.push(box41);
-    
-    const box42 = new THREE.Mesh(boxGeometry8, box4Material);
-    box42.position.set(0, 2, 165);
-    box42.castShadow = true;
-    box4.add(box42);
-    chao.push(box42);
-    paredes.push(box42);
-    
-    const box43 = new THREE.Mesh(boxGeometry7, box4Material);
-    box43.position.set(82.5, 2, 150);
-    box43.castShadow = true;
-    box4.add(box43);
-    chao.push(box43);
-    paredes.push(box43);
-    
+
     const escada4 = createEscada();
-    escada4.position.set(0, 0, 100);
+    escada4.position.set(0, 0, 70);
     box4.add(escada4);
+    
     
     // Cria as rampas
 
@@ -437,7 +434,7 @@ function createArea4(scene, player){
     const ramp4 = new THREE.Mesh(rampGeometry, wallMaterial);
     ramp4.rotation.y = Math.PI;
     ramp4.rotation.x = Math.atan(30/4);
-    ramp4.position.set(0, 2, 115); 
+    ramp4.position.set(0, 2, 85); 
     ramp4.visible = false;
     box4.add(ramp4);
     chao.push(ramp4);

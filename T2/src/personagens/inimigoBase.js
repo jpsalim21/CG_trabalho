@@ -23,6 +23,9 @@ class InimigoBase {
         this.sprite.scale.set(2, 0.4, 1);
         this.sprite.position.set(10, 2, 10);
 
+        this.clock = new THREE.Clock();
+        this.clock.start();
+
         this.tamSprite = 2;
         this.alturaSprite = 0.4;
 
@@ -55,6 +58,8 @@ class InimigoBase {
 
     atualizarBarraVida() {
         let porcentagemVida = this.vida / this.maxVida;
+        if (porcentagemVida < 0) porcentagemVida = 0;
+        if (porcentagemVida > 1) porcentagemVida = 1;
         this.sprite.scale.set(this.tamSprite * porcentagemVida, this.alturaSprite, 1);
     }
 
@@ -63,7 +68,10 @@ class InimigoBase {
     }
 
     render() {
-        this.update();
+        let delta = this.clock.getDelta();
+        if(this.player.isLocked) {
+            this.update(delta); // Delta calculado no render()
+        }
         requestAnimationFrame(() => this.render());
     }
 

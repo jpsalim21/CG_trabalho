@@ -19,8 +19,6 @@ class PainElemental extends InimigoBase {
 
         this.clockIdle = new THREE.Clock();
         this.clockIdle.start();
-        this.clock = new THREE.Clock();
-        this.clock.start();
 
         this.timeOnState = 0;
         this.maxTime = 5;
@@ -31,7 +29,6 @@ class PainElemental extends InimigoBase {
         this.alturaSprite = 0.8;
 
         this.municao = 5;
-        this.clock = new THREE.Clock();
 
         this.object.position.copy(pos);
 
@@ -58,13 +55,13 @@ class PainElemental extends InimigoBase {
         this.enterIdle();
     }
 
-    update(){
+    update(delta){
         if (!this.rodando) return;
 
         this.testeColisao();
 
         if(this.updateFunction) {
-            this.updateFunction();
+            this.updateFunction(delta);
         }
     }
 
@@ -75,10 +72,57 @@ class PainElemental extends InimigoBase {
         if (bullet && this.rodando) { // verifica se ainda está rodando
             bullet.reset(); // faz a bala desaparecer ao colidir
             this.tomarDano(10);
-            console.log("Cacodemon atingido!");
         }
     }
+    
+    morrer(){
+        this.rodando = false;
+        
+        const mesh = this.mesh;
+        mesh.traverse(child => {
+            if (child.isMesh && child.material) {
+                child.material.transparent = true; // ESTA LINHA ESTAVA FALTANDO
+            }
+        });
+        
+        let start = null;
+        const initialOpacities = [];
+        mesh.traverse(child => {
+            if (child.isMesh && child.material) {
+                initialOpacities.push(child.material.opacity ?? 1);
+            }
+        });
 
+        const duration = 0.7; // segundos
+        const scene = this.scene; // Para usar dentro da função
+
+        function animateFadeOut(timestamp) {
+            if (!start) start = timestamp;
+            const elapsed = (timestamp - start) / 1000;
+            const t = Math.min(elapsed / duration, 1);
+
+            let i = 0;
+            mesh.traverse(child => {
+                if (child.isMesh && child.material) {
+                    child.material.opacity = initialOpacities[i] * (1 - t);
+                    i++;
+                }
+            });
+
+            if (t < 1) {
+                requestAnimationFrame(animateFadeOut);
+            } else {
+                // CORRIGIDO: Remove da cena e libera memória ao final
+                mesh.visible = false;
+                scene.remove(mesh);
+                console.log("Pain Elemental removido da cena!");
+            }
+        }
+
+        requestAnimationFrame(animateFadeOut);
+
+    }
+    
     enterIdle() {
         this.updateFunction = this.idle.bind(this);
         this.timeOnState = 0;
@@ -90,6 +134,7 @@ class PainElemental extends InimigoBase {
 
         this.mesh.position.y = Math.sin(time * 6 + this.sinOffset) * 0.5;
     }
+
 }
 
 export { PainElemental };

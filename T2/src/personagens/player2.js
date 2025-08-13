@@ -276,7 +276,7 @@ class PlayerController extends EventDispatcher {
             this.spriteMixer.update(delta);
         }
 
-        this.camShake(delta); // chama a função de tremor da câmera
+        //this.camShake(delta); // chama a função de tremor da câmera
     
         this.bb.setFromObject(this.playerMesh);
         this.grounded = this.isOnGround(delta);
