@@ -21,6 +21,8 @@ class InimigoLostSoul extends InimigoBase {
 
         this.soundController = new SoundController(player.getCamera());
 
+        console.log("Meu player eh", this.player);
+
         this.bulletPool = this.player.getBulletPool();
 
         this.rayWall = new THREE.Raycaster();
@@ -30,13 +32,12 @@ class InimigoLostSoul extends InimigoBase {
         this.rayGround.far = 1.0;
         this.rayGround.near = 0.1;
 
+        this.startState = this.enterIdle.bind(this);
         this.updateFunction = null;
         this.estado = null;
 
         this.clockIdle = new THREE.Clock();
         this.clockIdle.start();
-        this.clock = new THREE.Clock();
-        this.clock.start();
 
         this.timeOnState = 0;
         this.maxTime = 5;
@@ -65,7 +66,7 @@ class InimigoLostSoul extends InimigoBase {
         this.bb = new THREE.Box3().setFromObject(this.mesh);
         addInimigoColisao(this);
 
-        this.enterIdle();
+        this.startState();
 
         this.rodando = true;
     }
@@ -116,20 +117,19 @@ class InimigoLostSoul extends InimigoBase {
         this.clock = null;
     }
 
-    update(){
+    update(delta){
         if (!this.rodando) return;
         
         this.testeColisao();
         
         if (this.updateFunction) {
-            const delta = this.clock.getDelta();
             this.updateFunction(delta);
             this.bb.setFromObject(this.mesh);
         }
     }
 
     testeColisao(){
-        const objects = this.bulletPool.getBulletsInUse();
+        const objects = this.player.getBulletPool().getBulletsInUse();
 
         const bullet = objects.find(obj => this.bb.intersectsBox(obj.bb));
         if (bullet) {

@@ -8,7 +8,7 @@ import { BlocoChave } from './blocoChave.js';
 import { PortaArea } from "./portaArea.js";
 import { GameController } from "../controller/gamecontroller.js";
 import { Cacodemon } from "../personagens/inimigoCacodemon.js";
-import { setMaterial } from "../Mesh/extractor.js";
+import { setMaterial, createAdvancedMaterial, createLavaMaterial } from "../Mesh/extractor.js";
 
 //materiais
 const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});
@@ -28,14 +28,13 @@ const boxGeometry3 = new THREE.BoxGeometry(60, 4, 100);
 const boxGeometry4 = new THREE.BoxGeometry(40, 4, 100);
 const boxGeometry5 = new THREE.BoxGeometry(30, 4, 70);
 const boxGeometry6 = new THREE.BoxGeometry(30, 4, 100);
-const boxGeometry7 = new THREE.BoxGeometry(135, 4, 100);
-const boxGeometry8 = new THREE.BoxGeometry(30, 4, 70);
+const boxGeometryA4 = new THREE.BoxGeometry(180, 4, 100, 100, 1, 50);
 const boxGeometry9 = new THREE.BoxGeometry(50, 4, 100);
 const boxGeometry10 = new THREE.BoxGeometry(10, 4, 90);
 const boxGeometry11 = new THREE.BoxGeometry(40, 4, 100);
 const rampGeometry = new THREE.PlaneGeometry(30, Math.sqrt(30 * 30 + 4 * 4));
 const wallGeometry = new THREE.PlaneGeometry(520, 50);
-const columnGeometry = new THREE.CylinderGeometry(2, 2, 20, 32);
+const columnGeometry = new THREE.CylinderGeometry(2, 2, 20, 32, 20);
 const topGeometry = new THREE.BoxGeometry(100, 2, 6);
 
 const chao = []; // array para armazenar os objetos do chão
@@ -140,8 +139,12 @@ function createSkybox(scene){
 }
 
 function createArea1(scene, player){
+
+    let materialPedra = createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1.66, 0.66);
+    
+
     const box1 = new THREE.Object3D();
-    const box11 = new THREE.Mesh(boxGeometry1, box1Material);
+    const box11 = new THREE.Mesh(boxGeometry1, materialPedra);
     box11.position.set(-45, 2, 0);
     box11.castShadow = true;
     chao.push(box11);
@@ -176,16 +179,28 @@ function createArea1(scene, player){
     box1.add(ramp1);
     box1.position.set(-150, 0, -150);
     
+    let materialLateral = createAdvancedMaterial('./assets/GreekPillar/', 
+        'ao.jpg', 
+        'normal.png', 
+        '', 
+        'dmap.png', 
+        '', 
+        0.5, 1, 
+        {displacementScale: 1.0,
+        metalness: 0.1,
+        roughness: 0.8
+    });
+
     let matCil = [
-        setMaterial('./assets/intertravado.jpg', 1, 1), // Textura dos lados
+        materialLateral, // Textura dos lados
         setMaterial('./assets/intertravado.jpg', 1, 1),
         setMaterial('./assets/intertravado.jpg', 1, 1)
     ]
     const column = new THREE.Mesh(columnGeometry, matCil);
     
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 11; i++) {
         let column1 = column.clone();
-        column1.position.set(-47 + i*7.2, 14, -48);
+        column1.position.set(-47 + i*9.36, 14, -46);
         column1.castShadow = true;
         box1.add(column1);
         paredes.push(column1);
@@ -196,9 +211,9 @@ function createArea1(scene, player){
     column1Top.position.set(0, 25, -48);
     column1Top.castShadow = true;
     box1.add(column1Top);
-    for (let i = 0; i < 13; i++) {
+    for (let i = 10; i > 5; i--) {
         let column2 = column.clone();
-        column2.position.set(-47, 14, 47 - i*7.2);
+        column2.position.set(-47, 14, 57 - i*9.2);
         column2.castShadow = true;
         box1.add(column2);
         paredes.push(column2);
@@ -208,9 +223,9 @@ function createArea1(scene, player){
     column2Top.rotation.y = Math.PI / 2;
     column2Top.castShadow = true;
     box1.add(column2Top);
-    for (let i = 0; i < 13; i++) {
+    for (let i = 0; i < 7; i++) {
         let column3 = column.clone();
-        column3.position.set(47, 14, 47 - i*7.2);
+        column3.position.set(47, 14, -37.24 + i*9.36);
         column3.castShadow = true;
         box1.add(column3);
         paredes.push(column3);
@@ -464,30 +479,28 @@ function createArea3(scene, player){
 
 function createArea4(scene, player){
     const box4 = new THREE.Object3D();
-    const box41 = new THREE.Mesh(boxGeometry7, box4Material);
-    box41.position.set(-82.5, 2, 150);
+
+    let materialTeste = createLavaMaterial(10, 10, {emissiveIntensity: 3.0, displacementScale: 0.8});
+    let materials = [
+        box4Material,
+        box4Material,
+        materialTeste,
+        box4Material,
+        box4Material,
+        box4Material
+    ]
+
+    const box41 = new THREE.Mesh(boxGeometryA4, materials);
+    box41.position.set(0, 2, 150);
     box41.castShadow = true;
     box4.add(box41);
     chao.push(box41);
     paredes.push(box41);
-    
-    const box42 = new THREE.Mesh(boxGeometry8, box4Material);
-    box42.position.set(0, 2, 165);
-    box42.castShadow = true;
-    box4.add(box42);
-    chao.push(box42);
-    paredes.push(box42);
-    
-    const box43 = new THREE.Mesh(boxGeometry7, box4Material);
-    box43.position.set(82.5, 2, 150);
-    box43.castShadow = true;
-    box4.add(box43);
-    chao.push(box43);
-    paredes.push(box43);
-    
+
     const escada4 = createEscada();
-    escada4.position.set(0, 0, 100);
+    escada4.position.set(0, 0, 70);
     box4.add(escada4);
+    
     
     // Cria as rampas
 
@@ -501,7 +514,7 @@ function createArea4(scene, player){
     const ramp4 = new THREE.Mesh(rampGeometry, wallMaterial);
     ramp4.rotation.y = Math.PI;
     ramp4.rotation.x = Math.atan(30/4);
-    ramp4.position.set(0, 2, 115); 
+    ramp4.position.set(0, 2, 85); 
     ramp4.visible = false;
     box4.add(ramp4);
     chao.push(ramp4);

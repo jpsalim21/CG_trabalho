@@ -39,8 +39,6 @@ class Cacodemon extends InimigoBase {
 
         this.clockIdle = new THREE.Clock();
         this.clockIdle.start();
-        this.clock = new THREE.Clock();
-        this.clock.start();
 
         this.timeOnState = 0;
 
@@ -109,7 +107,7 @@ class Cacodemon extends InimigoBase {
         }
     }
 
-    update() {
+    update(delta) {
         if (!this.rodando) return;
 
         const delta = this.clock.getDelta();
