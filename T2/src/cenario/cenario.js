@@ -4,7 +4,6 @@ import { Elevador } from './elevador.js';
 import { InimigoLostSoul } from '../personagens/inimigoLostSoul.js';
 import { AreaTrigger } from './areaTrigger.js';
 import { PlataformaChave} from './plataformaChave.js';
-import { BlocoChave } from './blocoChave.js';
 import { PortaArea } from "./portaArea.js";
 import { GameController } from "../controller/gamecontroller.js";
 import { Cacodemon } from "../personagens/inimigoCacodemon.js";
@@ -22,7 +21,7 @@ floorTexture.wrapS = THREE.RepeatWrapping;
 floorTexture.wrapT = THREE.RepeatWrapping;
 floorTexture.repeat.set(10, 10);
 
-const brickTexture = textureLoader.load('../../../assets/textures/stone.jpg');
+const brickTexture = textureLoader.load('../assets/textures/stone.jpg');
 brickTexture.wrapS = THREE.RepeatWrapping;
 brickTexture.wrapT = THREE.RepeatWrapping;
 brickTexture.repeat.set(4, 2);
@@ -36,7 +35,7 @@ const asfaltoTexture = textureLoader.load('../../../assets/textures/asfalto.jpg'
 asfaltoTexture.wrapS = THREE.RepeatWrapping;
 asfaltoTexture.wrapT = THREE.RepeatWrapping;
 
-const metalEscuroTexture = textureLoader.load('../../../assets/textures/metalescuro.jpg');
+const metalEscuroTexture = textureLoader.load('../../assets/textures/metalescuro.jpg');
 metalEscuroTexture.wrapS = THREE.RepeatWrapping;
 metalEscuroTexture.wrapT = THREE.RepeatWrapping;
 
@@ -44,12 +43,12 @@ const metalTexturizadoTexture = textureLoader.load('../../../assets/textures/met
 metalTexturizadoTexture.wrapS = THREE.RepeatWrapping;
 metalTexturizadoTexture.wrapT = THREE.RepeatWrapping;
 
-const brick2Texture = textureLoader.load('../../../assets/textures/tijolos.jpg');
+const brick2Texture = textureLoader.load('./assets/textures/tijolos.jpg');
 brick2Texture.wrapS = THREE.RepeatWrapping;
 brick2Texture.wrapT = THREE.RepeatWrapping;
 brick2Texture.repeat.set(2, 1);
 
-const telhadoTexture = textureLoader.load('../../../assets/textures/telhado.jpg');
+const telhadoTexture = textureLoader.load('./assets/textures/telhado.jpg');
 telhadoTexture.wrapS = THREE.RepeatWrapping;
 telhadoTexture.wrapT = THREE.RepeatWrapping;
 telhadoTexture.repeat.set(10, 10);
@@ -90,7 +89,7 @@ const boxGeometry10 = new THREE.BoxGeometry(10, 4, 90);
 const boxGeometry11 = new THREE.BoxGeometry(40, 4, 100);
 const rampGeometry = new THREE.PlaneGeometry(30, Math.sqrt(30 * 30 + 4 * 4));
 const wallGeometry = new THREE.PlaneGeometry(520, 50);
-const columnGeometry = new THREE.CylinderGeometry(2, 2, 20, 32, 20);
+const columnGeometry = new THREE.CylinderGeometry(2, 2, 20, 32, 10);
 const topGeometry = new THREE.BoxGeometry(100, 2, 6);
 
 const hangarWallGeometry = new THREE.BoxGeometry(100, 25, 2); 
@@ -792,6 +791,7 @@ function createArea3(scene, player, renderer){
         }
 
         requestAnimationFrame(animateGate);
+
     }
 
     function loadPlaneInHangar(hangar) {
@@ -958,6 +958,7 @@ function createArea3(scene, player, renderer){
             
         }
     }
+    return hangar;
 }
 
 function createArea4(scene, player){

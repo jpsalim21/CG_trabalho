@@ -3,9 +3,8 @@ import { initRenderer, initDefaultBasicLight } from "../libs/util/util.js";
 import { PlayerController } from "./src/personagens/player2.js";
 import { inicializaCenario } from "./src/cenario/cenario.js";
 import { GameController } from "./src/controller/gamecontroller.js";
-import { loadOBJ } from "./src/Mesh/extractor.js";
 import { SoundController } from "./src/controller/soundcontroller.js";
-import { PainElemental } from "./src/personagens/painElemental.js";
+import { PainElemental } from "./src/personagens/inimigoPainElemental.js";
 
 const scene = new THREE.Scene();
 let renderer = initRenderer();
@@ -143,4 +142,4 @@ class MessageSystem {
 const messageSystem = new MessageSystem();
 window.showTemporaryMessage = (text, duration) => messageSystem.showMessage(text, duration);
 
-let pe = new PainElemental(scene, player, null, 10, new THREE.Vector3(0, 3, -80));
+//let pe = new PainElemental(scene, player, null, 10, new THREE.Vector3(0, 3, -80));

@@ -22,7 +22,7 @@ class InimigoLostSoul extends InimigoBase {
         this.soundController = new SoundController(player.getCamera());
 
         this.rayWall = new THREE.Raycaster();
-        this.rayWall.far = 0.5;
+        this.rayWall.far = 2.0;
         this.rayWall.near = 0.1;
         this.rayGround = new THREE.Raycaster();
         this.rayGround.far = 1.0;

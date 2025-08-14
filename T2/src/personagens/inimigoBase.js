@@ -11,7 +11,7 @@ class InimigoBase {
         this.isEnemy = true;
 
         this.observer = observer;
-        //this.observer.addListener(this);
+        this.observer.addListener(this);
 
         this.scene = scene;
 
