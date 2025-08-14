@@ -108,6 +108,8 @@ let plataformaChave1 = null;
 let chave1Obj = null;
 let plataformaChave2 = null;
 let chave2Obj = null;
+let plataformaChave3 = null;
+let chave3Obj = null;
 let porta = null;
 let pilarChave = null;
 let elevador = null;
@@ -296,10 +298,9 @@ function createArea1(scene, player){
 
     // chave vermelha mostrada quando matar todos os inimigos da área 2
     chave1Obj = new Chave(scene, player, 'vermelha');
-    chave1Obj.mesh.visible = false;
 
-    // plataforma da chave na área 1
-    plataformaChave1 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 0), chave1Obj, player);
+    // plataforma da chave na área 1 - deve começar inativa
+    plataformaChave1 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 0), chave1Obj, player, false);
     box1.add(plataformaChave1.plataforma);
     paredes.push(plataformaChave1.plataforma);
     chao.push(plataformaChave1.plataforma);
@@ -459,10 +460,9 @@ function createArea2(scene, player){
 
     // chave amarela mostrada quando matar todos os inimigos
     chave2Obj = new Chave(scene, player, 'amarela');
-    chave2Obj.mesh.visible = false;
 
-    // plataforma da chave na área 2
-    plataformaChave2 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 15), chave2Obj, player);
+    // plataforma da chave na área 2 - deve começar inativa
+    plataformaChave2 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 15), chave2Obj, player, false);
     plataformaChave2.plataforma.add(block5);
     block5.position.set(0, 18, 0);
     box2.add(plataformaChave2.plataforma);
@@ -528,6 +528,20 @@ function createArea3(scene, player, renderer){
     const hangar = createHangar(scene, player, renderer);
     hangar.position.set(150, 0, -150); // posição da área 3
     scene.add(hangar);
+
+    // Criar a chave azul e sua plataforma no hangar
+    chave3Obj = new Chave(scene, player, 'azul');
+    
+    // Criar a plataforma para a chave azul posicionada no hangar
+    // Passar false como último parâmetro para que comece inativa
+    plataformaChave3 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 30), chave3Obj, player, false);
+    
+    hangar.add(plataformaChave3.plataforma);
+    paredes.push(plataformaChave3.plataforma);
+    chao.push(plataformaChave3.plataforma);
+    
+    // Disponibilizar globalmente para o GameController
+    window.plataformaChave3 = plataformaChave3;
 
     function createHangar(scene, player, renderer) {
         const hangar = new THREE.Object3D();
@@ -965,6 +979,9 @@ function createArea3(scene, player, renderer){
 
             const zombieman = new Zombieman(scene, player, spawnPosition, hangarTrigger);
             
+            // Registrar o zombieman na área 3 do GameController
+            GameController.instance.addInimigoArea3(zombieman);
+            
         }
     }
 }
@@ -1097,4 +1114,4 @@ function addParedes(objeto){
     paredes.push(objeto);
 }
 
-export { inicializaCenario, getParedes, getChao, addChao, addParedes, plataformaChave1, chave1Obj, plataformaChave2, chave2Obj, porta, pilarChave, elevador};
+export { inicializaCenario, getParedes, getChao, addChao, addParedes, plataformaChave1, chave1Obj, plataformaChave2, chave2Obj, plataformaChave3, chave3Obj, porta, pilarChave, elevador};
