@@ -8,6 +8,7 @@ import { GameController } from '../controller/gamecontroller.js';
 import { testaColisao } from './inimigocontroller.js';
 import { loadOBJ } from "../Mesh/extractor.js";
 import { SoundController } from "../controller/soundcontroller.js";
+import { HealthBarUI } from '../ui/HealthBarUI.js';
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
@@ -187,6 +188,9 @@ class PlayerController extends EventDispatcher {
         this.hpMax = 200;
         this.hp = this.hpMax;
         this.godMode = false;
+
+        this.healthBar = new HealthBarUI();
+        this.updateHealthUI();
 
         this.connect(); 
     }
@@ -514,14 +518,35 @@ class PlayerController extends EventDispatcher {
             direcao.y = dNova.z;
         }
     }
-    //#endregion
-    hurtbox(){
+
+    tomarDano(dano) {
         if (this.godMode) return; // Se estiver no modo Deus, não faz nada
 
+        this.hp -= dano;
+        if (this.hp < 0) this.hp = 0;
+
+        console.log(`Dano recebido: ${dano}. Vida atual: ${this.hp}`);
+        this.soundController.play('playerInjured');
+        
+        this.updateHealthUI();
+
+        if (this.hp <= 0) {
+            console.log("Player morreu!");
+            // Aqui você pode adicionar a lógica de morte (ex: this.morrer())
+        }
+    }
+
+    updateHealthUI() {
+        if (this.healthBar) {
+            this.healthBar.update(this.hp, this.hpMax);
+        }
+    }
+    
+    //#endregion
+    hurtbox(){
         let dano = testaColisao(this);
-        console.log("Dano recebido:", dano);
         if (dano > 0) {
-            this.soundController.play('playerInjured');
+            this.tomarDano(dano);
         }
     }
 
