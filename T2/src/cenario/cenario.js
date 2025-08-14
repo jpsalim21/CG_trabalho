@@ -348,18 +348,6 @@ function createArea2(scene, player){
     chao.push(block13);
     chao.push(block14);
 
-    // texturas
-    // var textureLoader = new THREE.TextureLoader();
-
-    // var metalWall = textureLoader.load('./assets/textures/metalparede.jpg');
-    //     metalWall.colorSpace = THREE.SRGBColorSpace;
-    //     metalWall.wrapS = metalWall.wrapT = THREE.RepeatWrapping;
-    //     metalWall.repeat.set(1, 1);
-    // box21.material = [metalWall, metalWall, , , metalWall, metalWall];
-    // box22.material = [metalWall, metalWall, , , metalWall, metalWall];
-    // box23.material = [metalWall, metalWall, , , metalWall, metalWall];
-    
-
     // pilar para a chave
     const pilarGeometria = new THREE.BoxGeometry(4, 2, 4);
     pilarChave = new THREE.Mesh(pilarGeometria, wallMaterial);
@@ -394,6 +382,52 @@ function createArea2(scene, player){
     box2.add(plataformaChave2.plataforma);
     paredes.push(plataformaChave2.plataforma);
     chao.push(plataformaChave2.plataforma);
+
+    // texturas
+    let material1 = [
+        setMaterial('./assets/textures/metalparede.jpg', 8, 1),
+        setMaterial('./assets/textures/metalparede.jpg', 8, 1),
+        setMaterial('./assets/textures/metalchao.jpg', 2, 5),
+        setMaterial('./assets/textures/metalchao.jpg', 2, 5),
+        setMaterial('./assets/textures/metalparede.jpg', 5, 1),
+        setMaterial('./assets/textures/metalparede.jpg', 5, 1)];
+
+    box21.material = material1;
+    box23.material = material1;
+
+    let material2 = [
+        setMaterial('./assets/textures/metalparede.jpg', 5, 1),
+        setMaterial('./assets/textures/metalparede.jpg', 5, 1),
+        setMaterial('./assets/textures/metalchao.jpg', 2/3, 4),
+        setMaterial('./assets/textures/metalchao.jpg', 2/3, 4),
+        setMaterial('./assets/textures/metalparede.jpg', 1, 1),
+        setMaterial('./assets/textures/metalparede.jpg', 1, 1)];
+
+    box22.material = material2;
+
+    let materialBlocos = [
+        setMaterial('./assets/textures/metalbloco.jpg', 0.13, 1.5),
+        setMaterial('./assets/textures/metalbloco.jpg', 0.13, 1.5),
+        setMaterial('./assets/textures/metalbloco.jpg', 0.13, 0.1),
+        setMaterial('./assets/textures/metalbloco.jpg', 0.13, 0.1),
+        setMaterial('./assets/textures/metalbloco.jpg', 0.13, 1.5),
+        setMaterial('./assets/textures/metalbloco.jpg', 0.13, 1.5)];
+    block1.material = materialBlocos;
+    block2.material = materialBlocos;
+    block3.material = materialBlocos;
+    block4.material = materialBlocos;
+    block5.material = materialBlocos;
+    block6.material = materialBlocos;
+    block7.material = materialBlocos;
+    block8.material = materialBlocos;
+    block9.material = materialBlocos;
+    block10.material = materialBlocos;
+    block11.material = materialBlocos;
+    block12.material = materialBlocos;
+    block13.material = materialBlocos;
+    block14.material = materialBlocos;
+
+    porta.material = setMaterial('./assets/textures/metalporta.jpg', 1, 0.5);
 
     return box2;
 }
