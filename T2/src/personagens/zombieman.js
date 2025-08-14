@@ -36,6 +36,9 @@ export class Zombieman extends ZombieBase {
         this.rayGround.far = 1.0;
         this.rayGround.near = 0.1;
 
+        this.rayShot = new THREE.Raycaster(); 
+        this.rayShot.far = 50;
+
         this.updateFunction = null;
         this.estado = null;
 
@@ -551,6 +554,33 @@ export class Zombieman extends ZombieBase {
         }
     }
 
+    performShot() {
+        const shotOrigin = this.object.position.clone();
+        shotOrigin.y += 1.5; 
+
+        const targetPosition = this.player.getCamPosition();
+        const direction = targetPosition.clone().sub(shotOrigin).normalize();
+
+        this.rayShot.set(shotOrigin, direction);
+
+        const walls = getParedes();
+        const wallIntersects = this.rayShot.intersectObjects(walls, true);
+
+        const playerHurtbox = this.player.playerMesh; 
+        const playerIntersects = this.rayShot.intersectObject(playerHurtbox);
+
+        const playerWasHit = playerIntersects.length > 0;
+        const wallWasHit = wallIntersects.length > 0;
+
+        // o jogador deve ser atingido E (não pode haver paredes no caminho OU a parede atingida deve estar MAIS LONGE que o jogador)
+        if (playerWasHit && (!wallWasHit || playerIntersects[0].distance < wallIntersects[0].distance)) {
+            console.log(`Zumbi #${this.zombieId} acertou o jogador!`);
+            this.player.tomarDano(5); 
+        } else {
+            console.log(`Zumbi #${this.zombieId} errou o tiro.`);
+        }
+    }
+
     enterShooting() {
         if (this.estado === "shooting") return;
         this.estado = "shooting";
@@ -564,6 +594,8 @@ export class Zombieman extends ZombieBase {
         const shootDirection = this.getDirectionRelativeToCamera(targetVector); 
         
         this.playShootAnimation(shootDirection, false);
+
+        this.performShot();
     }
 
     shooting(delta) {
