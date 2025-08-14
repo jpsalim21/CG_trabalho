@@ -9,6 +9,7 @@ import { GameController } from "../controller/gamecontroller.js";
 import { Cacodemon } from "../personagens/inimigoCacodemon.js";
 import { Zombieman } from "../personagens/zombieman.js";
 import { setMaterial, createAdvancedMaterial, createLavaMaterial } from "../Mesh/extractor.js";
+import { Zombieman } from "../personagens/zombieman.js";
 import { OBJLoader } from '../../../build/jsm/loaders/OBJLoader.js'; 
 import { MTLLoader } from '../../../build/jsm/loaders/MTLLoader.js';
 
@@ -21,7 +22,7 @@ floorTexture.wrapS = THREE.RepeatWrapping;
 floorTexture.wrapT = THREE.RepeatWrapping;
 floorTexture.repeat.set(10, 10);
 
-const brickTexture = textureLoader.load('../assets/textures/stone.jpg');
+const brickTexture = textureLoader.load('../../../assets/textures/stone.jpg');
 brickTexture.wrapS = THREE.RepeatWrapping;
 brickTexture.wrapT = THREE.RepeatWrapping;
 brickTexture.repeat.set(4, 2);
@@ -35,7 +36,7 @@ const asfaltoTexture = textureLoader.load('../../../assets/textures/asfalto.jpg'
 asfaltoTexture.wrapS = THREE.RepeatWrapping;
 asfaltoTexture.wrapT = THREE.RepeatWrapping;
 
-const metalEscuroTexture = textureLoader.load('../../assets/textures/metalescuro.jpg');
+const metalEscuroTexture = textureLoader.load('../../../assets/textures/metalescuro.jpg');
 metalEscuroTexture.wrapS = THREE.RepeatWrapping;
 metalEscuroTexture.wrapT = THREE.RepeatWrapping;
 
@@ -43,12 +44,12 @@ const metalTexturizadoTexture = textureLoader.load('../../../assets/textures/met
 metalTexturizadoTexture.wrapS = THREE.RepeatWrapping;
 metalTexturizadoTexture.wrapT = THREE.RepeatWrapping;
 
-const brick2Texture = textureLoader.load('./assets/textures/tijolos.jpg');
+const brick2Texture = textureLoader.load('../../../assets/textures/tijolos.jpg');
 brick2Texture.wrapS = THREE.RepeatWrapping;
 brick2Texture.wrapT = THREE.RepeatWrapping;
 brick2Texture.repeat.set(2, 1);
 
-const telhadoTexture = textureLoader.load('./assets/textures/telhado.jpg');
+const telhadoTexture = textureLoader.load('../../../assets/textures/telhado.jpg');
 telhadoTexture.wrapS = THREE.RepeatWrapping;
 telhadoTexture.wrapT = THREE.RepeatWrapping;
 telhadoTexture.repeat.set(10, 10);
@@ -83,6 +84,8 @@ const boxGeometry1 = new THREE.BoxGeometry(10, 4, 100);
 const boxGeometry2 = new THREE.BoxGeometry(30, 4, 70);
 const boxGeometry3 = new THREE.BoxGeometry(60, 4, 100);
 const boxGeometryArea3 = new THREE.BoxGeometry(100, 0.1, 100);
+const boxGeometry7 = new THREE.BoxGeometry(135, 4, 100);
+const boxGeometry8 = new THREE.BoxGeometry(30, 4, 70);
 const boxGeometryA4 = new THREE.BoxGeometry(180, 4, 100, 100, 1, 50);
 const boxGeometry9 = new THREE.BoxGeometry(50, 4, 100);
 const boxGeometry10 = new THREE.BoxGeometry(10, 4, 90);
@@ -111,7 +114,8 @@ let pilarChave = null;
 let elevador = null;
 
 function inicializaCenario(scene, player, renderer) {
-
+    // Cria o céu
+    createSkybox(scene);
     // cria o chão
     const ground = new THREE.Mesh(planeGeometry, material);
     ground.position.set(0, 0, 0); // posiciona o chão no centro da cena
@@ -160,10 +164,7 @@ function inicializaCenario(scene, player, renderer) {
     paredes.push(parede4);
 
     chao.forEach(element => { element.receiveShadow = true; });
-
     // texturas
-    var textureLoader = new THREE.TextureLoader();
-
     var floor  = textureLoader.load('../../assets/textures/intertravado.jpg');
         floor.colorSpace = THREE.SRGBColorSpace;
         floor.wrapS = floor.wrapT = THREE.RepeatWrapping;
@@ -202,8 +203,6 @@ function createSkybox(scene){
 function createArea1(scene, player){
 
     let materialPedra = createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1.66, 0.66);
-    
-
     const box1 = new THREE.Object3D();
     const box11 = new THREE.Mesh(boxGeometry1, materialPedra);
     box11.position.set(-45, 2, 0);
@@ -239,7 +238,7 @@ function createArea1(scene, player){
     box1.add(escada1);
     box1.add(ramp1);
     box1.position.set(-150, 0, -150);
-    
+
     let materialLateral = createAdvancedMaterial('./assets/GreekPillar/', 
         'ao.jpg', 
         'normal.png', 
@@ -423,6 +422,18 @@ function createArea2(scene, player){
     chao.push(block12);
     chao.push(block13);
     chao.push(block14);
+
+    // texturas
+    // var textureLoader = new THREE.TextureLoader();
+
+    // var metalWall = textureLoader.load('./assets/textures/metalparede.jpg');
+    //     metalWall.colorSpace = THREE.SRGBColorSpace;
+    //     metalWall.wrapS = metalWall.wrapT = THREE.RepeatWrapping;
+    //     metalWall.repeat.set(1, 1);
+    // box21.material = [metalWall, metalWall, , , metalWall, metalWall];
+    // box22.material = [metalWall, metalWall, , , metalWall, metalWall];
+    // box23.material = [metalWall, metalWall, , , metalWall, metalWall];
+
 
     // pilar para a chave
     const pilarGeometria = new THREE.BoxGeometry(4, 2, 4);
@@ -791,7 +802,6 @@ function createArea3(scene, player, renderer){
         }
 
         requestAnimationFrame(animateGate);
-
     }
 
     function loadPlaneInHangar(hangar) {
@@ -958,7 +968,6 @@ function createArea3(scene, player, renderer){
             
         }
     }
-    return hangar;
 }
 
 function createArea4(scene, player){
@@ -980,11 +989,25 @@ function createArea4(scene, player){
     box4.add(box41);
     chao.push(box41);
     paredes.push(box41);
-
+    /*
+    const box42 = new THREE.Mesh(boxGeometry8, box4Material);
+    box42.position.set(0, 2, 165);
+    box42.castShadow = true;
+    box4.add(box42);
+    chao.push(box42);
+    paredes.push(box42);
+    
+    const box43 = new THREE.Mesh(boxGeometry7, box4Material);
+    box43.position.set(82.5, 2, 150);
+    box43.castShadow = true;
+    box4.add(box43);
+    chao.push(box43);
+    paredes.push(box43); */
+    
     const escada4 = createEscada();
     escada4.position.set(0, 0, 70);
     box4.add(escada4);
-    
+
     
     // Cria as rampas
 
@@ -1015,19 +1038,19 @@ function addInimigos(scene, player) {
     const areaTrigger2 = new AreaTrigger( scene, new THREE.Vector3(0, 0, -150), new THREE.Vector3(100, 10, 100), player );
 
     // Adiciona um delay para garantir que tudo esteja inicializado antes de criar os inimigos
-    setTimeout(() => {
-        const inimigo1 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(0, 45, -135)); // altura maior para segurança
+    //setTimeout(() => {
+        const inimigo1 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(0, 45, -135));
         console.log("Inimigo criado na área 2:", inimigo1);
         GameController.instance.addInimigoArea2(inimigo1);
         
-        const inimigo2 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(20, 45, -185)); // altura maior para segurança
+        const inimigo2 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(20, 45, -185));
         console.log("Inimigo criado na área 2:", inimigo2);
         GameController.instance.addInimigoArea2(inimigo2);
         
-        const inimigo3 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(-40, 45, -125)); // altura maior para segurança
+        const inimigo3 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(-40, 45, -125));
         console.log("Inimigo criado na área 2:", inimigo3);
         GameController.instance.addInimigoArea2(inimigo3);
-    }, 100); // 100ms de delay
+    //}, 100); // 100ms de delay
 }
 
 //Só pra gente puxar os objetos para a colisão

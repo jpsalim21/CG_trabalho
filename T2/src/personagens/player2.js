@@ -281,7 +281,7 @@ class PlayerController extends EventDispatcher {
             this.spriteMixer.update(delta);
         }
 
-        //this.camShake(delta); // chama a função de tremor da câmera
+         //this.camShake(delta); // chama a função de tremor da câmera
     
         this.bb.setFromObject(this.playerMesh);
         this.grounded = this.isOnGround(delta);
@@ -293,6 +293,7 @@ class PlayerController extends EventDispatcher {
             this.cameraHolder.translateY(this.velVertical * delta);
         }
         */
+
         const moveDistance = this.speed * delta;
         let direcao = this.velocity.clone();
         direcao = direcao.normalize();
@@ -300,6 +301,7 @@ class PlayerController extends EventDispatcher {
         this.wallCollision(direcao);
         this.cameraHolder.translateX(direcao.x);
         this.cameraHolder.translateZ(direcao.y);
+
         this.hurtbox();
 
         // tratando duas armas

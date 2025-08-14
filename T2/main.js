@@ -5,6 +5,7 @@ import { inicializaCenario } from "./src/cenario/cenario.js";
 import { GameController } from "./src/controller/gamecontroller.js";
 import { SoundController } from "./src/controller/soundcontroller.js";
 import { PainElemental } from "./src/personagens/inimigoPainElemental.js";
+import { loadOBJ } from "./src/Mesh/extractor.js";
 
 const scene = new THREE.Scene();
 let renderer = initRenderer();

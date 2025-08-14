@@ -3,10 +3,11 @@ import { InimigoBase } from './inimigoBase.js';
 import { SpriteMixer } from '../../sprites/SpriteMixer.js';
 import { getParedes, getChao } from "../cenario/cenario.js";
 import { GameController } from "../controller/gamecontroller.js";
+import { ZombieBase } from './zombieBase.js';
 
 const textureLoader = new THREE.TextureLoader();
 
-export class Zombieman extends InimigoBase {
+export class Zombieman extends ZombieBase {
     constructor(scene, player, position, observer) {
         super(scene, 30, 10, player, observer);
 
