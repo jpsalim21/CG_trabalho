@@ -125,11 +125,11 @@ function loadGLB(path, texturePath, normal = "", diffuse = "", specular = "") {
     });
 }
 
-function createAdvancedMaterial(texturePath, diffuse, normal, emission, displacement, repeatU = 1, repeatV = 1, options = {}) {
+function createAdvancedMaterial(texturePath, diffuse, normal, emission, displacement, ao, repeatU = 1, repeatV = 1, options = {}) {
     const {
         metalness = 0.5,
         roughness = 1.0,
-        displacementScale = 1.0,
+        displacementScale = 0.5,
         emissiveIntensity = 1.0,
         emissiveColor = 0x222222
     } = options;
@@ -142,6 +142,7 @@ function createAdvancedMaterial(texturePath, diffuse, normal, emission, displace
         emissiveIntensity: emissiveIntensity,
         displacementMap: texLoader.load(texturePath + displacement),
         displacementScale: displacementScale,
+        aoMap: texLoader.load(texturePath + ao),
         metalness: metalness,
         roughness: roughness,
         transparent: true
