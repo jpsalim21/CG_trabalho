@@ -17,7 +17,7 @@ class InimigoLostSoul extends InimigoBase {
         this.velocidade = velocidade;
         this.rodando = true;
 
-        this.bulletPool = this.player.getBulletPool();
+        console.log("Meu player eh", this.player);
 
         this.rayWall = new THREE.Raycaster();
         this.rayWall.far = 0.5;
@@ -26,6 +26,7 @@ class InimigoLostSoul extends InimigoBase {
         this.rayGround.far = 1.0;
         this.rayGround.near = 0.1;
 
+        this.startState = this.enterIdle.bind(this);
         this.updateFunction = null;
         this.estado = null;
 
@@ -59,7 +60,7 @@ class InimigoLostSoul extends InimigoBase {
         this.bb = new THREE.Box3().setFromObject(this.mesh);
         addInimigoColisao(this);
 
-        this.enterIdle();
+        this.startState();
 
         this.rodando = true;
     }
@@ -122,7 +123,7 @@ class InimigoLostSoul extends InimigoBase {
     }
 
     testeColisao(){
-        const objects = this.bulletPool.getBulletsInUse();
+        const objects = this.player.getBulletPool().getBulletsInUse();
 
         const bullet = objects.find(obj => this.bb.intersectsBox(obj.bb));
         if (bullet) {

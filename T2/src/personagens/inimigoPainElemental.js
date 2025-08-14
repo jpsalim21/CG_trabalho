@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { InimigoBase } from './inimigoBase.js';
 import { loadGLB } from '../Mesh/extractor.js';
 import { InimigoLostSoul } from './inimigoLostSoul.js';
+import { getParedes, getChao } from "../cenario/cenario.js";
 
 class PainElemental extends InimigoBase {
     constructor(scene, player, observer, velocidade = 10, pos = new THREE.Vector3(0, 10, 0)) {
@@ -32,6 +33,8 @@ class PainElemental extends InimigoBase {
 
         this.object.position.copy(pos);
 
+        this.dirSignal = 1; // Define a direção inicial
+
         this.loadModel();
     }
 
@@ -41,6 +44,10 @@ class PainElemental extends InimigoBase {
             this.mesh.rotation.y = Math.PI / 2;
             this.bb = new THREE.Box3().setFromObject(this.mesh);
             this.setup();
+            console.log("Object pos world", this.object.getWorldPosition(new THREE.Vector3()));
+            console.log("Mesh pos world", this.mesh.getWorldPosition(new THREE.Vector3()));
+            console.log("Object pos local", this.object.position);
+            console.log("Mesh pos local", this.mesh.position);
         }
         catch (error) {
             console.error('Error loading model:', error);
@@ -52,7 +59,7 @@ class PainElemental extends InimigoBase {
         super.setup();
         this.sprite.scale.set(10, 0.8, 1);
         this.sprite.position.set(0, 20, 0);
-        this.enterIdle();
+        this.enterMoving();
     }
 
     update(delta){
@@ -133,6 +140,86 @@ class PainElemental extends InimigoBase {
         let time = this.clock.getElapsedTime();
 
         this.mesh.position.y = Math.sin(time * 6 + this.sinOffset) * 0.5;
+    }
+
+    triggered() {
+        if (this.municao > 0) {
+            console.log("Disparando Lost Soul", this.object.position);
+            const globalPosition = this.mesh.getWorldPosition(new THREE.Vector3());
+            globalPosition.y += 5.0; 
+            const lostSoul = new InimigoLostSoul(this.scene, 20, 5, this.player, this.observer, 10);
+            lostSoul.object.position.copy(globalPosition);
+            lostSoul.startState = lostSoul.enterAttack.bind(lostSoul);
+            this.municao--;
+        }
+    }
+
+    enterMoving() {
+        this.updateFunction = this.moving.bind(this);
+        this.timeOnState = 0;
+        this.clockIdle.start();
+    }
+
+    moving(delta){
+        this.timeOnState += delta;
+        if (this.timeOnState > this.maxTime) {
+            console.log("Mudando de estado para idle");
+            this.triggered();
+            this.timeOnState = 0;
+            this.dirSignal = Math.random() < 0.5 ? -1 : 1;
+            this.maxTime = 0.5 + Math.random() * 5; // Tempo aleatório entre 1 e 5 segundos
+            return;
+        }
+
+        let direcao = this.player.getCamPosition().clone().sub(this.object.position);
+        direcao.y = 0;
+        direcao.normalize();
+        
+        direcao.applyAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
+        let alvo = this.object.position.clone().sub(direcao);
+        
+        // Em vez de rotacionar o object, rotacione apenas o mesh:
+        this.mesh.lookAt(alvo);
+        
+        const dir = new THREE.Vector3(0, 0, this.dirSignal);
+        this.wallCollision(dir, delta, 1.0);
+        this.groundCollision();
+    }
+
+    wallCollision(dir, delta, scale = 1){
+        const quaternion = this.mesh.quaternion.clone();
+        let direcao = dir.clone();
+        direcao.applyQuaternion(quaternion);
+
+        this.rayWall.set(this.object.position, direcao);
+
+        const objects = getParedes().concat(getChao());
+        const intersectedObjects = this.rayWall.intersectObjects(objects, true);
+
+        
+        if (intersectedObjects.length > 0) {
+            let normal = intersectedObjects[0].face.normal;
+            
+            normal = normal.applyMatrix3(new THREE.Matrix3().getNormalMatrix(intersectedObjects[0].object.matrixWorld)).normalize();
+            
+            let dNova = direcao.clone().projectOnPlane(normal); // Projeta a direção no plano para não atravessar paredes
+            direcao = dNova.normalize();
+        }
+        
+        this.object.position.add(direcao.multiplyScalar(this.velocidade * delta * scale));
+    }
+
+    groundCollision(){
+        this.rayGround.set(this.object.position, new THREE.Vector3(0, -1, 0));
+        const objects = getChao();
+        const intersectedObjects = this.rayGround.intersectObjects(objects, true);
+
+        if (intersectedObjects.length > 0) {
+            const groundY = intersectedObjects[0].point.y;
+            if (this.object.position.y - 2.0 < groundY) {
+                this.object.position.y = groundY + 2.0;
+            }
+        }
     }
 
 }

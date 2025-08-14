@@ -86,4 +86,4 @@ class MessageSystem {
 const messageSystem = new MessageSystem();
 window.showTemporaryMessage = (text, duration) => messageSystem.showMessage(text, duration);
 
-let pe = new PainElemental(scene, player, null, 10, new THREE.Vector3(0, 3, -20));
+let pe = new PainElemental(scene, player, null, 10, new THREE.Vector3(0, 3, -80));
