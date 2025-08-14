@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { SoundController } from "../controller/soundcontroller.js";
 
 import { GameController } from "../controller/gamecontroller.js";
 
@@ -12,6 +13,8 @@ class PortaArea {
         this.portaAberta = false;
         this.velocidade = 1;
         this.player = player;
+
+        this.soundController = new SoundController(player.getCamera());
         
         this.bbBlocoChave = new THREE.Box3(
             new THREE.Vector3(blocoChave.position.x - 3, blocoChave.position.y - 1, blocoChave.position.z - 3),
@@ -32,6 +35,7 @@ class PortaArea {
                 this.portaAberta = true;
                 const position = this.blocoChave.position.clone();
                 position.y += 3; 
+                this.soundController.play("portaAbrindo");
                 this.chave.colocar(position);
             }
         }

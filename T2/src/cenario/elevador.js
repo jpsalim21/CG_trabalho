@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { setMaterial } from '../Mesh/extractor.js';
 import { addChao, addParedes} from '../cenario/cenario.js';
 
 const geometry = new THREE.BoxGeometry(10, 20, 10);
@@ -15,19 +16,19 @@ class Elevador {
         this.scene = scene;
         this.player = player;
 
-        this.mesh = new THREE.Mesh(geometry, material);
+        this.mesh = new THREE.Mesh(geometry, setMaterial('./assets/textures/metalelevador.jpg', 1, 2));
         position.y -= 10.1;
 
         this.mesh.position.copy(position);
 
-        let elevadorchao = new THREE.Mesh(new THREE.BoxGeometry(10, 0.1, 10),  material);
+        let elevadorchao = new THREE.Mesh(new THREE.BoxGeometry(10, 0.1, 10),  setMaterial('./assets/textures/metalelevador.jpg', 1, 2));
         elevadorchao.position.set(5, 0, -106);
         elevadorchao.receiveShadow = true;
         scene.add(elevadorchao);
         
         addChao(this.mesh); // adiciona o elevador ao chão
         addParedes(this.mesh); // adiciona o elevador às paredes
-        
+
         this.falseMesh = new THREE.Mesh(geometriaMaior, material);
         this.mesh.add(this.falseMesh);
         this.falseMesh.position.set(0, 5, 0); // posição do falso teto

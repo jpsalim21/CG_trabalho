@@ -3,7 +3,9 @@ import { initRenderer, initDefaultBasicLight } from "../libs/util/util.js";
 import { PlayerController } from "./src/personagens/player2.js";
 import { inicializaCenario } from "./src/cenario/cenario.js";
 import { GameController } from "./src/controller/gamecontroller.js";
-import { PainElemental } from "./src/personagens/inimigoPainElemental.js";
+import { loadOBJ } from "./src/Mesh/extractor.js";
+import { SoundController } from "./src/controller/soundcontroller.js";
+import { PainElemental } from "./src/personagens/painElemental.js";
 
 const scene = new THREE.Scene();
 let renderer = initRenderer();
@@ -12,10 +14,12 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 renderer.localClippingEnabled = true; 
-
-new GameController();
-
 const player = new PlayerController(scene, renderer);
+
+const soundController = new SoundController(player.getCamera());
+
+const gameController = new GameController();
+gameController.soundController = soundController;
 
 inicializaCenario(scene, player, renderer);
 

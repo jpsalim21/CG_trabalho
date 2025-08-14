@@ -7,6 +7,7 @@ import { SpriteMixer } from '../../sprites/SpriteMixer.js';
 import { GameController } from '../controller/gamecontroller.js';
 import { testaColisao } from './inimigocontroller.js';
 import { loadOBJ } from "../Mesh/extractor.js";
+import { SoundController } from "../controller/soundcontroller.js";
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
@@ -45,6 +46,8 @@ class PlayerController extends EventDispatcher {
         this.camera.position.set(0, 2, 0); //altura do jogador
         this.camera.lookAt(new THREE.Vector3(0, 2, -1)); // começa olhando pra frente
         this.cameraHolder.add(this.camera);
+
+        this.soundController = new SoundController(this.camera);
 
         // setup das duas armas
         this.weapons = {};
@@ -305,10 +308,11 @@ class PlayerController extends EventDispatcher {
                 // inicia a animação de tiro se não estiver atirando
                 if (!weapon.isShooting) {
                     weapon.actions.shoot.playLoop();
-                    weapon.isShooting = true;
+                    weapon.isShooting = true;    
                 }
                 // chama a função de tiro da metralhadora (raycast)
                 this.fireChaingun(delta);
+                this.soundController.play("chaingun");
             }
             // se for o lancador
             else if (this.activeWeapon === 2 && this.weapons[2]) {
@@ -381,6 +385,7 @@ class PlayerController extends EventDispatcher {
         return isGround;
     }
     fireLauncher() {
+        this.soundController.play('rocketlauncher');
         let objetos = getParedes();
         let direcao = this.camera.getWorldDirection(new THREE.Vector3());
         let camPos = this.camera.getWorldPosition(new THREE.Vector3());
@@ -401,6 +406,7 @@ class PlayerController extends EventDispatcher {
     }
 
     fireChaingun(delta) {
+        
         let objetos = getParedes();
         let direcao = this.camera.getWorldDirection(new THREE.Vector3());
         let camPos = this.camera.getWorldPosition(new THREE.Vector3());
@@ -506,6 +512,7 @@ class PlayerController extends EventDispatcher {
         let dano = testaColisao(this);
         console.log("Dano recebido:", dano);
         if (dano > 0) {
+            this.soundController.play('playerInjured');
         }
     }
 
@@ -535,6 +542,10 @@ class PlayerController extends EventDispatcher {
 
     getCamPosition() {
         return this.camera.getWorldPosition(new THREE.Vector3());
+    }
+
+    getCamera() {
+        return this.camera;
     }
 
     // trocando as arma
