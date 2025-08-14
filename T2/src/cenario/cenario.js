@@ -742,11 +742,18 @@ function createArea3(scene, player, renderer){
             
             update: function() {
                 if (!this.triggered && this.bb.intersectsBox(player.bb)) {
-                    console.log("TRIGGER ATIVADO! Jogador entrou na área do hangar!");
-                    console.log("Posição do jogador:", player.cameraHolder.position);
-                    console.log("Bounding box do trigger:", this.bb);
-                    this.triggered = true;
-                    openHangarGate(gateLeft, gateRight, renderer);
+                    // verificar se o jogador possui a chave amarela
+                    if (GameController.instance && GameController.instance.chave2) {
+                        console.log("TRIGGER ATIVADO! Jogador entrou na área do hangar com a chave amarela!");
+                        console.log("Posição do jogador:", player.cameraHolder.position);
+                        console.log("Bounding box do trigger:", this.bb);
+                        this.triggered = true;
+                        openHangarGate(gateLeft, gateRight, renderer);
+                        showTemporaryMessage("Chave amarela detectada! Portão do hangar aberto.", 3000);
+                    } else {
+                        console.log("Jogador tentou entrar no hangar sem a chave amarela!");
+                        //showTemporaryMessage("Você precisa da chave amarela para abrir o portão do hangar!", 3000);
+                    }
                 }
             }
         };
