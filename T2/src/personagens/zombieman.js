@@ -4,12 +4,14 @@ import { SpriteMixer } from '../../sprites/SpriteMixer.js';
 import { getParedes, getChao } from "../cenario/cenario.js";
 import { GameController } from "../controller/gamecontroller.js";
 import { ZombieBase } from './zombieBase.js';
+import { SoundController } from "../controller/soundcontroller.js";
 
 const textureLoader = new THREE.TextureLoader();
 
 export class Zombieman extends ZombieBase {
     constructor(scene, player, position, observer) {
         super(scene, 30, 10, player, observer);
+        this.soundController = new SoundController(player.getCamera());
 
         this.spritePath = './assets/zombieman.png';
         this.spriteMixer = null;
@@ -211,6 +213,7 @@ export class Zombieman extends ZombieBase {
         if (bullet) {
             bullet.reset();
             this.tomarDano(10);
+            this.soundController.play("soldierInjured");
         }
     }
 
@@ -345,7 +348,7 @@ export class Zombieman extends ZombieBase {
     }
 
     enterTriggered() {
-        this.enterChasing(); 
+        this.enterChasing();
     }
 
     getDirectionFromVector(vector) {
@@ -483,6 +486,7 @@ export class Zombieman extends ZombieBase {
         this.timeOnState = 0;
         this.maxTime = 0.8 + Math.random() * 1.2; 
         this.updateFunction = this.chasing.bind(this);
+        this.soundController.play("soldierSight");
     }
 
     chasing(delta) {
@@ -594,6 +598,7 @@ export class Zombieman extends ZombieBase {
         const shootDirection = this.getDirectionRelativeToCamera(targetVector); 
         
         this.playShootAnimation(shootDirection, false);
+        this.soundController.play("soldierAttack");
 
         this.performShot();
     }
