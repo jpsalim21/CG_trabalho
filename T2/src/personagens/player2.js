@@ -53,6 +53,8 @@ class PlayerController extends EventDispatcher {
         this.weapons = {};
         this.activeWeapon = 1;
         this.clock = new THREE.Clock();
+
+        this.chaingunSoundTime = 0;
      
         // cria a arma "lançador"
         this.getLauncher();
@@ -312,7 +314,6 @@ class PlayerController extends EventDispatcher {
                 }
                 // chama a função de tiro da metralhadora (raycast)
                 this.fireChaingun(delta);
-                this.soundController.play("chaingun");
             }
             // se for o lancador
             else if (this.activeWeapon === 2 && this.weapons[2]) {
@@ -417,7 +418,13 @@ class PlayerController extends EventDispatcher {
             (objetos.includes(obj) || obj.userData?.isEnemy)
         );
         let intersects = this.rayMira.intersectObjects(sceneObjects, true);
-    
+        
+        this.chaingunSoundTime += delta;
+        if (this.chaingunSoundTime >= 0.1) {
+            this.soundController.play("chaingun");
+            this.chaingunSoundTime = 0;
+        }
+
         if (intersects.length > 0) {
             const targetObject = intersects[0].object;
     
@@ -446,7 +453,7 @@ class PlayerController extends EventDispatcher {
                             }
                         } 
                     } 
-                    this.chaingunDamageTime -= 0.1;
+                    this.chaingunDamageTime = 0.0;
                 }
             } else {
                 this.currentTarget = null;
