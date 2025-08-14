@@ -533,8 +533,8 @@ function createArea3(scene, player, renderer){
     chave3Obj = new Chave(scene, player, 'azul');
     
     // Criar a plataforma para a chave azul posicionada no hangar
-    // Passar false como último parâmetro para que comece inativa
-    plataformaChave3 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 30), chave3Obj, player, false);
+    // Passar false como último parâmetro para que comece inativa e 2.5 para altura menor
+    plataformaChave3 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 30), chave3Obj, player, false, 1.6);
     
     hangar.add(plataformaChave3.plataforma);
     paredes.push(plataformaChave3.plataforma);

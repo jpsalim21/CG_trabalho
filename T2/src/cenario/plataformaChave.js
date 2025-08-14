@@ -2,11 +2,11 @@ import * as THREE from "three";
 import { SoundController } from "../controller/soundcontroller.js";
 
 class PlataformaChave {
-    constructor(scene, position, chave, player, iniciaAtiva = true) {
+    constructor(scene, position, chave, player, iniciaAtiva = true, alturaAlvo = 5) {
         this.scene = scene;
         this.position = position;
         this.chave = chave;
-        this.alturaAlvo = 5;
+        this.alturaAlvo = alturaAlvo; // altura personalizada
         this.velocidade = 0.8;
         this.ativo = iniciaAtiva;
 
