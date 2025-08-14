@@ -122,7 +122,7 @@ function createSkybox(scene){
 
 function createArea1(scene, player){
 
-    let materialPedra1 = createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1.66, 0.66);
+    let materialPedra = createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1.66, 0.66);
     
 
     const box1 = new THREE.Object3D();
