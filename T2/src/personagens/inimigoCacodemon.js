@@ -110,7 +110,7 @@ class Cacodemon extends InimigoBase {
     update(delta) {
         if (!this.rodando) return;
 
-        const delta = this.clock.getDelta();
+        delta = this.clock.getDelta();
 
         const distancia = this.object.position.distanceTo(this.player.getCamPosition());
         if (distancia < 5) {
