@@ -8,7 +8,51 @@ import { BlocoChave } from './blocoChave.js';
 import { PortaArea } from "./portaArea.js";
 import { GameController } from "../controller/gamecontroller.js";
 import { Cacodemon } from "../personagens/inimigoCacodemon.js";
+import { Zombieman } from "../personagens/zombieman.js";
 import { setMaterial, createAdvancedMaterial, createLavaMaterial } from "../Mesh/extractor.js";
+import { OBJLoader } from '../../../build/jsm/loaders/OBJLoader.js'; 
+import { MTLLoader } from '../../../build/jsm/loaders/MTLLoader.js';
+
+//texturas
+
+const textureLoader = new THREE.TextureLoader();
+
+const floorTexture = textureLoader.load('../../../assets/textures/granite.png');
+floorTexture.wrapS = THREE.RepeatWrapping;
+floorTexture.wrapT = THREE.RepeatWrapping;
+floorTexture.repeat.set(10, 10);
+
+const brickTexture = textureLoader.load('../../../assets/textures/stone.jpg');
+brickTexture.wrapS = THREE.RepeatWrapping;
+brickTexture.wrapT = THREE.RepeatWrapping;
+brickTexture.repeat.set(4, 2);
+
+const cementTexture = textureLoader.load('../../../assets/textures/darkcement.jpg');
+cementTexture.wrapS = THREE.RepeatWrapping;
+cementTexture.wrapT = THREE.RepeatWrapping;
+cementTexture.repeat.set(10, 10);
+
+const asfaltoTexture = textureLoader.load('../../../assets/textures/asfalto.jpg');
+asfaltoTexture.wrapS = THREE.RepeatWrapping;
+asfaltoTexture.wrapT = THREE.RepeatWrapping;
+
+const metalEscuroTexture = textureLoader.load('../../../assets/textures/metalescuro.jpg');
+metalEscuroTexture.wrapS = THREE.RepeatWrapping;
+metalEscuroTexture.wrapT = THREE.RepeatWrapping;
+
+const metalTexturizadoTexture = textureLoader.load('../../../assets/textures/metaltexturizado.jpg');
+metalTexturizadoTexture.wrapS = THREE.RepeatWrapping;
+metalTexturizadoTexture.wrapT = THREE.RepeatWrapping;
+
+const brick2Texture = textureLoader.load('../../../assets/textures/tijolos.jpg');
+brick2Texture.wrapS = THREE.RepeatWrapping;
+brick2Texture.wrapT = THREE.RepeatWrapping;
+brick2Texture.repeat.set(2, 1);
+
+const telhadoTexture = textureLoader.load('../../../assets/textures/telhado.jpg');
+telhadoTexture.wrapS = THREE.RepeatWrapping;
+telhadoTexture.wrapT = THREE.RepeatWrapping;
+telhadoTexture.repeat.set(10, 10);
 
 //materiais
 const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});
@@ -20,14 +64,26 @@ const box4Material  = new THREE.MeshLambertMaterial({color:'rgb(132, 77, 155)'})
 const wallMaterial  = new THREE.MeshLambertMaterial({color:'rgb(255, 255, 255)'});
 const columnMaterial = new THREE.MeshLambertMaterial({color:'rgb(158, 158, 158)'});
 
+const hangarMaterial = new THREE.MeshLambertMaterial({
+    map: brick2Texture,
+    side: THREE.DoubleSide 
+});
+const roofMaterial = new THREE.MeshLambertMaterial({
+    map: telhadoTexture,
+    side: THREE.DoubleSide
+});
+const hangarGateMaterial = new THREE.MeshLambertMaterial({
+    map: metalEscuroTexture,
+    side: THREE.DoubleSide
+});
+const floorMaterial = new THREE.MeshLambertMaterial({map: cementTexture});
+
 //geometrias
 const planeGeometry = new THREE.PlaneGeometry(500, 500); 
 const boxGeometry1 = new THREE.BoxGeometry(10, 4, 100);
 const boxGeometry2 = new THREE.BoxGeometry(30, 4, 70);
 const boxGeometry3 = new THREE.BoxGeometry(60, 4, 100);
-const boxGeometry4 = new THREE.BoxGeometry(40, 4, 100);
-const boxGeometry5 = new THREE.BoxGeometry(30, 4, 70);
-const boxGeometry6 = new THREE.BoxGeometry(30, 4, 100);
+const boxGeometryArea3 = new THREE.BoxGeometry(100, 0.1, 100);
 const boxGeometryA4 = new THREE.BoxGeometry(180, 4, 100, 100, 1, 50);
 const boxGeometry9 = new THREE.BoxGeometry(50, 4, 100);
 const boxGeometry10 = new THREE.BoxGeometry(10, 4, 90);
@@ -36,6 +92,13 @@ const rampGeometry = new THREE.PlaneGeometry(30, Math.sqrt(30 * 30 + 4 * 4));
 const wallGeometry = new THREE.PlaneGeometry(520, 50);
 const columnGeometry = new THREE.CylinderGeometry(2, 2, 20, 32, 20);
 const topGeometry = new THREE.BoxGeometry(100, 2, 6);
+
+const hangarWallGeometry = new THREE.BoxGeometry(100, 25, 2); 
+const hangarBackWallGeometry = new THREE.BoxGeometry(100, 25, 2); 
+const hangarRoofGeometry = new THREE.CylinderGeometry(49, 49, 100, 32, 1, false, Math.PI, Math.PI /2);
+const hangarRoofGeometry2 = new THREE.CylinderGeometry(49, 49, 100, 32, 1, false, Math.PI / 2, Math.PI /2);
+const hangarGateGeometry = new THREE.BoxGeometry(50, 25, 2); 
+const ceilingGeometry = new THREE.BoxGeometry(100, 0.5, 98);
 
 const chao = []; // array para armazenar os objetos do chão
 const paredes = []; // array para armazenar as paredes
@@ -48,14 +111,13 @@ let porta = null;
 let pilarChave = null;
 let elevador = null;
 
-function inicializaCenario(scene, player) {
-    // Cria o céu
-    createSkybox(scene);
+function inicializaCenario(scene, player, renderer) {
 
     // cria o chão
     const ground = new THREE.Mesh(planeGeometry, material);
     ground.position.set(0, 0, 0); // posiciona o chão no centro da cena
     ground.rotation.x = -0.5 * Math.PI; // rotaciona para ficar horizontal
+    ground.receiveShadow = true;
     chao.push(ground); // adiciona o chão ao array de chão
 
     // área 1
@@ -67,7 +129,7 @@ function inicializaCenario(scene, player) {
     scene.add(a2);
 
     // box 3
-    let a3 = createArea3(scene, player);
+    let a3 = createArea3(scene, player, renderer);
     scene.add(a3);
     
     // box 4
@@ -197,7 +259,7 @@ function createArea1(scene, player){
         setMaterial('./assets/intertravado.jpg', 1, 1)
     ]
     const column = new THREE.Mesh(columnGeometry, matCil);
-    
+
     for (let i = 0; i < 11; i++) {
         let column1 = column.clone();
         column1.position.set(-47 + i*9.36, 14, -46);
@@ -205,7 +267,6 @@ function createArea1(scene, player){
         box1.add(column1);
         paredes.push(column1);
     }
-
     let columnTop = new THREE.Mesh(topGeometry, columnMaterial);
     let column1Top = columnTop.clone();
     column1Top.position.set(0, 25, -48);
@@ -323,6 +384,7 @@ function createArea2(scene, player){
     box2.add(block2);
     box2.add(block3);
     box2.add(block4);
+    //box2.add(block5);    
     box2.add(block6);
     box2.add(block7);
     box2.add(block8);
@@ -409,38 +471,458 @@ function createArea2(scene, player){
     box2.add(plataformaChave2.plataforma);
     paredes.push(plataformaChave2.plataforma);
     chao.push(plataformaChave2.plataforma);
-
     return box2;
 }
 
-function createArea3(scene, player){
-    const box3 = new THREE.Object3D();
-    const box31 = new THREE.Mesh(boxGeometry4, box3Material);
-    box31.position.set(120, 2, -150);
-    box31.castShadow = true;
-    box3.add(box31);
-    chao.push(box31);
-    paredes.push(box31);
+function createArea3(scene, player, renderer){
+    const chaoArea3 = new THREE.Mesh(boxGeometryArea3, floorMaterial);
+    chaoArea3.position.set(150, 0.1, -150);
+    chaoArea3.receiveShadow = true;
+    chao.push(chaoArea3);
+    scene.add(chaoArea3);
+
+    const hangar = createHangar(scene, player, renderer);
+    hangar.position.set(150, 0, -150); // posição da área 3
+    scene.add(hangar);
+
+    function createHangar(scene, player, renderer) {
+        const hangar = new THREE.Object3D();
+
+        const hangarPosition = new THREE.Vector3(150, 0, -150);
+        hangar.position.copy(hangarPosition);
+        
+        // Planos de corte para os portões do hangar
+        
+        const leftClipPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), -100);  
+        const rightClipPlane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 200);
+
+        const hangarGateMaterialClipped = hangarGateMaterial.clone();
+        hangarGateMaterialClipped.clippingPlanes = [leftClipPlane, rightClipPlane];
+        hangarGateMaterialClipped.clipIntersection = false; 
+        
+        // geometria para paredes estendidas 
+        const extendedWallGeometry = new THREE.BoxGeometry(120, 40, 4); // mais larga, mais alta, mais grossa
+
+        // Parede esquerda
+        const wallLeft = new THREE.Mesh(hangarWallGeometry, hangarMaterial);
+        wallLeft.position.set(-50, 12.5, 0);
+        wallLeft.rotation.y = Math.PI / 2;
+        wallLeft.castShadow = true;
+        wallLeft.receiveShadow = true;
+        hangar.add(wallLeft);
+        paredes.push(wallLeft);
+
+        // Parede esquerda estendida para cobrir completamente
+        const extendedWallLeft = new THREE.Mesh(extendedWallGeometry, hangarMaterial);
+        extendedWallLeft.position.set(-52, 20, 0); // um pouco mais para fora
+        extendedWallLeft.rotation.y = Math.PI / 2;
+        extendedWallLeft.castShadow = false; // não projeta sombra para evitar linhas no teto
+        extendedWallLeft.receiveShadow = false;
+        extendedWallLeft.visible = false; // invisível mas funcional
+        hangar.add(extendedWallLeft);
+
+        // Parede direita
+        const wallRight = new THREE.Mesh(hangarWallGeometry, hangarMaterial);
+        wallRight.position.set(50, 12.5, 0);
+        wallRight.rotation.y = Math.PI / 2;
+        wallRight.castShadow = true;
+        wallRight.receiveShadow = true;
+        hangar.add(wallRight);
+        paredes.push(wallRight);
+
+        // Parede direita estendida para cobrir completamente (solução do vazamento)
+        const extendedWallRight = new THREE.Mesh(extendedWallGeometry, hangarMaterial);
+        extendedWallRight.position.set(52, 20, 0); // um pouco mais para fora
+        extendedWallRight.rotation.y = Math.PI / 2;
+        extendedWallRight.castShadow = false; // não projeta sombra para evitar linhas no teto
+        extendedWallRight.receiveShadow = false;
+        extendedWallRight.visible = false; // invisível mas funcional
+        hangar.add(extendedWallRight);
+
+        // Parede de trás
+        const wallBack = new THREE.Mesh(hangarBackWallGeometry, hangarMaterial);
+        wallBack.position.set(0, 12.5, -49);
+        wallBack.castShadow = true;
+        wallBack.receiveShadow = true;
+        hangar.add(wallBack);
+        paredes.push(wallBack);
+
+        // Parede de trás estendida para cobrir completamente
+        const extendedWallBack = new THREE.Mesh(extendedWallGeometry, hangarMaterial);
+        extendedWallBack.position.set(0, 20, -52); // mais para trás e mais alta
+        extendedWallBack.castShadow = false; // não projeta sombra para evitar linhas no teto
+        extendedWallBack.receiveShadow = false;
+        extendedWallBack.visible = false; // invisível mas funcional
+        hangar.add(extendedWallBack);
+
+        // Paredes auxiliares mais altas para evitar vazamentos nas junções com o teto
+        const tallWallGeometry = new THREE.BoxGeometry(100, 30, 2); // 5 unidades mais alta
+        
+        const tallWallLeft = new THREE.Mesh(tallWallGeometry, hangarMaterial);
+        tallWallLeft.position.set(-50, 15, 0); 
+        tallWallLeft.rotation.y = Math.PI / 2;
+        tallWallLeft.castShadow = false; 
+        tallWallLeft.visible = false; 
+        hangar.add(tallWallLeft);
+
+        const tallWallRight = new THREE.Mesh(tallWallGeometry, hangarMaterial);
+        tallWallRight.position.set(50, 15, 0);
+        tallWallRight.rotation.y = Math.PI / 2;
+        tallWallRight.castShadow = false;
+        tallWallRight.visible = false; 
+        hangar.add(tallWallRight);
+
+        const tallWallBack = new THREE.Mesh(tallWallGeometry, hangarMaterial);
+        tallWallBack.position.set(0, 15, -49);
+        tallWallBack.castShadow = false;
+        tallWallBack.visible = false;
+        hangar.add(tallWallBack);
+        
+        const roof = new THREE.Mesh(hangarRoofGeometry, roofMaterial);
+        roof.position.set(0, 25, 0);
+        roof.rotation.x = Math.PI / 2;  
+        roof.rotation.z = Math.PI;
+        roof.castShadow = true;
+        roof.receiveShadow = true;
+        hangar.add(roof);
+
+        const roof2 = new THREE.Mesh(hangarRoofGeometry2, roofMaterial);
+        roof2.position.set(0, 25, 0);
+        roof2.rotation.x = Math.PI / 2;  
+        roof2.rotation.z = Math.PI;
+        roof2.castShadow = true;
+        roof2.receiveShadow = true;
+        hangar.add(roof2);
+
+        const mainCeilingGeometry = new THREE.PlaneGeometry(102, 102); 
+        const mainCeiling = new THREE.Mesh(mainCeilingGeometry, roofMaterial);
+        mainCeiling.position.set(0, 25.1, 0); 
+        mainCeiling.rotation.x = -Math.PI / 2; 
+        mainCeiling.castShadow = true;
+        //mainCeiling.receiveShadow = true;
+        hangar.add(mainCeiling);
+
+        // tetos adicionais nas bordas para garantir cobertura total
+        const edgeCeilingGeometry = new THREE.PlaneGeometry(104, 104);
+        const edgeCeiling = new THREE.Mesh(edgeCeilingGeometry, roofMaterial);
+        edgeCeiling.position.set(0, 24.9, 0); 
+        edgeCeiling.rotation.x = -Math.PI / 2;
+        edgeCeiling.castShadow = true;
+        edgeCeiling.receiveShadow = true;
+        hangar.add(edgeCeiling);
+
+        // painéis laterais do teto para conectar com as paredes
+        const sideCeilingGeometry = new THREE.BoxGeometry(100, 2, 100);
+        const sideCeiling = new THREE.Mesh(sideCeilingGeometry, roofMaterial);
+        sideCeiling.position.set(0, 26, 0); // acima do teto principal
+        sideCeiling.castShadow = true;
+        sideCeiling.receiveShadow = true;
+        hangar.add(sideCeiling);
+        
+        console.log("Sistema de bloqueio de luz implementado");
+
+        // Portão 
+        const gateLeft = new THREE.Mesh(hangarGateGeometry, hangarGateMaterialClipped);
+        gateLeft.position.set(-24, 12.5, 48.5);
+        gateLeft.castShadow = true;
+        gateLeft.receiveShadow = true;
+        hangar.add(gateLeft);
+        paredes.push(gateLeft);
+
+        const gateRight = new THREE.Mesh(hangarGateGeometry, hangarGateMaterialClipped);
+        gateRight.position.set(24, 12.5, 48.5);
+        gateRight.castShadow = true;
+        gateRight.receiveShadow = true;
+        hangar.add(gateRight);
+        paredes.push(gateRight);
+
     
-    const box32 = new THREE.Mesh(boxGeometry5, box3Material);
-    box32.position.set(155, 2, -165);
-    box32.castShadow = true;
-    box3.add(box32);
-    chao.push(box32);
-    paredes.push(box32);
+        loadPlaneInHangar(hangar);
+
+        addZombiemen(scene, player);
+
+        // Trigger para controle de iluminação do hangar
+        const hangarLightingTrigger = {
+            position: new THREE.Vector3(150, 12, -150), // centro do hangar
+            size: new THREE.Vector3(90, 25, 90), // área do hangar
+            bb: new THREE.Box3(
+                new THREE.Vector3(150 - 45, 0, -150 - 45),
+                new THREE.Vector3(150 + 45, 25, -150 + 45)
+            ),
+            playerInside: false,
+            
+            update: function() {
+                const playerInside = this.bb.intersectsBox(player.bb);
+                
+                if (playerInside && !this.playerInside) {
+                    // jogador entrou no hangar
+                    this.playerInside = true;
+                    if (window.lightingController) {
+                        window.lightingController.enterHangar();
+                    }
+                } else if (!playerInside && this.playerInside) {
+                    // jogador saiu do hangar
+                    this.playerInside = false;
+                    if (window.lightingController) {
+                        window.lightingController.exitHangar();
+                    }
+                }
+            }
+        };
+
+        const triggerPosition = new THREE.Vector3(150, 1, -60); 
+        const triggerSize = new THREE.Vector3(60, 10, 50); 
+
+        const gateTrigger = {
+            position: triggerPosition,
+            size: triggerSize,
+            bb: new THREE.Box3(
+                new THREE.Vector3(triggerPosition.x - triggerSize.x / 2, triggerPosition.y - triggerSize.y / 2, triggerPosition.z - triggerSize.z / 2),
+                new THREE.Vector3(triggerPosition.x + triggerSize.x / 2, triggerPosition.y + triggerSize.y / 2, triggerPosition.z + triggerSize.z / 2)
+            ),
+            triggered: false,
+            
+            update: function() {
+                if (!this.triggered && this.bb.intersectsBox(player.bb)) {
+                    console.log("TRIGGER ATIVADO! Jogador entrou na área do hangar!");
+                    console.log("Posição do jogador:", player.cameraHolder.position);
+                    console.log("Bounding box do trigger:", this.bb);
+                    this.triggered = true;
+                    openHangarGate(gateLeft, gateRight, renderer);
+                }
+            }
+        };
+
+        
+        // O trigger será verificado através de outro sistema
+        /*
+        const originalRender = gateTrigger.update;
+        function renderTrigger() {
+            originalRender.call(gateTrigger);
+            requestAnimationFrame(renderTrigger);
+        }
+        renderTrigger();
+        */
+
+        // Solução alternativa: Adicionar os triggers ao array de objetos que são verificados regularmente
+        if (!window.gameUpdateCallbacks) {
+            window.gameUpdateCallbacks = [];
+        }
+        window.gameUpdateCallbacks.push(() => gateTrigger.update());
+        window.gameUpdateCallbacks.push(() => hangarLightingTrigger.update());
+
+        console.log("Trigger do hangar criado na posição:", triggerPosition);
+        console.log("Bounding box do trigger:", gateTrigger.bb);
+        console.log("Trigger de iluminação do hangar criado");
+        console.log("Bounding box do trigger de iluminação:", hangarLightingTrigger.bb);
+
+        return hangar;
+    }
+
+    function openHangarGate(gateLeft, gateRight, renderer) {
+        console.log("Função openHangarGate chamada!");
+        const duration = 15000; 
+
     
-    const box33 = new THREE.Mesh(boxGeometry6, box3Material);
-    box33.position.set(185, 2, -150);
-    box33.castShadow = true;
-    box3.add(box33);
-    chao.push(box33);
-    paredes.push(box33);
+        const gateWidth = hangarGateGeometry.parameters.width; 
     
-    const escada3 = createEscada();
-    escada3.position.set(155, 0, -100);
-    escada3.rotation.y = Math.PI;
-    box3.add(escada3);
-    return box3;
+        const targetPositionLeft = -70; 
+        const targetPositionRight = 70;
+
+        const startPositionLeft = gateLeft.position.x;
+        const startPositionRight = gateRight.position.x;
+        const startTime = Date.now();
+
+        function animateGate() {
+            const elapsed = Date.now() - startTime;
+            let progress = Math.min(elapsed / duration, 1);
+
+            gateLeft.position.x = startPositionLeft + (targetPositionLeft - startPositionLeft) * progress;
+            gateRight.position.x = startPositionRight + (targetPositionRight - startPositionRight) * progress;
+
+            if (progress < 1) {
+                requestAnimationFrame(animateGate);
+            } else {
+                gateLeft.position.x = targetPositionLeft;
+                gateRight.position.x = targetPositionRight;
+
+                console.log("Portão do hangar aberto!");
+                
+                const indexLeft = paredes.indexOf(gateLeft);
+                if (indexLeft > -1) paredes.splice(indexLeft, 1);
+                
+                const indexRight = paredes.indexOf(gateRight);
+                if (indexRight > -1) paredes.splice(indexRight, 1);
+            }
+        }
+
+        requestAnimationFrame(animateGate);
+    }
+
+    function loadPlaneInHangar(hangar) {
+        const mtlLoader = new MTLLoader();
+        mtlLoader.setPath('../assets/objects/');
+        mtlLoader.load('plane.mtl', function (materials) {
+            materials.preload();
+
+            const objLoader = new OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.setPath('../assets/objects/');
+            objLoader.load('plane.obj', function (obj) {
+                obj.visible = true;
+                obj.name = 'hangarPlane';
+                
+                obj.traverse(function (child) {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+                    if (child.material) {
+                        child.material.side = THREE.DoubleSide;
+                    }
+                });
+
+                const scale = getMaxSize(obj); 
+                const desiredScale = 45; 
+                obj.scale.set(
+                    desiredScale * (1.0/scale),
+                    desiredScale * (1.0/scale),
+                    desiredScale * (1.0/scale)
+                );
+
+                obj.position.set(0, 0, -10); 
+                
+                obj.rotation.y = -1; 
+
+                const box = new THREE.Box3().setFromObject(obj);
+                if (box.min.y > 0) {
+                    obj.translateY(-box.min.y);
+                } else {
+                    obj.translateY(-1 * box.min.y);
+                }
+
+                console.log("Avião carregado no hangar!");
+                hangar.add(obj); 
+                
+                addPlaneCollision(obj);
+            }, 
+            
+            function (progress) {
+                console.log('Carregando avião:', (progress.loaded / progress.total * 100) + '%');
+            },
+        
+            function (error) {
+                console.error('Erro ao carregar o avião:', error);
+            });
+        },
+        
+        function (progress) {
+            console.log('Carregando materiais do avião:', (progress.loaded / progress.total * 100) + '%');
+        },
+
+        function (error) {
+            console.error('Erro ao carregar materiais do avião:', error);
+        });
+    }
+
+
+    function getMaxSize(obj) {
+        const box = new THREE.Box3().setFromObject(obj);
+        const size = box.getSize(new THREE.Vector3());
+        return Math.max(size.x, size.y, size.z);
+    }
+
+    function addPlaneCollision(planeObj) {
+        const box = new THREE.Box3().setFromObject(planeObj);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        
+        console.log("Bounding box do avião:", {
+            size: size,
+            center: center,
+            planePosition: planeObj.position
+        });
+        
+        const collisionGeometry = new THREE.BoxGeometry(
+            size.x * 0.4, 
+            size.y * 0.8, 
+            size.z * 0.4  
+        );
+        
+        // descomentando tem um auxilio visual
+        const collisionMaterial = new THREE.MeshBasicMaterial({ 
+            // color: 0xff0000,
+            // transparent: true, 
+            // opacity: 0.3,
+            // wireframe: true
+            visible: false
+        });
+        
+        const collisionMesh = new THREE.Mesh(collisionGeometry, collisionMaterial);
+        
+        const worldPosition = new THREE.Vector3();
+        planeObj.getWorldPosition(worldPosition);
+        collisionMesh.position.copy(worldPosition);
+        
+        collisionMesh.name = 'planeCollision';
+        
+        // para que seja detectado nas colisões
+        paredes.push(collisionMesh);
+        
+        planeObj.parent.parent.add(collisionMesh); // parent.parent porque o avião está no hangar que está na cena
+        
+        console.log("Colisão do avião adicionada:", {
+            worldPosition: worldPosition,
+            collisionPosition: collisionMesh.position,
+            paredesLength: paredes.length
+        });
+    }
+
+    function addZombiemen(scene, player) {
+        const numZombiemen = 8;
+        const hangarCenter = new THREE.Vector3(150, 0, -150);
+        const spawnAreaSize = 85;
+
+        const hangarTrigger = new AreaTrigger(scene, hangarCenter, new THREE.Vector3(100, 25, 100), player);
+
+        const planeExclusionCenter = new THREE.Vector3(150, 0, -160); // posição aproximada do avião
+        const planeExclusionRadius = 25; // raio de exclusão ao redor do avião
+
+        for (let i = 0; i < numZombiemen; i++) {
+            let spawnPosition;
+            let attempts = 0;
+            const maxAttempts = 50;
+
+            // tenta encontrar uma posição válida que não esteja muito perto do avião
+            do {
+                const x = hangarCenter.x + (Math.random() - 0.5) * spawnAreaSize;
+                const z = hangarCenter.z + (Math.random() - 0.5) * spawnAreaSize;
+                spawnPosition = new THREE.Vector3(x, 0, z);
+                attempts++;
+                
+                // verifica se a posição está longe o suficiente do avião
+                const distanceToPlane = spawnPosition.distanceTo(planeExclusionCenter);
+                if (distanceToPlane > planeExclusionRadius) {
+                    break; // posição válida encontrada
+                }
+                
+            } while (attempts < maxAttempts);
+            
+            // se não encontrou uma posição válida após muitas tentativas, usa uma posição padrão segura
+            if (attempts >= maxAttempts) {
+                const angle = (i / numZombiemen) * Math.PI * 2;
+                const radius = 30;
+                spawnPosition = new THREE.Vector3(
+                    hangarCenter.x + Math.cos(angle) * radius,
+                    0,
+                    hangarCenter.z + Math.sin(angle) * radius
+                );
+            }
+
+            const zombieman = new Zombieman(scene, player, spawnPosition, hangarTrigger);
+            
+        }
+    }
 }
 
 function createArea4(scene, player){
@@ -470,12 +952,6 @@ function createArea4(scene, player){
     
     // Cria as rampas
 
-    const ramp3 = new THREE.Mesh(rampGeometry, wallMaterial);
-    ramp3.rotation.x = -Math.atan(30/4); 
-    ramp3.position.set(155, 2, -115); 
-    ramp3.visible = false;
-    box4.add(ramp3);
-    chao.push(ramp3);
 
     const ramp4 = new THREE.Mesh(rampGeometry, wallMaterial);
     ramp4.rotation.y = Math.PI;
@@ -502,17 +978,20 @@ function addInimigos(scene, player) {
     // add inimigos na área 2
     const areaTrigger2 = new AreaTrigger( scene, new THREE.Vector3(0, 0, -150), new THREE.Vector3(100, 10, 100), player );
 
-    const inimigo1 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(0, 40, -135));
-    console.log("Inimigo criado na área 2:", inimigo1);
-    GameController.instance.addInimigoArea2(inimigo1);
-    
-    const inimigo2 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(20, 40, -185));
-    console.log("Inimigo criado na área 2:", inimigo2);
-    GameController.instance.addInimigoArea2(inimigo2);
-    
-    const inimigo3 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(-40, 40   , -125));
-    console.log("Inimigo criado na área 2:", inimigo3);
-    GameController.instance.addInimigoArea2(inimigo3);
+    // Adiciona um delay para garantir que tudo esteja inicializado antes de criar os inimigos
+    setTimeout(() => {
+        const inimigo1 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(0, 45, -135)); // altura maior para segurança
+        console.log("Inimigo criado na área 2:", inimigo1);
+        GameController.instance.addInimigoArea2(inimigo1);
+        
+        const inimigo2 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(20, 45, -185)); // altura maior para segurança
+        console.log("Inimigo criado na área 2:", inimigo2);
+        GameController.instance.addInimigoArea2(inimigo2);
+        
+        const inimigo3 = new Cacodemon(scene, player, areaTrigger2, 10, new THREE.Vector3(-40, 45, -125)); // altura maior para segurança
+        console.log("Inimigo criado na área 2:", inimigo3);
+        GameController.instance.addInimigoArea2(inimigo3);
+    }, 100); // 100ms de delay
 }
 
 //Só pra gente puxar os objetos para a colisão
