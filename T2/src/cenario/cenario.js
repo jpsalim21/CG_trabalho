@@ -9,7 +9,6 @@ import { GameController } from "../controller/gamecontroller.js";
 import { Cacodemon } from "../personagens/inimigoCacodemon.js";
 import { Zombieman } from "../personagens/zombieman.js";
 import { setMaterial, createAdvancedMaterial, createLavaMaterial } from "../Mesh/extractor.js";
-import { Zombieman } from "../personagens/zombieman.js";
 import { OBJLoader } from '../../../build/jsm/loaders/OBJLoader.js'; 
 import { MTLLoader } from '../../../build/jsm/loaders/MTLLoader.js';
 
