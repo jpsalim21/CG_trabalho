@@ -1,13 +1,16 @@
 import * as THREE from "three";
+import { SoundController } from "../controller/soundcontroller.js";
 
 class PlataformaChave {
-    constructor(scene, position, chave) {
+    constructor(scene, position, chave, player) {
         this.scene = scene;
         this.position = position;
         this.chave = chave;
         this.alturaAlvo = 5;
         this.velocidade = 0.8;
         this.ativo = false;
+
+        this.soundController = new SoundController(player.getCamera());
         
         this.plataforma = new THREE.Mesh(new THREE.BoxGeometry(3.5,2,3.5), new THREE.MeshLambertMaterial({ color: 0x888888 }));
         this.plataforma.position.copy(position);
@@ -33,6 +36,7 @@ class PlataformaChave {
         if (this.plataforma.position.y < this.alturaAlvo) {
             this.plataforma.position.y += this.velocidade * 0.016;
             this.chave.bb.setFromObject(this.chave.mesh);
+            this.soundController.play("plataformaMovendo");
         }
     }
 

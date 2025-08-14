@@ -5,6 +5,8 @@ import { getParedes, getChao } from "../cenario/cenario.js";
 import { GameController } from "../controller/gamecontroller.js";
 import { removeInimigoColisao, addInimigoColisao } from "./inimigocontroller.js";
 import { loadOBJ } from "../Mesh/extractor.js";
+import { SoundController } from "../controller/soundcontroller.js";
+
 
 const path = "./assets/skullMelhor.obj";
 const texturePath = "./assets/skul/";
@@ -16,6 +18,8 @@ class InimigoLostSoul extends InimigoBase {
         this.player = player;
         this.velocidade = velocidade;
         this.rodando = true;
+
+        this.soundController = new SoundController(player.getCamera());
 
         this.bulletPool = this.player.getBulletPool();
 
@@ -130,6 +134,7 @@ class InimigoLostSoul extends InimigoBase {
         const bullet = objects.find(obj => this.bb.intersectsBox(obj.bb));
         if (bullet) {
             bullet.reset();
+            this.soundController.play("lostsoulInjured");
             this.tomarDano(10);
         }
     }
@@ -220,6 +225,8 @@ class InimigoLostSoul extends InimigoBase {
 
     enterAttack(){
         if(this.estado === "attack") return;
+
+        this.soundController.play("lostsoulAttack");
 
         this.timeOnState = 0;
         const alvo = this.player.getCamPosition();

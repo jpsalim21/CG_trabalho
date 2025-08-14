@@ -4,6 +4,7 @@ import { PlayerController } from "./src/personagens/player2.js";
 import { inicializaCenario } from "./src/cenario/cenario.js";
 import { GameController } from "./src/controller/gamecontroller.js";
 import { loadOBJ } from "./src/Mesh/extractor.js";
+import { SoundController } from "./src/controller/soundcontroller.js";
 
 const scene = new THREE.Scene();
 let renderer = initRenderer();
@@ -11,9 +12,14 @@ renderer.setClearColor(0x70AFDA);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-new GameController();
+//new GameController();
 
 const player = new PlayerController(scene, renderer);
+
+const soundController = new SoundController(player.getCamera());
+
+const gameController = new GameController();
+gameController.soundController = soundController;
 
 inicializaCenario(scene, player);
 

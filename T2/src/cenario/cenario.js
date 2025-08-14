@@ -222,11 +222,11 @@ function createArea1(scene, player){
     box1.add(column3Top);
 
     // chave vermelha mostrada quando matar todos os inimigos da área 2
-    chave1Obj = new Chave(scene, player.bb, 'vermelha');
+    chave1Obj = new Chave(scene, player, 'vermelha');
     chave1Obj.mesh.visible = false;
 
     // plataforma da chave na área 1
-    plataformaChave1 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 0), chave1Obj);
+    plataformaChave1 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 0), chave1Obj, player);
     box1.add(plataformaChave1.plataforma);
     paredes.push(plataformaChave1.plataforma);
     chao.push(plataformaChave1.plataforma);
@@ -372,11 +372,11 @@ function createArea2(scene, player){
     const areaPorta = new PortaArea(scene, porta, pilarChave, player, chave1Obj);
 
     // chave amarela mostrada quando matar todos os inimigos
-    chave2Obj = new Chave(scene, player.bb, 'amarela');
+    chave2Obj = new Chave(scene, player, 'amarela');
     chave2Obj.mesh.visible = false;
 
     // plataforma da chave na área 2
-    plataformaChave2 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 15), chave2Obj);
+    plataformaChave2 = new PlataformaChave(scene, new THREE.Vector3(0, -2, 15), chave2Obj, player);
     plataformaChave2.plataforma.add(block5);
     block5.position.set(0, 18, 0);
     box2.add(plataformaChave2.plataforma);

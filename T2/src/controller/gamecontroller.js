@@ -1,4 +1,5 @@
 import { plataformaChave1, plataformaChave2} from "../cenario/cenario.js";
+import { SoundController } from "./soundcontroller.js";
 
 class GameController {
     constructor(){
@@ -16,6 +17,14 @@ class GameController {
         this.iChave1 = null;
         this.iChave2 = null;
         this.iChave3 = null;
+
+        // Mapeia a tecla Q para ligar/desligar música
+        window.addEventListener("keydown", (event) => {
+            if (event.code === "KeyQ") {
+                this.soundController.soundBackground();
+                showTemporaryMessage("Música pausada.");
+            }
+        })
 
         GameController.instance = this;
     }

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { CSG } from '../../../libs/other/CSGMesh.js';    
 import { GameController } from "../controller/gamecontroller.js";
+import { SoundController } from "../controller/soundcontroller.js";
 
 const vermelha = new THREE.MeshPhongMaterial({color: 'rgb(196, 18, 18)', shininess: 100});
 const amarela = new THREE.MeshPhongMaterial({color: 'rgb(255, 255, 65)', shininess: 100});
@@ -31,20 +32,21 @@ csgObj = csgObj.subtract(cilCSG3);
 
 
 class Chave {
-    constructor(scene, playerbb, tipo = 'vermelha') {
+    constructor(scene, player, tipo = 'vermelha') {
         this.scene = scene;
         this.mesh = CSG.toMesh(csgObj, new THREE.Matrix4(), vermelha);
         this.mesh.castShadow = true;
 
         this.mesh.position.set(0, 2, -15);
 
-        this.playerbb = playerbb; 
+        this.player = player; 
         this.bb = new THREE.Box3().setFromObject(this.mesh);
-        
+        this.soundController = new SoundController(player.getCamera());
+
         this.tipo = tipo;
         this.adquirida = false;
         this.colocada = false;
-        this.playerbb = playerbb;
+        this.playerbb = player.bb;
         
         this.ativa = false;
 
@@ -98,6 +100,7 @@ class Chave {
             console.log("Chave visível:", this.mesh.position);
             this.mesh.visible = true;
             this.colocada = true;
+            this.soundController.play("chave");
         }
     }
 

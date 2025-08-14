@@ -5,16 +5,19 @@ import { BulletPool } from './disparo.js';
 import { getParedes, getChao } from '../cenario/cenario.js';
 import { GameController } from '../controller/gamecontroller.js';
 import { loadGLTF } from '../Mesh/extractor.js';
+import { SoundController } from "../controller/soundcontroller.js";
 
 const path = './assets/cacodemon.glb';
 const GRAVIDADE = 25;
 
 class Cacodemon extends InimigoBase {
-    constructor(scene, player, observer, velocidade = 10, initialPosition = new THREE.Vector3(0, 5, 0)) {
+    constructor(scene, player, observer, velocidade = 10, initialPosition = new THREE.Vector3(0, 5, 0)) {        
         super(scene, 50, 10, player, observer); // 50 HP, 10 de ataque
         this.velocidade = velocidade;
         this.rodando = true;
         this.player = player;
+
+        this.soundController = new SoundController(player.getCamera());
 
         //variacoes de movimento para nao ficarem se juntando
         this.angularSpeed = 0.08 + Math.random() * 0.04; // velocidade angular entre 0.08 e 0.12
@@ -111,6 +114,11 @@ class Cacodemon extends InimigoBase {
 
         const delta = this.clock.getDelta();
 
+        const distancia = this.object.position.distanceTo(this.player.getCamPosition());
+        if (distancia < 5) {
+            this.soundController.play("cacodemonNearby");
+        }
+
         this.applyGravity(delta);
         this.testeColisao();
 
@@ -125,6 +133,8 @@ class Cacodemon extends InimigoBase {
         const bullet = objects.find(obj => this.bb.intersectsBox(obj.bb));
         if (bullet && this.rodando) { // verifica se ainda está rodando
             bullet.reset(); // faz a bala desaparecer ao colidir
+            this.soundController.play("cacodemonInjured");
+
             this.tomarDano(10);
             console.log("Cacodemon atingido!");
         }
@@ -146,6 +156,7 @@ class Cacodemon extends InimigoBase {
 
     enterTriggered() {
         if (this.estado === 'approaching' || this.estado === 'circling') return;
+        this.soundController.play("cacodemonSight");
         this.timeOnState = 0;
         this.updateFunction = this.approaching.bind(this);
         this.estado = 'approaching';
@@ -258,6 +269,8 @@ class Cacodemon extends InimigoBase {
     }
 
     shoot() {
+        this.soundController.play("cacodemonAttack");
+
         const posicao = this.object.position.clone();
         const alvo = this.player.getCamPosition().clone();
         this.bulletPool.atirar(posicao, alvo);
@@ -273,6 +286,9 @@ class Cacodemon extends InimigoBase {
     morrer() {
         if (!this.rodando) return;
         this.rodando = false;
+
+        this.soundController.play("cacodemonDeath");
+
         const mesh = this.mesh;
         if (!mesh) {
             this.destructor();
