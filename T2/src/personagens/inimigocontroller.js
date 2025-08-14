@@ -24,6 +24,11 @@ function testaColisao(player){
     if(elapsed < tempoInvencivel) return 0;
 
     for(let i = 0; i < listaInimigos.length; i++){
+        // ignora balas do próprio jogador para evitar auto-dano
+        if(listaInimigos[i].isPlayerBullet === true) {
+            continue;
+        }
+        
         if(listaInimigos[i].bb.intersectsBox(player.bb)){
             clock.start();
             return listaInimigos[i].ataque;

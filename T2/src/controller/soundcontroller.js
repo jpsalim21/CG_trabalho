@@ -66,6 +66,9 @@ class SoundController {
 
     play(name) {
         const sound = this.sounds[name];
+        if(sound.isPlaying){
+            sound.stop(); 
+        }
         if (sound && !sound.isPlaying) {
             sound.play();
         }

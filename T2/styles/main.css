@@ -97,3 +97,55 @@ canvas {
     transform: translateY(-20px);
   }
 }
+
+#health-bar-container {
+    position: fixed; 
+    top: 20px;
+    left: 20px;
+    width: 300px;
+    height: 30px;
+    background-color: rgba(0, 0, 0, 0.5); 
+    border: 2px solid #555;
+    border-radius: 5px;
+    padding: 2px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    z-index: 1000; 
+}
+
+#health-bar-fill {
+    height: 100%;
+    width: 100%; 
+    border-radius: 3px;
+    transition: width 0.3s ease-out, background-color 0.5s linear; 
+}
+
+#health-bar-text {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    color: white;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    text-shadow: 1px 1px 2px black;
+    text-align: center;
+}
+
+
+#health-bar-fill.high {
+    background-color: #0f6523; 
+}
+
+#health-bar-fill.medium {
+    background-color: #28a745; 
+}
+
+#health-bar-fill.low {
+    background-color: #ffc107; 
+}
+
+#health-bar-fill.critical {
+    background-color: #dc3545; 
+}

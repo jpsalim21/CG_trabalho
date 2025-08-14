@@ -5,6 +5,7 @@ import { SoundController } from "../controller/soundcontroller.js";
 
 const vermelha = new THREE.MeshPhongMaterial({color: 'rgb(196, 18, 18)', shininess: 100});
 const amarela = new THREE.MeshPhongMaterial({color: 'rgb(255, 255, 65)', shininess: 100});
+const azul = new THREE.MeshPhongMaterial({color: 'rgb(18, 18, 196)', shininess: 100});
 const cubeMesh = new THREE.Mesh(new THREE.BoxGeometry(3, 3, 3));
 const cilMesh = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 4, 32));
 const cilMesh2 = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 4, 32));
@@ -53,9 +54,12 @@ class Chave {
         if (tipo == 'vermelha') {
             this.mesh.material = vermelha;
             GameController.instance.iChave1 = this;
-        } else {
+        } else if (tipo == 'amarela') {
             this.mesh.material = amarela;   
             GameController.instance.iChave2 = this;
+        } else if (tipo == 'azul') {
+            this.mesh.material = azul;   
+            GameController.instance.iChave3 = this;
         }
 
         this.render();
@@ -74,9 +78,12 @@ class Chave {
             if (this.tipo === 'vermelha') {
                 GameController.instance.chave1 = true;
                 showTemporaryMessage("Chave vermelha adquirida! Use-a para desbloquear a área 2.", 5000);
-            } else {
+            } else if (this.tipo === 'amarela') {
                 GameController.instance.chave2 = true;
                 showTemporaryMessage("Chave amarela adquirida! Use-a para desbloquear a área 3", 5000);
+            } else if (this.tipo === 'azul') {
+                GameController.instance.chave3 = true;
+                showTemporaryMessage("Chave azul adquirida! Use-a para desbloquear a área 4", 5000);
             }
             this.destroy();
         }

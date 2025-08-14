@@ -3,11 +3,12 @@ import { onWindowResize } from "../../../libs/util/util.js";
 import * as THREE from "three";
 import { BulletPool } from "./disparo.js";
 import { getChao, getParedes } from "../cenario/cenario.js";
+import { SpriteMixer } from '../../sprites/SpriteMixer.js';
 import { GameController } from '../controller/gamecontroller.js';
 import { testaColisao } from './inimigocontroller.js';
-import { SpriteMixer } from '../../sprites/SpriteMixer.js';
 import { loadOBJ } from "../Mesh/extractor.js";
 import { SoundController } from "../controller/soundcontroller.js";
+import { HealthBarUI } from '../ui/HealthBarUI.js';
 
 const _euler = new Euler( 0, 0, 0, 'YXZ' );
 const eulerCameraHolder = new Euler( 0, 0, 0, 'YXZ' );
@@ -53,6 +54,8 @@ class PlayerController extends EventDispatcher {
         this.weapons = {};
         this.activeWeapon = 1;
         this.clock = new THREE.Clock();
+
+        this.chaingunSoundTime = 0;
      
         // cria a arma "lançador"
         this.getLauncher();
@@ -68,8 +71,8 @@ class PlayerController extends EventDispatcher {
             this.weapons[1] = {
                 object: chaingunSprite,
                 actions: {
-                    idle: this.spriteMixer.Action(chaingunSprite, 0, 0, 100),
-                    shoot: this.spriteMixer.Action(chaingunSprite, 1, 4, 80) // movimento de tiro, começando no frame 1 e terminando no frame 4, com 80ms por frame
+                    idle: this.spriteMixer.Action(chaingunSprite, 100, 0, 0, 0, 0), // frame (0,0) - primeira coluna
+                    shoot: this.spriteMixer.Action(chaingunSprite, 80, 0, 1, 0, 2) // frames (0,1) a (0,2) - animação de tiro
                 },
                 isShooting: false
             };
@@ -186,10 +189,13 @@ class PlayerController extends EventDispatcher {
         this.hp = this.hpMax;
         this.godMode = false;
 
+        this.healthBar = new HealthBarUI();
+        this.updateHealthUI();
+
         this.connect(); 
     }
 
-    async getLauncher(){
+     async getLauncher(){
         try {
             let launcher = await loadOBJ('./assets/rocketlauncher/wephomura6.obj', "./assets/rocketlauncher/", "texhomu_11.png");
             launcher.scale.set(0.5, 0.5, 0.5);
@@ -279,11 +285,19 @@ class PlayerController extends EventDispatcher {
             this.spriteMixer.update(delta);
         }
 
-        //this.camShake(delta); // chama a função de tremor da câmera
+         //this.camShake(delta); // chama a função de tremor da câmera
     
         this.bb.setFromObject(this.playerMesh);
         this.grounded = this.isOnGround(delta);
-    
+        /*
+        if (this.grounded) {
+            this.velVertical = 0;
+        } else {
+            this.velVertical -= GRAVIDADE * delta;
+            this.cameraHolder.translateY(this.velVertical * delta);
+        }
+        */
+
         const moveDistance = this.speed * delta;
         let direcao = this.velocity.clone();
         direcao = direcao.normalize();
@@ -291,7 +305,7 @@ class PlayerController extends EventDispatcher {
         this.wallCollision(direcao);
         this.cameraHolder.translateX(direcao.x);
         this.cameraHolder.translateZ(direcao.y);
-        
+
         this.hurtbox();
 
         // tratando duas armas
@@ -306,7 +320,6 @@ class PlayerController extends EventDispatcher {
                 }
                 // chama a função de tiro da metralhadora (raycast)
                 this.fireChaingun(delta);
-                this.soundController.play("chaingun");
             }
             // se for o lancador
             else if (this.activeWeapon === 2 && this.weapons[2]) {
@@ -323,9 +336,12 @@ class PlayerController extends EventDispatcher {
             // se o jogador SOLTOU o botão de atirar, para a animação da metralhadora
             if (this.activeWeapon === 1 && this.weapons[1] && this.weapons[1].isShooting && this.weapons[1].actions) {
                 const weapon = this.weapons[1];
+                // Para a animação de tiro
+                weapon.actions.shoot.stop();
+                // Inicia a animação idle
                 weapon.actions.idle.playLoop();
-                weapon.object.setFrame(0); // voltamos ao frame inicial
                 weapon.isShooting = false;
+                console.log("Chaingun parou de atirar - voltando para idle");
             }
         }
     }
@@ -333,6 +349,15 @@ class PlayerController extends EventDispatcher {
     render() {
         if (this.isLocked) {
             this.update(this.clock.getDelta());
+        }
+
+        // Executa os callbacks de atualização do jogo (triggers, etc.)
+        if (window.gameUpdateCallbacks) {
+            window.gameUpdateCallbacks.forEach(callback => {
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            });
         }
 
         this.renderer.render(this.scene, this.camera);
@@ -399,7 +424,13 @@ class PlayerController extends EventDispatcher {
             (objetos.includes(obj) || obj.userData?.isEnemy)
         );
         let intersects = this.rayMira.intersectObjects(sceneObjects, true);
-    
+        
+        this.chaingunSoundTime += delta;
+        if (this.chaingunSoundTime >= 0.1) {
+            this.soundController.play("chaingun");
+            this.chaingunSoundTime = 0;
+        }
+
         if (intersects.length > 0) {
             const targetObject = intersects[0].object;
     
@@ -428,7 +459,7 @@ class PlayerController extends EventDispatcher {
                             }
                         } 
                     } 
-                    this.chaingunDamageTime -= 0.1;
+                    this.chaingunDamageTime = 0.0;
                 }
             } else {
                 this.currentTarget = null;
@@ -487,14 +518,35 @@ class PlayerController extends EventDispatcher {
             direcao.y = dNova.z;
         }
     }
-    //#endregion
-    hurtbox(){
+
+    tomarDano(dano) {
         if (this.godMode) return; // Se estiver no modo Deus, não faz nada
 
+        this.hp -= dano;
+        if (this.hp < 0) this.hp = 0;
+
+        console.log(`Dano recebido: ${dano}. Vida atual: ${this.hp}`);
+        this.soundController.play('playerInjured');
+        
+        this.updateHealthUI();
+
+        if (this.hp <= 0) {
+            console.log("Player morreu!");
+            // Aqui você pode adicionar a lógica de morte (ex: this.morrer())
+        }
+    }
+
+    updateHealthUI() {
+        if (this.healthBar) {
+            this.healthBar.update(this.hp, this.hpMax);
+        }
+    }
+    
+    //#endregion
+    hurtbox(){
         let dano = testaColisao(this);
-        console.log("Dano recebido:", dano);
         if (dano > 0) {
-            this.soundController.play('playerInjured');
+            this.tomarDano(dano);
         }
     }
 
@@ -549,6 +601,12 @@ class PlayerController extends EventDispatcher {
         // mostra a nova arma
         this.activeWeapon = newWeaponIndex;
         this.weapons[this.activeWeapon].object.visible = true;
+        
+        // Se for a chaingun, inicia a animação idle
+        if (this.activeWeapon === 1 && this.weapons[1] && this.weapons[1].actions) {
+            this.weapons[1].actions.idle.playLoop();
+            console.log("Chaingun selecionada - animação idle iniciada");
+        }
     }
 
     // novo método para lidar com as teclas '1' e '2'

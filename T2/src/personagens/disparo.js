@@ -17,6 +17,7 @@ class Bullet {
         this.mesh.visible = false;
         this.pool = pool;
         this.ataque = 10;
+        this.isPlayerBullet = pool.isPlayerBullet; // identifica se é bala do jogador
 
         this.raycaster = new THREE.Raycaster();
         this.raycaster.far = 1;
@@ -78,6 +79,7 @@ class BulletPool {
         this.bullets = [];
         this.bulletsInUse = [];
         this.poolSize = 10;
+        this.isPlayerBullet = jogador; // identifica se as balas são do jogador
 
         if(jogador) {
             this.color = 0xff0000; // Vermelho

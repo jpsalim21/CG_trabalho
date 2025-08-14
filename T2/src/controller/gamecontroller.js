@@ -1,4 +1,4 @@
-import { plataformaChave1, plataformaChave2} from "../cenario/cenario.js";
+import { plataformaChave1, plataformaChave2, plataformaChave3} from "../cenario/cenario.js";
 import { SoundController } from "./soundcontroller.js";
 
 class GameController {
@@ -9,6 +9,7 @@ class GameController {
 
         this.inimigosArea1 = [];
         this.inimigosArea2 = [];
+        this.inimigosArea3 = []; // Hangar - Zombieman
 
         this.chave1 = false;
         this.chave2 = false;
@@ -39,6 +40,11 @@ class GameController {
         this.inimigosArea2.push(inimigo);
     }
 
+    addInimigoArea3(inimigo) {
+        console.log("Inimigo adicionado na area 3 (hangar)");
+        this.inimigosArea3.push(inimigo);
+    }
+
     inimigoMorreu(inimigo) {
         const index1 = this.inimigosArea1.indexOf(inimigo);
         if (index1 !== -1) {
@@ -50,6 +56,12 @@ class GameController {
         if (index2 !== -1) {
             this.inimigosArea2.splice(index2, 1);
             this.verificarArea2();
+        }
+
+        const index3 = this.inimigosArea3.indexOf(inimigo);
+        if (index3 !== -1) {
+            this.inimigosArea3.splice(index3, 1);
+            this.verificarArea3();
         }
     }
 
@@ -70,6 +82,16 @@ class GameController {
         }
     }
 
+    verificarArea3() {
+        if (this.inimigosArea3.length === 0) {
+            console.log("Todos os zombieman do hangar foram derrotados");
+            showTemporaryMessage("Zombieman eliminados! A chave azul está disponível no hangar.", 5000);
+            if (window.plataformaChave3) {
+                window.plataformaChave3.ativar();
+            }
+        }
+    }
+
     pauseGame() {
         console.log("Jogo pausado");
     }
@@ -85,7 +107,7 @@ class GameController {
         this.chave2 = true;
         this.iChave2.pegaPorController();
         this.chave3 = true;
-        //this.iChave3.pegaPorController();
+        this.iChave3.pegaPorController();
     }
 
 }

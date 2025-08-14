@@ -42,6 +42,11 @@ class Cacodemon extends InimigoBase {
 
         this.timeOnState = 0;
 
+        // Controle de inicialização para evitar queda imediata
+        this.initializationTime = 0;
+        this.initializationDelay = 0.5; // 500ms de delay antes de aplicar gravidade
+        this.initialized = false;
+
         // define a posição inicial
         this.object.position.copy(initialPosition);
         this.distanceFromPlayer = 35; // distância fixa do jogador
@@ -118,6 +123,7 @@ class Cacodemon extends InimigoBase {
         }
 
         this.applyGravity(delta);
+        
         this.testeColisao();
 
         if (this.updateFunction) {
