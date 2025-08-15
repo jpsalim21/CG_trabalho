@@ -9,6 +9,7 @@ const posEsquerda = 87.5;
 
 let piecesMeshWhite = {};
 let piecesMeshBlack = {};
+const collisionGeo = new THREE.BoxGeometry(3.5, 6, 3.5);
 
 let whitePawnsPositions = [
     new THREE.Vector3(posEsquerda + tamQuadrado, 2, posEsquerda),
@@ -40,7 +41,10 @@ function createChessBoard(scene){
     ]
     const boxMesh = new THREE.Mesh(boxGeometry, materiais);
     boxMesh.position.set(0, 2, 150);
+    boxMesh.castShadow = true;
+    boxMesh.receiveShadow = true;
     addChao(boxMesh);
+    addParedes(boxMesh);
     scene.add(boxMesh);
 
     loadPieces(boxMesh)
@@ -51,8 +55,10 @@ async function loadPieces(pai){
     for (const name of pieceNames) {
         piecesMeshBlack[name] = await loadChessPiece(`./assets/xadrez/${name}.glb`, 'rgba(60, 60, 60, 1)');
         piecesMeshBlack[name].scale.set(2, 2, 2);
+        piecesMeshBlack[name].castShadow = true;
         piecesMeshWhite[name] = await loadChessPiece(`./assets/xadrez/${name}.glb`, 'rgba(200, 200, 200, 1)');
         piecesMeshWhite[name].scale.set(2, 2, 2);
+        piecesMeshWhite[name].castShadow = true;
     }
     arrangePieces(pai);
 }
@@ -89,6 +95,55 @@ function arrangePieces(pai){
     pai.add(rw1);
     pai.add(rw2);
 
+    // Colisão
+    const collisionMesh = new THREE.Mesh(collisionGeo, new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 }));
+    collisionMesh.visible = false;
+    collisionMesh.castShadow = true;
+    let cClones = []
+    let c1 = collisionMesh.clone();
+    kw.add(c1);
+    c1.position.set(0, 3, 0);
+    let c2 = collisionMesh.clone();
+    kb.add(c2);
+    c2.position.set(0, 3, 0);
+    let c3 = collisionMesh.clone();
+    qw.add(c3);
+    c3.position.set(0, 3, 0);
+    let c4 = collisionMesh.clone();
+    qb.add(c4);
+    c4.position.set(0, 3, 0);
+    let c5 = collisionMesh.clone();
+    bw1.add(c5);
+    c5.position.set(0, 3, 0);
+    let c6 = collisionMesh.clone();
+    bb1.add(c6);
+    c6.position.set(0, 3, 0);
+    let c7 = collisionMesh.clone();
+    bb2.add(c7);
+    c7.position.set(0, 3, 0);
+    let c8 = collisionMesh.clone();
+    nb1.add(c8);
+    c8.position.set(0, 3, 0);
+    let c9 = collisionMesh.clone();
+    nb2.add(c9);
+    c9.position.set(0, 3, 0);
+    let c10 = collisionMesh.clone();
+    rb1.add(c10);
+    c10.position.set(0, 3, 0);
+    let c11 = collisionMesh.clone();
+    rb2.add(c11);
+    c11.position.set(0, 3, 0);
+    let c12 = collisionMesh.clone();
+    rw1.add(c12);
+    c12.position.set(0, 3, 0);
+    let c13 = collisionMesh.clone();
+    rw2.add(c13);
+    c13.position.set(0, 3, 0);
+    cClones.push(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13);
+    for(let i = 0; i < cClones.length; i++) {
+        addParedes(cClones[i]);
+    }
+
     // White pieces positions
     kw.position.set(87.5, 2, -62.5);
     rw1.position.set(87.5, 2, -37.5);
@@ -109,10 +164,15 @@ function arrangePieces(pai){
     nb1.rotation.y = Math.PI / 2; // 90 graus em radianos
     nb2.rotation.y = Math.PI / 2; // 90 graus em radianos
 
+    let colPawns = [];
     // White pawns positions
     for (let i = 0; i < whitePawnsPositions.length; i++) {
         const pawn = piecesMeshWhite['Pawn'].clone();
         pawn.position.copy(whitePawnsPositions[i]);
+        let c = collisionMesh.clone();
+        pawn.add(c);
+        c.position.set(0, 3, 0);
+        colPawns.push(c);
         pai.add(pawn);
     }
 
@@ -120,7 +180,15 @@ function arrangePieces(pai){
     for (let i = 0; i < blackPawnsPositions.length; i++) {
         const pawn = piecesMeshBlack['Pawn'].clone();
         pawn.position.copy(blackPawnsPositions[i]);
+        let c = collisionMesh.clone();
+        pawn.add(c);
+        c.position.set(0, 3, 0);
+        colPawns.push(c);
         pai.add(pawn);
+    }
+
+    for (let i = 0; i < colPawns.length; i++) {
+        addParedes(colPawns[i]);
     }
 
 }
