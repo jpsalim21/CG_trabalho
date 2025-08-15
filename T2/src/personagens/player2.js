@@ -151,6 +151,8 @@ class PlayerController extends EventDispatcher {
         this.rayGround.far = 10.0;
         this.rayGround.near = 0.1;
 
+        this.shaking = false;
+
         this.velocity = new THREE.Vector2(0, 0);
         this.rayWall = new THREE.Raycaster();
         this.rayWall.far = 1.5;
@@ -286,18 +288,18 @@ class PlayerController extends EventDispatcher {
             this.spriteMixer.update(delta);
         }
 
-         //this.camShake(delta); // chama a função de tremor da câmera
+        if(this.shaking) this.camShake(delta); // chama a função de tremor da câmera
     
         this.bb.setFromObject(this.playerMesh);
         this.grounded = this.isOnGround(delta);
-        /*
+        
         if (this.grounded) {
             this.velVertical = 0;
         } else {
             this.velVertical -= GRAVIDADE * delta;
             this.cameraHolder.translateY(this.velVertical * delta);
         }
-        */
+        
 
         const moveDistance = this.speed * delta;
         let direcao = this.velocity.clone();

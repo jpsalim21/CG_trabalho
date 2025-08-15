@@ -140,7 +140,7 @@ function inicializaCenario(scene, player, renderer) {
     // box 4
     // let a4 = createArea4(scene, player);
     // scene.add(a4);
-    createChessBoard(scene);
+    createChessBoard(scene, player, chave3Obj);
 
 
     //Cria as paredes

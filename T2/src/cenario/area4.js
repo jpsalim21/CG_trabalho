@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { loadChessPiece, setMaterial } from '../Mesh/extractor.js';
 import { addChao, addParedes } from './cenario.js';
+import { portaA4 } from './portaArea4.js';
+import { ParedeA4 } from './paredesA4.js';
 
 const boxGeometry = new THREE.BoxGeometry(200, 4, 200);
 
@@ -28,7 +30,7 @@ let blackPawnsPositions = [
 ];
 
 
-function createChessBoard(scene){
+function createChessBoard(scene, player, chave){
     const tabuleiroMaterial = setMaterial('./assets/xadrez/xadrez2.png', 4, 4);
     const materialLado = setMaterial('./assets/textures/metalparede.jpg', 8, 1);
     const materiais = [
@@ -47,7 +49,13 @@ function createChessBoard(scene){
     addParedes(boxMesh);
     scene.add(boxMesh);
 
-    loadPieces(boxMesh)
+    loadPieces(boxMesh);
+
+    let porta = new portaA4(scene, new THREE.Vector3(30, 0.8, 30), player, chave);
+    addParedes(porta.mesh);
+    addChao(porta.mesh);
+
+
 }
 
 async function loadPieces(pai){
