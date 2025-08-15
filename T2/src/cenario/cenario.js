@@ -12,46 +12,6 @@ import { setMaterial, createAdvancedMaterial, createLavaMaterial } from "../Mesh
 import { OBJLoader } from '../../../build/jsm/loaders/OBJLoader.js'; 
 import { MTLLoader } from '../../../build/jsm/loaders/MTLLoader.js';
 
-//texturas
-
-const textureLoader = new THREE.TextureLoader();
-
-const floorTexture = textureLoader.load('../../../assets/textures/granite.png');
-floorTexture.wrapS = THREE.RepeatWrapping;
-floorTexture.wrapT = THREE.RepeatWrapping;
-floorTexture.repeat.set(10, 10);
-
-const brickTexture = textureLoader.load('../../../assets/textures/stone.jpg');
-brickTexture.wrapS = THREE.RepeatWrapping;
-brickTexture.wrapT = THREE.RepeatWrapping;
-brickTexture.repeat.set(4, 2);
-
-const cementTexture = textureLoader.load('../../../assets/textures/darkcement.jpg');
-cementTexture.wrapS = THREE.RepeatWrapping;
-cementTexture.wrapT = THREE.RepeatWrapping;
-cementTexture.repeat.set(10, 10);
-
-const asfaltoTexture = textureLoader.load('../../../assets/textures/asfalto.jpg');
-asfaltoTexture.wrapS = THREE.RepeatWrapping;
-asfaltoTexture.wrapT = THREE.RepeatWrapping;
-
-const metalEscuroTexture = textureLoader.load('../../../assets/textures/metalescuro.jpg');
-metalEscuroTexture.wrapS = THREE.RepeatWrapping;
-metalEscuroTexture.wrapT = THREE.RepeatWrapping;
-
-const metalTexturizadoTexture = textureLoader.load('../../../assets/textures/metaltexturizado.jpg');
-metalTexturizadoTexture.wrapS = THREE.RepeatWrapping;
-metalTexturizadoTexture.wrapT = THREE.RepeatWrapping;
-
-const brick2Texture = textureLoader.load('../../../assets/textures/tijolos.jpg');
-brick2Texture.wrapS = THREE.RepeatWrapping;
-brick2Texture.wrapT = THREE.RepeatWrapping;
-brick2Texture.repeat.set(2, 1);
-
-const telhadoTexture = textureLoader.load('../../../assets/textures/telhado.jpg');
-telhadoTexture.wrapS = THREE.RepeatWrapping;
-telhadoTexture.wrapT = THREE.RepeatWrapping;
-telhadoTexture.repeat.set(10, 10);
 
 //materiais
 const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});
@@ -423,17 +383,6 @@ function createArea2(scene, player){
     chao.push(block13);
     chao.push(block14);
 
-    // texturas
-    // var textureLoader = new THREE.TextureLoader();
-
-    // var metalWall = textureLoader.load('./assets/textures/metalparede.jpg');
-    //     metalWall.colorSpace = THREE.SRGBColorSpace;
-    //     metalWall.wrapS = metalWall.wrapT = THREE.RepeatWrapping;
-    //     metalWall.repeat.set(1, 1);
-    // box21.material = [metalWall, metalWall, , , metalWall, metalWall];
-    // box22.material = [metalWall, metalWall, , , metalWall, metalWall];
-    // box23.material = [metalWall, metalWall, , , metalWall, metalWall];
-
 
     // pilar para a chave
     const pilarGeometria = new THREE.BoxGeometry(4, 2, 4);
@@ -519,6 +468,47 @@ function createArea2(scene, player){
 }
 
 function createArea3(scene, player, renderer){
+    //texturas área 3
+
+const textureLoader = new THREE.TextureLoader();
+
+    const floorTexture = textureLoader.load('./assets/textures/granite.png');
+    floorTexture.wrapS = THREE.RepeatWrapping;
+    floorTexture.wrapT = THREE.RepeatWrapping;
+    floorTexture.repeat.set(10, 10);
+
+    const brickTexture = textureLoader.load('./assets/textures/stone.jpg');
+    brickTexture.wrapS = THREE.RepeatWrapping;
+    brickTexture.wrapT = THREE.RepeatWrapping;
+    brickTexture.repeat.set(4, 2);
+
+    const cementTexture = textureLoader.load('./assets/textures/darkcement.jpg');
+    cementTexture.wrapS = THREE.RepeatWrapping;
+    cementTexture.wrapT = THREE.RepeatWrapping;
+    cementTexture.repeat.set(10, 10);
+
+    const asfaltoTexture = textureLoader.load('./assets/textures/asfalto.jpg');
+    asfaltoTexture.wrapS = THREE.RepeatWrapping;
+    asfaltoTexture.wrapT = THREE.RepeatWrapping;
+
+    const metalEscuroTexture = textureLoader.load('./assets/textures/metalescuro.jpg');
+    metalEscuroTexture.wrapS = THREE.RepeatWrapping;
+    metalEscuroTexture.wrapT = THREE.RepeatWrapping;
+
+    const metalTexturizadoTexture = textureLoader.load('./assets/textures/metaltexturizado.jpg');
+    metalTexturizadoTexture.wrapS = THREE.RepeatWrapping;
+    metalTexturizadoTexture.wrapT = THREE.RepeatWrapping;
+
+    const brick2Texture = textureLoader.load('./assets/textures/tijolos.jpg');
+    brick2Texture.wrapS = THREE.RepeatWrapping;
+    brick2Texture.wrapT = THREE.RepeatWrapping;
+    brick2Texture.repeat.set(2, 1);
+
+    const telhadoTexture = textureLoader.load('./assets/textures/telhado.jpg');
+    telhadoTexture.wrapS = THREE.RepeatWrapping;
+    telhadoTexture.wrapT = THREE.RepeatWrapping;
+    telhadoTexture.repeat.set(10, 10);
+
     const chaoArea3 = new THREE.Mesh(boxGeometryArea3, floorMaterial);
     chaoArea3.position.set(150, 0.1, -150);
     chaoArea3.receiveShadow = true;

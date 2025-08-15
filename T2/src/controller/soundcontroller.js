@@ -57,7 +57,7 @@ class SoundController {
             audioLoader.load(soundFiles[key], (buffer) => {
                 sound.setBuffer(buffer);
                 sound.setLoop(key === 'background');
-                sound.setVolume(key === 'background' ? 0.3 : 0.7);
+                sound.setVolume(key === 'background' ? 0.5 : 0.7);
                 if (key === 'background') sound.play(); // música começa ligada
             });
             this.sounds[key] = sound;
