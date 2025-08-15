@@ -6,7 +6,7 @@ import { ParedeA4 } from './paredesA4.js';
 
 const boxGeometry = new THREE.BoxGeometry(200, 4, 200, 10, 10, 10);
 
-const baseGeo = new THREE.CylinderGeometry(3, 3, 1, 64, 34);
+const baseGeo = new THREE.CylinderGeometry(3, 3, 2, 64, 34);
 
 const tamQuadrado = -25;
 const posEsquerda = 87.5;
@@ -42,7 +42,7 @@ function createChessBoard(scene, player, chave){
         materialLado,
         materialLado,
         materialLado
-    ]
+    ];
     const boxMesh = new THREE.Mesh(boxGeometry, materiais);
     boxMesh.position.set(0, 2, 150);
     boxMesh.castShadow = true;
@@ -208,12 +208,37 @@ function arrangePieces(pai){
 }
 
 function criaBases(scene){
-    let materialLava1 = createLavaMaterial(1, 1);
-    let materialLava2 = createLavaMaterial(1, 1);
-    let base1 = new THREE.Mesh(baseGeo, [materialLava1, materialLava2, materialLava1]);
-    base1.position.set(0, 0.5, 0);
-    base1.castShadow = true;
-    scene.add(base1);
+    const texLoader = new THREE.TextureLoader();
+    let materialLava = setMaterial('./assets/LavaTexture/basecolor.png', 2, 2);
+    materialLava.colorSpace = THREE.SRGBColorSpace;
+    materialLava.normalMap = texLoader.load('./assets/LavaTexture/normal.png');
+    const materialLado = setMaterial('../../../assets/textures/displacement/rockWall.jpg', 8, 1);
+    let base = new THREE.Mesh(baseGeo, [materialLado, materialLava, materialLava]);
+    base.position.set(0, 5, 200);
+    scene.add(base);
+    addChao(base);
+    addParedes(base);
+
+    let b2 = base.clone();
+    b2.position.set(20, 5, 160);
+    scene.add(b2);
+
+    let b3 = base.clone();
+    b3.position.set(70, 5, 140);
+    scene.add(b3);
+
+    let b4 = base.clone();
+    b4.position.set(-70, 5, 120);
+    scene.add(b4);
+
+    let b5 = base.clone();
+    b5.position.set(-40, 5, 100);
+    scene.add(b5);
+
+    let b6 = base.clone();
+    b6.position.set(-90, 5, 80);
+    scene.add(b6);
+
 }
 
 function adicionarInimigos(scene, player){
