@@ -150,8 +150,6 @@ function inicializaCenario(scene, player, renderer) {
     ramp4.visible = true;
     chao.push(ramp4);
     scene.add(ramp4);
-    
-
 
     //Cria as paredes
     const parede1 = new THREE.Mesh(wallGeometry, wallMaterial); 

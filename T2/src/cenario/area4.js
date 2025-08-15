@@ -1,10 +1,12 @@
 import * as THREE from 'three';
-import { loadChessPiece, setMaterial } from '../Mesh/extractor.js';
+import { loadChessPiece, setMaterial, createLavaMaterial } from '../Mesh/extractor.js';
 import { addChao, addParedes } from './cenario.js';
 import { portaA4 } from './portaArea4.js';
 import { ParedeA4 } from './paredesA4.js';
 
-const boxGeometry = new THREE.BoxGeometry(200, 4, 200);
+const boxGeometry = new THREE.BoxGeometry(200, 4, 200, 10, 10, 10);
+
+const baseGeo = new THREE.CylinderGeometry(3, 3, 1, 64, 34);
 
 const tamQuadrado = -25;
 const posEsquerda = 87.5;
@@ -57,7 +59,7 @@ function createChessBoard(scene, player, chave){
     addParedes(porta.mesh);
     addChao(porta.mesh);
 
-
+    criaBases(scene);
 }
 
 async function loadPieces(pai){
@@ -162,7 +164,9 @@ function arrangePieces(pai){
     qw.position.set(posEsquerda + 6 * tamQuadrado, 2, posEsquerda + 6 * tamQuadrado);
 
     //Black pieces positions
-    kb.position.set(posEsquerda + 7 * tamQuadrado, 2, posEsquerda + 6 * tamQuadrado);
+    kb.position.set(posEsquerda + 7 * tamQuadrado, 5, posEsquerda + 6 * tamQuadrado);
+    kb.rotation.z = 0.2; // Inverte a rotação do rei preto
+    kb.rotation.x = Math.PI / 2 * 1.05; // Inverte a rotação do rei preto
     qb.position.set(posEsquerda + 7 * tamQuadrado, 2, posEsquerda + 3 * tamQuadrado);
     bb1.position.set(posEsquerda + 2 * tamQuadrado, 2, posEsquerda + 3 * tamQuadrado);
     bb2.position.set(posEsquerda + 6 * tamQuadrado, 2, posEsquerda + 4 * tamQuadrado);
@@ -201,6 +205,19 @@ function arrangePieces(pai){
         addParedes(colPawns[i]);
     }
 
+}
+
+function criaBases(scene){
+    let materialLava1 = createLavaMaterial(1, 1);
+    let materialLava2 = createLavaMaterial(1, 1);
+    let base1 = new THREE.Mesh(baseGeo, [materialLava1, materialLava2, materialLava1]);
+    base1.position.set(0, 0.5, 0);
+    base1.castShadow = true;
+    scene.add(base1);
+}
+
+function adicionarInimigos(scene, player){
+    
 }
 
 export { createChessBoard };

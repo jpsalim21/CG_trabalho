@@ -86,7 +86,7 @@ function loadSprite(path){
 }
 
 function setMaterial(file, repeatU = 1, repeatV = 1, color = 'rgb(255,255,255)'){
-    let mat = new THREE.MeshBasicMaterial({ map: texLoader.load(file), color:color});
+    let mat = new THREE.MeshStandardMaterial({ map: texLoader.load(file), color:color});
     mat.map.colorSpace = THREE.SRGBColorSpace;
     mat.map.wrapS = mat.map.wrapT = THREE.RepeatWrapping;
     mat.map.minFilter = mat.map.magFilter = THREE.LinearFilter;
@@ -221,6 +221,8 @@ function loadChessPiece(path, color= 'white'){
                             metalness: 0.5,
                             roughness: 0.5
                         });
+                        child.castShadow = true; // Permite que a peça de xadrez projete sombras
+                        child.receiveShadow = true; // Permite que a peça de xadrez receba
                     }
                 });
                 resolve(gltf.scene);
