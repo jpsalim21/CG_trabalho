@@ -216,7 +216,7 @@ function loadChessPiece(path, color= 'white'){
             (gltf) => {
                 gltf.scene.traverse((child) => {
                     if (child.isMesh) {
-                        child.material = new THREE.MeshLambertMaterial({
+                        child.material = new THREE.MeshStandardMaterial({
                             color: color,
                             metalness: 0.5,
                             roughness: 0.5

@@ -11,6 +11,7 @@ import { Zombieman } from "../personagens/zombieman.js";
 import { setMaterial, createAdvancedMaterial, createLavaMaterial } from "../Mesh/extractor.js";
 import { OBJLoader } from '../../../build/jsm/loaders/OBJLoader.js'; 
 import { MTLLoader } from '../../../build/jsm/loaders/MTLLoader.js';
+import { createChessBoard } from "./area4.js";
 
 //texturas
 
@@ -137,8 +138,10 @@ function inicializaCenario(scene, player, renderer) {
     scene.add(a3);
     
     // box 4
-    let a4 = createArea4(scene, player);
-    scene.add(a4);
+    // let a4 = createArea4(scene, player);
+    // scene.add(a4);
+    createChessBoard(scene);
+
 
     //Cria as paredes
     const parede1 = new THREE.Mesh(wallGeometry, wallMaterial); 
