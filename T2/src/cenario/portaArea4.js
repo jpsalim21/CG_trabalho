@@ -4,12 +4,13 @@ import { SoundController } from "../controller/soundcontroller.js";
 import { GameController } from "../controller/gamecontroller.js";
 
 class portaA4 {
-    constructor(scene, position, player, chave) {
+    constructor(scene, position, player, chave, paredes) {
         this.scene = scene;
         this.position = position;
         this.player = player;
         this.chave = chave;
         this.chaveColocada = false;
+        this.paredes = paredes;
 
         this.aberto = false;
         this.soundController = new SoundController(player.getCamera());
@@ -27,11 +28,16 @@ class portaA4 {
             new THREE.Vector3(position.x + 3, position.y + 3, position.z + 3)
         );
 
+        this.animationFrameID = null; // Para controle do loop de renderização
         this.render();
     }
 
     update() {
-        if (this.aberto) return;
+        console.log("Atualizando porta A4", this.aberto);
+        if (this.aberto){
+            this.stopRender();
+            return; // Se a porta já está aberta, não faz nada
+        } 
         
         if (this.bb.intersectsBox(this.player.bb)) {
             if (GameController.instance.chave1 && !this.chaveColocada) {
@@ -42,13 +48,21 @@ class portaA4 {
                 position.y += 3; 
                 this.soundController.play("portaAbrindo");
                 this.chave.colocar(position);
+                this.paredes.render();
             }
         }
     }
 
     render() {
         this.update();
-        requestAnimationFrame(() => this.render());
+        this.animationFrameID = requestAnimationFrame(() => this.render());
+    }
+
+    stopRender() {
+        if (this.animationFrameID) {
+            cancelAnimationFrame(this.animationFrameID); // Cancela o loop de renderização
+            this.animationFrameID = null; // Reseta o ID para evitar chamadas futuras
+        }
     }
 }
 

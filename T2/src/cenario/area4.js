@@ -51,7 +51,9 @@ function createChessBoard(scene, player, chave){
 
     loadPieces(boxMesh);
 
-    let porta = new portaA4(scene, new THREE.Vector3(30, 0.8, 30), player, chave);
+    let paredes = new ParedeA4(scene, player);
+
+    let porta = new portaA4(scene, new THREE.Vector3(30, 0.8, 30), player, chave, paredes);
     addParedes(porta.mesh);
     addChao(porta.mesh);
 

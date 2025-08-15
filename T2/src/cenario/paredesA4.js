@@ -1,6 +1,10 @@
 import * as THREE from 'three';
+import { addParedes } from './cenario.js';
+
 
 const paredeGeo = new THREE.BoxGeometry(201, 90, 1);
+
+const alturaAlvo = -41;
 
 class ParedeA4 {
     constructor(scene, player) {
@@ -27,21 +31,36 @@ class ParedeA4 {
         this.p2 = parede2;
         this.p3 = parede3;
 
+        addParedes(parede1);
+        addParedes(parede2);
+        addParedes(parede3);
+
         this.aberto = false;
         this.comecou = false;
+        this.clock = new THREE.Clock();
     }
 
-    update() {
+    update(delta) {
         if(this.aberto) return;
 
-
+        let posDelta = 10 * delta;
+        if(this.p1.position.y > alturaAlvo){
+            this.p1.position.y -= posDelta;
+            this.p2.position.y -= posDelta;
+            this.p3.position.y -= posDelta;
+        } else if (!this.aberto) {
+            this.player.shaking = false;
+            this.aberto = true;
+        }
     }
 
     render(){
         if(!this.comecou){
-            this.player.
+            this.comecou = true;
+            this.player.shaking = true;
+            this.clock.start();
         }
-        this.update();
+        this.update(this.clock.getDelta());
         requestAnimationFrame(() => this.render());
     }
 }
