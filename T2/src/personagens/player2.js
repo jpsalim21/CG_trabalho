@@ -252,6 +252,7 @@ class PlayerController extends EventDispatcher {
                 GameController.instance.pegarTodasChaves();
                 break;
             case "g":
+                if (!isPressed) break; // Só ativa/desativa no pressionamento
                 if(this.godMode) {
                     this.godMode = false;
                     showTemporaryMessage("Modo Deus desativado. Você pode ser atingido por inimigos.", 5000);
