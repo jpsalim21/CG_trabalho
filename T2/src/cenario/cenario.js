@@ -86,9 +86,19 @@ function inicializaCenario(scene, player, renderer) {
     
     
     // box 4
-    // let a4 = createArea4(scene, player);
-    // scene.add(a4);
     createChessBoard(scene, player, chave3Obj);
+    const escada4 = createEscada();
+    escada4.position.set(0, 0, 20);
+    scene.add(escada4);
+
+    const ramp4 = new THREE.Mesh(rampGeometry, wallMaterial);
+    ramp4.rotation.y = Math.PI;
+    ramp4.rotation.x = Math.atan(30/4);
+    ramp4.position.set(0, 2, 35); 
+    ramp4.visible = true;
+    chao.push(ramp4);
+    scene.add(ramp4);
+    
 
 
     //Cria as paredes

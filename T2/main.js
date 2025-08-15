@@ -144,11 +144,3 @@ const messageSystem = new MessageSystem();
 window.showTemporaryMessage = (text, duration) => messageSystem.showMessage(text, duration);
 
 //let pe = new PainElemental(scene, player, null, 10, new THREE.Vector3(0, 3, -80));
-
-testeKing();
-
-async function testeKing(){
-  let king = await loadChessPiece('./assets/xadrez/King.glb', 'rgba(60, 60, 60, 1)');
-  king.position.set(0, 0, -10);
-  scene.add(king);
-}
