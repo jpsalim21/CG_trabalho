@@ -4,18 +4,41 @@ import { addChao, addParedes } from './cenario.js';
 
 const boxGeometry = new THREE.BoxGeometry(200, 4, 200);
 
-let piecesMeshWhite = {};
-let piecesMeshBlack = {};
-
-let whitePawnsPositions = [];
-let blackPawnsPositions = [];
-
 const tamQuadrado = -25;
 const posEsquerda = 87.5;
 
+let piecesMeshWhite = {};
+let piecesMeshBlack = {};
+
+let whitePawnsPositions = [
+    new THREE.Vector3(posEsquerda + tamQuadrado, 2, posEsquerda),
+    new THREE.Vector3(posEsquerda + 2 * tamQuadrado, 2, posEsquerda + tamQuadrado),
+    new THREE.Vector3(posEsquerda + tamQuadrado, 2, posEsquerda + 3 * tamQuadrado),
+    new THREE.Vector3(posEsquerda + 2 * tamQuadrado, 2, posEsquerda + 4 * tamQuadrado),
+    new THREE.Vector3(posEsquerda + tamQuadrado, 2, posEsquerda + 5 * tamQuadrado),
+    new THREE.Vector3(posEsquerda + tamQuadrado, 2, posEsquerda + 6 * tamQuadrado),
+    new THREE.Vector3(posEsquerda + tamQuadrado, 2, posEsquerda + 7 * tamQuadrado),
+];
+let blackPawnsPositions = [
+    new THREE.Vector3(posEsquerda + 6 * tamQuadrado, 2, posEsquerda + 2 * tamQuadrado),
+    new THREE.Vector3(posEsquerda + 3 * tamQuadrado, 2, posEsquerda + 4 * tamQuadrado),
+    new THREE.Vector3(posEsquerda + 6 * tamQuadrado, 2, posEsquerda + 5 * tamQuadrado),
+    new THREE.Vector3(posEsquerda + 6 * tamQuadrado, 2, posEsquerda + 7 * tamQuadrado)
+];
+
+
 function createChessBoard(scene){
     const tabuleiroMaterial = setMaterial('./assets/xadrez/xadrez2.png', 4, 4);
-    const boxMesh = new THREE.Mesh(boxGeometry, tabuleiroMaterial);
+    const materialLado = setMaterial('./assets/textures/metalparede.jpg', 8, 1);
+    const materiais = [
+        materialLado,
+        materialLado,
+        tabuleiroMaterial,
+        materialLado,
+        materialLado,
+        materialLado
+    ]
+    const boxMesh = new THREE.Mesh(boxGeometry, materiais);
     boxMesh.position.set(0, 2, 150);
     addChao(boxMesh);
     scene.add(boxMesh);
@@ -85,6 +108,20 @@ function arrangePieces(pai){
 
     nb1.rotation.y = Math.PI / 2; // 90 graus em radianos
     nb2.rotation.y = Math.PI / 2; // 90 graus em radianos
+
+    // White pawns positions
+    for (let i = 0; i < whitePawnsPositions.length; i++) {
+        const pawn = piecesMeshWhite['Pawn'].clone();
+        pawn.position.copy(whitePawnsPositions[i]);
+        pai.add(pawn);
+    }
+
+    // Black pawns positions
+    for (let i = 0; i < blackPawnsPositions.length; i++) {
+        const pawn = piecesMeshBlack['Pawn'].clone();
+        pawn.position.copy(blackPawnsPositions[i]);
+        pai.add(pawn);
+    }
 
 }
 
