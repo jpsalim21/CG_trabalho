@@ -11,6 +11,7 @@ import { Zombieman } from "../personagens/zombieman.js";
 import { setMaterial, createAdvancedMaterial, createLavaMaterial } from "../Mesh/extractor.js";
 import { OBJLoader } from '../../../build/jsm/loaders/OBJLoader.js'; 
 import { MTLLoader } from '../../../build/jsm/loaders/MTLLoader.js';
+import { createChessBoard } from "./area4.js";
 
 
 //materiais
@@ -97,8 +98,10 @@ function inicializaCenario(scene, player, renderer) {
     scene.add(a3);
     
     // box 4
-    let a4 = createArea4(scene, player);
-    scene.add(a4);
+    // let a4 = createArea4(scene, player);
+    // scene.add(a4);
+    createChessBoard(scene, player, chave3Obj);
+
 
     //Cria as paredes
     const parede1 = new THREE.Mesh(wallGeometry, wallMaterial); 
@@ -239,7 +242,8 @@ function createArea1(scene, player){
         paredes.push(column2);
     }
     let column2Top = columnTop.clone();
-    column2Top.position.set(-47, 25, 0);
+    column2Top.scale.set(0.55, 1, 1);
+    column2Top.position.set(-47, 25, -20);
     column2Top.rotation.y = Math.PI / 2;
     column2Top.castShadow = true;
     box1.add(column2Top);
@@ -251,7 +255,8 @@ function createArea1(scene, player){
         paredes.push(column3);
     }
     let column3Top = columnTop.clone();
-    column3Top.position.set(47, 25, 0);
+    column3Top.scale.set(0.65, 1, 1);
+    column3Top.position.set(47, 25, -10);
     column3Top.rotation.y = Math.PI / -2;
     column3Top.castShadow = true;
     box1.add(column3Top);
