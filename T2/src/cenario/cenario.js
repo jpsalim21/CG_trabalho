@@ -282,7 +282,8 @@ function createArea1(scene, player){
         paredes.push(column2);
     }
     let column2Top = columnTop.clone();
-    column2Top.position.set(-47, 25, 0);
+    column2Top.scale.set(0.55, 1, 1);
+    column2Top.position.set(-47, 25, -20);
     column2Top.rotation.y = Math.PI / 2;
     column2Top.castShadow = true;
     box1.add(column2Top);
@@ -294,7 +295,8 @@ function createArea1(scene, player){
         paredes.push(column3);
     }
     let column3Top = columnTop.clone();
-    column3Top.position.set(47, 25, 0);
+    column3Top.scale.set(0.65, 1, 1);
+    column3Top.position.set(47, 25, -10);
     column3Top.rotation.y = Math.PI / -2;
     column3Top.castShadow = true;
     box1.add(column3Top);
