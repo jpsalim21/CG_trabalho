@@ -208,4 +208,32 @@ function createLavaMaterial(repeatU = 1, repeatV = 1, options = {}) {
     return material;
 }
 
-export { loadOBJ, loadGLTF, setMaterial, loadGLB, createAdvancedMaterial, createLavaMaterial };
+function loadChessPiece(path, color= 'white'){
+    return new Promise((resolve, reject) => {
+        const loader = new GLTFLoader();
+        loader.load(
+            path,
+            (gltf) => {
+                gltf.scene.traverse((child) => {
+                    if (child.isMesh) {
+                        child.material = new THREE.MeshLambertMaterial({
+                            color: color,
+                            metalness: 0.5,
+                            roughness: 0.5
+                        });
+                    }
+                });
+                resolve(gltf.scene);
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            (error) => {
+                console.error('An error happened while loading the chess piece model:', error);
+                reject(error);
+            }
+        );
+    });
+}
+
+export { loadOBJ, loadGLTF, setMaterial, loadGLB, createAdvancedMaterial, createLavaMaterial, loadChessPiece };
