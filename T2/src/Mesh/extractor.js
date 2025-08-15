@@ -86,7 +86,7 @@ function loadSprite(path){
 }
 
 function setMaterial(file, repeatU = 1, repeatV = 1, color = 'rgb(255,255,255)'){
-    let mat = new THREE.MeshBasicMaterial({ map: texLoader.load(file), color:color});
+    let mat = new THREE.MeshStandardMaterial({ map: texLoader.load(file), color:color, roughness: 0.8, metalness: 0.2});
     mat.map.colorSpace = THREE.SRGBColorSpace;
     mat.map.wrapS = mat.map.wrapT = THREE.RepeatWrapping;
     mat.map.minFilter = mat.map.magFilter = THREE.LinearFilter;

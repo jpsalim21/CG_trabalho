@@ -24,20 +24,6 @@ const box4Material  = new THREE.MeshLambertMaterial({color:'rgb(132, 77, 155)'})
 const wallMaterial  = new THREE.MeshLambertMaterial({color:'rgb(255, 255, 255)'});
 const columnMaterial = new THREE.MeshLambertMaterial({color:'rgb(158, 158, 158)'});
 
-const hangarMaterial = new THREE.MeshLambertMaterial({
-    map: brick2Texture,
-    side: THREE.DoubleSide 
-});
-const roofMaterial = new THREE.MeshLambertMaterial({
-    map: telhadoTexture,
-    side: THREE.DoubleSide
-});
-const hangarGateMaterial = new THREE.MeshLambertMaterial({
-    map: metalEscuroTexture,
-    side: THREE.DoubleSide
-});
-const floorMaterial = new THREE.MeshLambertMaterial({map: cementTexture});
-
 //geometrias
 const planeGeometry = new THREE.PlaneGeometry(500, 500); 
 const boxGeometry1 = new THREE.BoxGeometry(10, 4, 100);
@@ -75,6 +61,8 @@ let porta = null;
 let pilarChave = null;
 let elevador = null;
 
+const textureLoader = new THREE.TextureLoader();
+
 function inicializaCenario(scene, player, renderer) {
     // Cria o céu
     createSkybox(scene);
@@ -95,7 +83,7 @@ function inicializaCenario(scene, player, renderer) {
 
     // box 3
     let a3 = createArea3(scene, player, renderer);
-    scene.add(a3);
+    
     
     // box 4
     // let a4 = createArea4(scene, player);
@@ -474,45 +462,29 @@ function createArea2(scene, player){
 
 function createArea3(scene, player, renderer){
     //texturas área 3
+    const floorTexture = setMaterial('./assets/textures/granite.png', 10, 10);
+    const brickTexture = setMaterial('./assets/textures/stone.jpg', 4, 2);
+    const cementTexture = setMaterial('./assets/textures/darkcement.jpg', 10,10);
+    const asfaltoTexture = setMaterial('./assets/textures/asfalto.jpg', 1, 1);
+    const metalEscuroTexture = setMaterial('./assets/textures/metalescuro.jpg', 1, 1);
+    const metalTexturizadoTexture = setMaterial('./assets/textures/metaltexturizado.jpg', 1, 1);
+    const brick2Texture = setMaterial('./assets/textures/tijolos.jpg', 2, 1);
+    const telhadoTexture = setMaterial('./assets/textures/telhado.jpg', 10, 10);
 
-const textureLoader = new THREE.TextureLoader();
-
-    const floorTexture = textureLoader.load('./assets/textures/granite.png');
-    floorTexture.wrapS = THREE.RepeatWrapping;
-    floorTexture.wrapT = THREE.RepeatWrapping;
-    floorTexture.repeat.set(10, 10);
-
-    const brickTexture = textureLoader.load('./assets/textures/stone.jpg');
-    brickTexture.wrapS = THREE.RepeatWrapping;
-    brickTexture.wrapT = THREE.RepeatWrapping;
-    brickTexture.repeat.set(4, 2);
-
-    const cementTexture = textureLoader.load('./assets/textures/darkcement.jpg');
-    cementTexture.wrapS = THREE.RepeatWrapping;
-    cementTexture.wrapT = THREE.RepeatWrapping;
-    cementTexture.repeat.set(10, 10);
-
-    const asfaltoTexture = textureLoader.load('./assets/textures/asfalto.jpg');
-    asfaltoTexture.wrapS = THREE.RepeatWrapping;
-    asfaltoTexture.wrapT = THREE.RepeatWrapping;
-
-    const metalEscuroTexture = textureLoader.load('./assets/textures/metalescuro.jpg');
-    metalEscuroTexture.wrapS = THREE.RepeatWrapping;
-    metalEscuroTexture.wrapT = THREE.RepeatWrapping;
-
-    const metalTexturizadoTexture = textureLoader.load('./assets/textures/metaltexturizado.jpg');
-    metalTexturizadoTexture.wrapS = THREE.RepeatWrapping;
-    metalTexturizadoTexture.wrapT = THREE.RepeatWrapping;
-
-    const brick2Texture = textureLoader.load('./assets/textures/tijolos.jpg');
-    brick2Texture.wrapS = THREE.RepeatWrapping;
-    brick2Texture.wrapT = THREE.RepeatWrapping;
-    brick2Texture.repeat.set(2, 1);
-
-    const telhadoTexture = textureLoader.load('./assets/textures/telhado.jpg');
-    telhadoTexture.wrapS = THREE.RepeatWrapping;
-    telhadoTexture.wrapT = THREE.RepeatWrapping;
-    telhadoTexture.repeat.set(10, 10);
+    const hangarMaterial = new THREE.MeshLambertMaterial({
+        map: brick2Texture,
+        side: THREE.DoubleSide 
+    });
+    const roofMaterial = new THREE.MeshLambertMaterial({
+        map: telhadoTexture,
+        side: THREE.DoubleSide
+    });
+    const hangarGateMaterial = new THREE.MeshLambertMaterial({
+        map: metalEscuroTexture,
+        side: THREE.DoubleSide
+    });
+    const floorMaterial = new THREE.MeshLambertMaterial({map: cementTexture});
+    // fim texturas
 
     const chaoArea3 = new THREE.Mesh(boxGeometryArea3, floorMaterial);
     chaoArea3.position.set(150, 0.1, -150);
