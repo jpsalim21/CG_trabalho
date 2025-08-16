@@ -175,10 +175,11 @@ class PainElemental extends InimigoBase {
         direcao.normalize();
         
         direcao.applyAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
-        let alvo = this.object.position.clone().sub(direcao);
         
-        // Em vez de rotacionar o object, rotacione apenas o mesh:
-        this.mesh.lookAt(alvo);
+        const angleY = Math.atan2(-direcao.x, -direcao.z);
+
+        // Define o quaternion para rotacionar apenas no eixo Y
+        this.mesh.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), angleY);
         
         const dir = new THREE.Vector3(0, 0, this.dirSignal);
         this.wallCollision(dir, delta, 1.0);
