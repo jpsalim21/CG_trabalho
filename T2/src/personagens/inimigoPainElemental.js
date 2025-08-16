@@ -41,7 +41,6 @@ class PainElemental extends InimigoBase {
     async loadModel(){
         try {
             this.mesh = await loadGLB('../../../0_assetsT3/objects/pain/painElemental.glb', '../../../0_assetsT3/objects/pain/textures/', 'pain_elemental_toy_normal.png');
-            this.mesh.rotation.y = Math.PI / 2;
             this.bb = new THREE.Box3().setFromObject(this.mesh);
             this.setup();
             console.log("Object pos world", this.object.getWorldPosition(new THREE.Vector3()));
@@ -59,7 +58,7 @@ class PainElemental extends InimigoBase {
         super.setup();
         this.sprite.scale.set(10, 0.8, 1);
         this.sprite.position.set(0, 20, 0);
-        this.enterMoving();
+        this.enterIdle();
     }
 
     update(delta){
@@ -138,7 +137,6 @@ class PainElemental extends InimigoBase {
 
     idle(delta) {
         let time = this.clock.getElapsedTime();
-
         this.mesh.position.y = Math.sin(time * 6 + this.sinOffset) * 0.5;
     }
 
@@ -154,7 +152,7 @@ class PainElemental extends InimigoBase {
         }
     }
 
-    enterMoving() {
+    enterTriggered() {
         this.updateFunction = this.moving.bind(this);
         this.timeOnState = 0;
         this.clockIdle.start();
@@ -167,7 +165,8 @@ class PainElemental extends InimigoBase {
             this.triggered();
             this.timeOnState = 0;
             this.dirSignal = Math.random() < 0.5 ? -1 : 1;
-            this.maxTime = 0.5 + Math.random() * 5; // Tempo aleatório entre 1 e 5 segundos
+            // Tempo aleatório entre 10 e 20 segundos
+            this.maxTime = 10 + Math.random() * 10;
             return;
         }
 

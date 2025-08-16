@@ -71,36 +71,36 @@ class InimigoLostSoul extends InimigoBase {
         this.rodando = false;
 
         const metodoDestructor = this.destructor.bind(this);
-        let start = null;
-        const initialOpacities = [];
-        const mesh = this.mesh;
-        mesh.traverse(child => {
-            if (child.isMesh && child.material) {
-                initialOpacities.push(child.material.opacity ?? 1);
-            }
-        });
+        let start = performance.now();
         const duration = 0.7; // segundos
-        function animateFadeOut(timestamp) {
-            if (!start) start = timestamp;
-            const elapsed = (timestamp - start) / 1000;
+
+        const fadeOut = () => {
+            const elapsed = (performance.now() - start) / 1000;
             const t = Math.min(elapsed / duration, 1);
 
-            let i = 0;
-            mesh.traverse(child => {
+            // Itera sobre os materiais para alterar a opacidade
+            this.mesh.traverse((child) => {
                 if (child.isMesh && child.material) {
-                    child.material.opacity = initialOpacities[i] * (1 - t);
-                    i++;
+                    if (Array.isArray(child.material)) {
+                        child.material.forEach((mat) => {
+                            mat.transparent = true; // Certifica-se de que o material é transparente
+                            mat.opacity = 1 - t; // Aplica a opacidade
+                        });
+                    } else {
+                        child.material.transparent = true; // Certifica-se de que o material é transparente
+                        child.material.opacity = 1 - t; // Aplica a opacidade
+                    }
                 }
             });
 
             if (t < 1) {
-                requestAnimationFrame(animateFadeOut);
+                requestAnimationFrame(fadeOut);
             } else {
                 metodoDestructor();
             }
-        }
+        };
 
-        requestAnimationFrame(animateFadeOut);
+        fadeOut();
         GameController.instance.inimigoMorreu(this);
     }
 
@@ -116,11 +116,12 @@ class InimigoLostSoul extends InimigoBase {
     update(delta){
         if (!this.rodando) return;
         
-        this.testeColisao();
-        
         if (this.updateFunction) {
+            if (this.estado !== "idle") {
+                this.bb.setFromObject(this.mesh);
+            }
+            this.testeColisao();
             this.updateFunction(delta);
-            this.bb.setFromObject(this.mesh);
         }
     }
 
@@ -187,7 +188,6 @@ class InimigoLostSoul extends InimigoBase {
         let seno = Math.sin(this.clockIdle.getElapsedTime() * 2 + this.sinOffset);
 
         this.object.position.y = this.altura + seno;
-        this.bb.setFromObject(this.mesh);
     }
 
     enterTriggered(){

@@ -3,10 +3,13 @@ import { loadChessPiece, setMaterial, createLavaMaterial } from '../Mesh/extract
 import { addChao, addParedes } from './cenario.js';
 import { portaA4 } from './portaArea4.js';
 import { ParedeA4 } from './paredesA4.js';
+import { PainElemental } from '../personagens/inimigoPainElemental.js';
+import { Cacodemon } from '../personagens/inimigoCacodemon.js';
+import { AreaTrigger } from './areaTrigger.js';
 
-const boxGeometry = new THREE.BoxGeometry(200, 4, 200, 10, 10, 10);
+const boxGeometry = new THREE.BoxGeometry(200, 4, 200, 50, 1, 50);
 
-const baseGeo = new THREE.CylinderGeometry(3, 3, 2, 64, 64);
+const baseGeo = new THREE.CylinderGeometry(3, 3, 2);
 
 const tamQuadrado = -25;
 const posEsquerda = 87.5;
@@ -41,6 +44,11 @@ function createChessBoard(scene, player, chave){
     tabuleiroMaterial.normalMap = texLoader.load('./assets/xadrez/xadreznormal.jpg');
     tabuleiroMaterial.normalMap.wrapS = tabuleiroMaterial.normalMap.wrapT = THREE.RepeatWrapping;
     tabuleiroMaterial.normalMap.repeat.set(4/3, 4/3);
+    tabuleiroMaterial.displacementMap = texLoader.load('./assets/xadrez/height.png');
+    tabuleiroMaterial.displacementScale = 1.0;
+    tabuleiroMaterial.displacementMap.wrapS = tabuleiroMaterial.displacementMap.wrapT = THREE.RepeatWrapping;
+    tabuleiroMaterial.displacementMap.repeat.set(4/3, 4/3);
+
     const materiais = [
         materialLado,
         materialLado,
@@ -66,6 +74,7 @@ function createChessBoard(scene, player, chave){
     addChao(porta.mesh);
 
     criaBases(scene);
+    adicionarInimigos(scene, player);
 }
 
 async function loadPieces(pai){
@@ -230,27 +239,45 @@ function criaBases(scene){
     let b2 = base.clone();
     b2.position.set(20, 5, 160);
     scene.add(b2);
+    addChao(b2);
+    addParedes(b2);
 
     let b3 = base.clone();
     b3.position.set(70, 5, 140);
     scene.add(b3);
+    addChao(b3);
+    addParedes(b3);
 
     let b4 = base.clone();
     b4.position.set(-70, 5, 120);
     scene.add(b4);
+    addChao(b4);
+    addParedes(b4);
 
     let b5 = base.clone();
     b5.position.set(-40, 5, 100);
     scene.add(b5);
+    addChao(b5);
+    addParedes(b5);
 
     let b6 = base.clone();
     b6.position.set(-90, 5, 80);
     scene.add(b6);
+    addChao(b6);
+    addParedes(b6);
 
 }
 
 function adicionarInimigos(scene, player){
-    
+    let areaTrigger = new AreaTrigger(scene, new THREE.Vector3(0, 2, 150), new THREE.Vector3(200, 10, 200), player);
+
+    let painElemental = new PainElemental(scene, player, areaTrigger, 10, new THREE.Vector3(0, 10, 200));
+
+    let cacodemon1 = new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(20, 10, 160));
+    let cacodemon2 = new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(70, 10, 140));
+    let cacodemon3 = new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(-70, 10, 120));
+    let cacodemon4 = new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(-40, 10, 120));
+    let cacodemon5 = new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(-90, 10, 80));
 }
 
 export { createChessBoard };

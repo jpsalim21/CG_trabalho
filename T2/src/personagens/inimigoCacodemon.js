@@ -11,6 +11,8 @@ const path = './assets/cacodemon.glb';
 const GRAVIDADE = 25;
 
 class Cacodemon extends InimigoBase {
+    static bulletPool = null;
+
     constructor(scene, player, observer, velocidade = 10, initialPosition = new THREE.Vector3(0, 5, 0)) {        
         super(scene, 50, 10, player, observer); // 50 HP, 10 de ataque
         this.velocidade = velocidade;
@@ -25,7 +27,10 @@ class Cacodemon extends InimigoBase {
         this.maxAngle = (Math.PI / 2) + (Math.random() * Math.PI / 2); // limite de ângulo entre 90° e 180°
 
         // pool de projéteis amarelos para o Cacodemon
-        this.bulletPool = new BulletPool(scene, false);
+        if (!Cacodemon.bulletPool) {
+            Cacodemon.bulletPool = new BulletPool(scene, false);
+        }
+
         this.shootInterval = 5; // atira a cada 5 segundos
         this.lastShotTime = 0;
 
@@ -275,7 +280,7 @@ class Cacodemon extends InimigoBase {
 
         const posicao = this.object.position.clone();
         const alvo = this.player.getCamPosition().clone();
-        this.bulletPool.atirar(posicao, alvo);
+        Cacodemon.bulletPool.atirar(posicao, alvo);
     }
 
     tomarDano(dano) {
