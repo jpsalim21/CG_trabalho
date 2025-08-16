@@ -99,7 +99,7 @@ const hangarWallGeometry = new THREE.BoxGeometry(100, 25, 2);
 const hangarBackWallGeometry = new THREE.BoxGeometry(100, 25, 2); 
 const hangarRoofGeometry = new THREE.CylinderGeometry(49, 49, 100, 32, 1, false, Math.PI, Math.PI /2);
 const hangarRoofGeometry2 = new THREE.CylinderGeometry(49, 49, 100, 32, 1, false, Math.PI / 2, Math.PI /2);
-const hangarGateGeometry = new THREE.BoxGeometry(50, 25, 2); 
+const hangarGateGeometry = new THREE.BoxGeometry(49.95, 25, 2); 
 const ceilingGeometry = new THREE.BoxGeometry(100, 0.5, 98);
 
 const chao = []; // array para armazenar os objetos do chão
@@ -612,7 +612,7 @@ function createArea3(scene, player, renderer){
 
         // Parede de trás
         const wallBack = new THREE.Mesh(hangarBackWallGeometry, hangarMaterial);
-        wallBack.position.set(0, 12.5, -49);
+        wallBack.position.set(0, 12.5, -49.01);
         wallBack.castShadow = true;
         wallBack.receiveShadow = true;
         hangar.add(wallBack);
@@ -694,14 +694,14 @@ function createArea3(scene, player, renderer){
 
         // Portão 
         const gateLeft = new THREE.Mesh(hangarGateGeometry, hangarGateMaterialClipped);
-        gateLeft.position.set(-24, 12.5, 48.5);
+        gateLeft.position.set(-25, 12.5, 48.5);
         gateLeft.castShadow = true;
         gateLeft.receiveShadow = true;
         hangar.add(gateLeft);
         paredes.push(gateLeft);
 
         const gateRight = new THREE.Mesh(hangarGateGeometry, hangarGateMaterialClipped);
-        gateRight.position.set(24, 12.5, 48.5);
+        gateRight.position.set(25, 12.5, 48.5);
         gateRight.castShadow = true;
         gateRight.receiveShadow = true;
         hangar.add(gateRight);
