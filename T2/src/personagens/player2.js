@@ -443,16 +443,17 @@ class PlayerController extends EventDispatcher {
         this.rayMira.set(camPos, direcao);
         let intersects = this.rayMira.intersectObjects(objetos);
         
-        const posicao = this.weapons[2].object.getWorldPosition(new THREE.Vector3()); 
-        
+        const posicao = this.weapons[2].object.getWorldPosition(new THREE.Vector3());
+        const spawnOffset = 10.2; 
+        const spawnPos = posicao.clone().add(direcao.clone().multiplyScalar(spawnOffset));
+
         let alvo;
-        
         if (intersects.length > 0) {
             alvo = intersects[0].point; // pega o ponto de interseção mais próximo
         } else {
-            alvo = posicao.clone().add(direcao.multiplyScalar(500)); // se não houver interseção, define um alvo distante
+            alvo = spawnPos.clone().add(direcao.clone().multiplyScalar(500)); // alvo distante
         }
-        this.arma.atirar(posicao, alvo);
+        this.arma.atirar(spawnPos, alvo);
 
         if (this.weapons[2] && this.weapons[2].object) {
             this.launcherRecoil.active = true;
