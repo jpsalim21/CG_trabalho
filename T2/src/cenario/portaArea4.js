@@ -17,7 +17,7 @@ class portaA4 {
 
         this.mesh = new THREE.Mesh(
             new THREE.BoxGeometry(3, 2, 3),
-            new THREE.MeshStandardMaterial({ color: 0x8B4513 }) // Cor marrom para a porta
+            new THREE.MeshLambertMaterial({color:'rgba(128, 134, 127, 1)'}) // Cor marrom para a porta
         );
         this.mesh.position.copy(position);
         this.mesh.castShadow = true; // A porta pode projetar sombras

@@ -260,12 +260,6 @@ function criaBases(scene){
     addChao(b5);
     addParedes(b5);
 
-    let b6 = base.clone();
-    b6.position.set(-90, 5, 80);
-    scene.add(b6);
-    addChao(b6);
-    addParedes(b6);
-
 }
 
 function adicionarInimigos(scene, player){
@@ -277,7 +271,6 @@ function adicionarInimigos(scene, player){
     let cacodemon2 = new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(70, 10, 140));
     let cacodemon3 = new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(-70, 10, 120));
     let cacodemon4 = new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(-40, 10, 120));
-    let cacodemon5 = new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(-90, 10, 80));
 }
 
 export { createChessBoard };

@@ -150,6 +150,25 @@ function inicializaCenario(scene, player, renderer) {
     escada4.position.set(0, 0, 20);
     scene.add(escada4);
 
+     
+    //laterais da escada 4
+    const espessuraCaixa = 6; 
+    const geometriaCaixa = new THREE.BoxGeometry(espessuraCaixa, 4, 30);
+    
+    const caixaEsquerda = new THREE.Mesh(geometriaCaixa, columnMaterial);
+    caixaEsquerda.position.set(-(30/2 + espessuraCaixa/2), 4/2, 30/2);
+    caixaEsquerda.castShadow = true;
+    escada4.add(caixaEsquerda);
+    chao.push(caixaEsquerda);
+    paredes.push(caixaEsquerda);
+
+    const caixaDireita = new THREE.Mesh(geometriaCaixa, columnMaterial);
+    caixaDireita.position.set(30/2 + espessuraCaixa/2, 4/2, 30/2);
+    caixaDireita.castShadow = true;
+    escada4.add(caixaDireita);
+    chao.push(caixaDireita);
+    paredes.push(caixaDireita);
+
     const ramp4 = new THREE.Mesh(rampGeometry, wallMaterial);
     ramp4.rotation.y = Math.PI;
     ramp4.rotation.x = Math.atan(30/4);
@@ -1151,24 +1170,6 @@ function createEscada(){
       
       escada.add(degrau);
     }
-
-    //laterais da escada
-    const espessuraCaixa = 6; 
-    const geometriaCaixa = new THREE.BoxGeometry(espessuraCaixa, alturaTotal, comprimento);
-    
-    const caixaEsquerda = new THREE.Mesh(geometriaCaixa, columnMaterial);
-    caixaEsquerda.position.set(-(largura/2 + espessuraCaixa/2), alturaTotal/2, comprimento/2);
-    caixaEsquerda.castShadow = true;
-    escada.add(caixaEsquerda);
-    chao.push(caixaEsquerda);
-    paredes.push(caixaEsquerda);
-
-    const caixaDireita = new THREE.Mesh(geometriaCaixa, columnMaterial);
-    caixaDireita.position.set(largura/2 + espessuraCaixa/2, alturaTotal/2, comprimento/2);
-    caixaDireita.castShadow = true;
-    escada.add(caixaDireita);
-    chao.push(caixaDireita);
-    paredes.push(caixaDireita);
 
     return escada;
 }

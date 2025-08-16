@@ -204,6 +204,15 @@ class PlayerController extends EventDispatcher {
         this.updateHealthUI();
 
         this.connect(); 
+
+        // tela de morte
+        this.deathScreen = document.getElementById("death-screen");
+        this.restartButton = document.getElementById("restart-button");
+        
+        // botão de reinício
+        this.restartButton.addEventListener("click", () => {
+            this.reiniciarJogo();
+        }, false);
     }
 
      async getLauncher(){
@@ -583,8 +592,32 @@ class PlayerController extends EventDispatcher {
 
         if (this.hp <= 0) {
             console.log("Player morreu!");
-            // Aqui você pode adicionar a lógica de morte (ex: this.morrer())
+            this.morrer();
         }
+    }
+
+    morrer() {
+        console.log("Player morreu!");
+        
+        // Desativa controles
+        this.isLocked = false;
+        this.unlock();
+        this.teclas = [false, false, false, false];
+        this.atirar = false;
+        
+        // Mostra a tela de morte
+        this.mira.style.display = "none";
+        this.blocker.style.display = "none";
+        this.deathScreen.style.display = "flex";
+        this.unlock();
+    }
+
+    reiniciarJogo() {
+        // Esconde a tela de morte
+         this.deathScreen.style.display = "none";
+        
+        // Recarrega a página 
+        window.location.reload();
     }
 
     updateHealthUI() {
