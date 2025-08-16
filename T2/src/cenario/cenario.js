@@ -1122,6 +1122,23 @@ function createEscada(){
       
       escada.add(degrau);
     }
+    const espessuraCaixa = 6; 
+    const geometriaCaixa = new THREE.BoxGeometry(espessuraCaixa, alturaTotal, comprimento);
+    
+    // Caixa lateral esquerda
+    const caixaEsquerda = new THREE.Mesh(geometriaCaixa, planeMaterial);
+    caixaEsquerda.position.set(-(largura/2 + espessuraCaixa/2), alturaTotal/2, comprimento/2);
+    caixaEsquerda.castShadow = true;
+    escada.add(caixaEsquerda);
+    chao.push(caixaEsquerda);
+    paredes.push(caixaEsquerda);
+
+    const caixaDireita = new THREE.Mesh(geometriaCaixa, planeMaterial);
+    caixaDireita.position.set(largura/2 + espessuraCaixa/2, alturaTotal/2, comprimento/2);
+    caixaDireita.castShadow = true;
+    escada.add(caixaDireita);
+    chao.push(caixaDireita);
+    paredes.push(caixaDireita);
 
     return escada;
 }
