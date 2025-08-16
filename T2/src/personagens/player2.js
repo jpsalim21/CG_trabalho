@@ -295,12 +295,14 @@ class PlayerController extends EventDispatcher {
         this.bb.setFromObject(this.playerMesh);
         this.grounded = this.isOnGround(delta);
         
+        /*
         if (this.grounded) {
             this.velVertical = 0;
         } else {
             this.velVertical -= GRAVIDADE * delta;
             this.cameraHolder.translateY(this.velVertical * delta);
         }
+        */
         
 
         const moveDistance = this.speed * delta;

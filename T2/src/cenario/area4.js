@@ -6,7 +6,7 @@ import { ParedeA4 } from './paredesA4.js';
 
 const boxGeometry = new THREE.BoxGeometry(200, 4, 200, 10, 10, 10);
 
-const baseGeo = new THREE.CylinderGeometry(3, 3, 2, 64, 34);
+const baseGeo = new THREE.CylinderGeometry(3, 3, 2, 64, 64);
 
 const tamQuadrado = -25;
 const posEsquerda = 87.5;
@@ -33,8 +33,14 @@ let blackPawnsPositions = [
 
 
 function createChessBoard(scene, player, chave){
+    const texLoader = new THREE.TextureLoader();
+
     const tabuleiroMaterial = setMaterial('./assets/xadrez/xadrez2.png', 4, 4);
     const materialLado = setMaterial('./assets/textures/metalparede.jpg', 8, 1);
+    tabuleiroMaterial.colorSpace = THREE.SRGBColorSpace;
+    tabuleiroMaterial.normalMap = texLoader.load('./assets/xadrez/xadreznormal.jpg');
+    tabuleiroMaterial.normalMap.wrapS = tabuleiroMaterial.normalMap.wrapT = THREE.RepeatWrapping;
+    tabuleiroMaterial.normalMap.repeat.set(4/3, 4/3);
     const materiais = [
         materialLado,
         materialLado,
@@ -212,6 +218,8 @@ function criaBases(scene){
     let materialLava = setMaterial('./assets/LavaTexture/basecolor.png', 2, 2);
     materialLava.colorSpace = THREE.SRGBColorSpace;
     materialLava.normalMap = texLoader.load('./assets/LavaTexture/normal.png');
+    materialLava.emissiveMap = texLoader.load('./assets/LavaTexture/emissive.png');
+    materialLava.emissiveIntensity = 4;
     const materialLado = setMaterial('../../../assets/textures/displacement/rockWall.jpg', 8, 1);
     let base = new THREE.Mesh(baseGeo, [materialLado, materialLava, materialLava]);
     base.position.set(0, 5, 200);
