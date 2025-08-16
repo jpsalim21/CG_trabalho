@@ -64,10 +64,13 @@ const box4Material  = new THREE.MeshLambertMaterial({color:'rgb(132, 77, 155)'})
 const wallMaterial  = new THREE.MeshLambertMaterial({color:'rgb(255, 255, 255)'});
 const columnMaterial = new THREE.MeshLambertMaterial({color:'rgb(158, 158, 158)'});
 
-const hangarMaterial = new THREE.MeshLambertMaterial({
-    map: brick2Texture,
-    side: THREE.DoubleSide 
-});
+const hangarMaterial = [
+        setMaterial('./assets/textures/tijolos.jpg', 0.1,1),
+        setMaterial('./assets/textures/tijolos.jpg', 0.1,1),
+        setMaterial('./assets/textures/tijolos.jpg', 1,1),
+        setMaterial('./assets/textures/tijolos.jpg', 1,1),
+        setMaterial('./assets/textures/tijolos.jpg', 3,1),
+        setMaterial('./assets/textures/tijolos.jpg', 3,1)];
 const roofMaterial = new THREE.MeshLambertMaterial({
     map: telhadoTexture,
     side: THREE.DoubleSide
