@@ -17,39 +17,39 @@ import { createChessBoard } from "./area4.js";
 
 const textureLoader = new THREE.TextureLoader();
 
-const floorTexture = textureLoader.load('../../../assets/textures/granite.png');
+const floorTexture = textureLoader.load('./assets/textures/granite.png');
 floorTexture.wrapS = THREE.RepeatWrapping;
 floorTexture.wrapT = THREE.RepeatWrapping;
 floorTexture.repeat.set(10, 10);
 
-const brickTexture = textureLoader.load('../../../assets/textures/stone.jpg');
+const brickTexture = textureLoader.load('./assets/textures/stone.jpg');
 brickTexture.wrapS = THREE.RepeatWrapping;
 brickTexture.wrapT = THREE.RepeatWrapping;
 brickTexture.repeat.set(4, 2);
 
-const cementTexture = textureLoader.load('../../../assets/textures/darkcement.jpg');
+const cementTexture = textureLoader.load('./assets/textures/darkcement.jpg');
 cementTexture.wrapS = THREE.RepeatWrapping;
 cementTexture.wrapT = THREE.RepeatWrapping;
 cementTexture.repeat.set(10, 10);
 
-const asfaltoTexture = textureLoader.load('../../../assets/textures/asfalto.jpg');
+const asfaltoTexture = textureLoader.load('./assets/textures/asfalto.jpg');
 asfaltoTexture.wrapS = THREE.RepeatWrapping;
 asfaltoTexture.wrapT = THREE.RepeatWrapping;
 
-const metalEscuroTexture = textureLoader.load('../../../assets/textures/metalescuro.jpg');
+const metalEscuroTexture = textureLoader.load('./assets/textures/metalescuro.jpg');
 metalEscuroTexture.wrapS = THREE.RepeatWrapping;
 metalEscuroTexture.wrapT = THREE.RepeatWrapping;
 
-const metalTexturizadoTexture = textureLoader.load('../../../assets/textures/metaltexturizado.jpg');
+const metalTexturizadoTexture = textureLoader.load('./assets/textures/metaltexturizado.jpg');
 metalTexturizadoTexture.wrapS = THREE.RepeatWrapping;
 metalTexturizadoTexture.wrapT = THREE.RepeatWrapping;
 
-const brick2Texture = textureLoader.load('../../../assets/textures/tijolos.jpg');
+const brick2Texture = textureLoader.load('./assets/textures/tijolos.jpg');
 brick2Texture.wrapS = THREE.RepeatWrapping;
 brick2Texture.wrapT = THREE.RepeatWrapping;
 brick2Texture.repeat.set(2, 1);
 
-const telhadoTexture = textureLoader.load('../../../assets/textures/telhado.jpg');
+const telhadoTexture = textureLoader.load('./assets/textures/telhado.jpg');
 telhadoTexture.wrapS = THREE.RepeatWrapping;
 telhadoTexture.wrapT = THREE.RepeatWrapping;
 telhadoTexture.repeat.set(10, 10);
@@ -138,7 +138,7 @@ function inicializaCenario(scene, player, renderer) {
 
     // box 3
     let a3 = createArea3(scene, player, renderer);
-    scene.add(a3);
+    
     
     // box 4
     createChessBoard(scene, player, chave3Obj);
