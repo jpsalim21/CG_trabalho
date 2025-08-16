@@ -67,23 +67,35 @@ class LightingController {
   }
 
   createHangarLight() {
-    const hangarLightColor = new THREE.Color('rgb(200, 200, 180)'); // luz mais amarelada
-    this.hangarLight = new THREE.DirectionalLight(hangarLightColor, 1.5); // mais fraca que a principal
-    this.hangarLight.position.set(150, 150, -50); // posicionada para iluminar o hangar
-    this.hangarLight.castShadow = false; // não projeta sombra
-    this.hangarLight.visible = false; // inicialmente desligada
+    const hangarLightColor = new THREE.Color('rgb(200, 200, 180)'); 
+  
+    this.hangarLight = new THREE.DirectionalLight(hangarLightColor, 1.2);
+    this.hangarLight.position.set(150, 150, -50); 
+    this.hangarLight.castShadow = true; 
+    this.hangarLight.shadow.mapSize.width = 1024;
+    this.hangarLight.shadow.mapSize.height = 1024;
+    this.hangarLight.shadow.camera.near = 0.5;
+    this.hangarLight.shadow.camera.far = 500;
+    this.hangarLight.shadow.camera.left = -80;
+    this.hangarLight.shadow.camera.right = 80;
+    this.hangarLight.shadow.camera.top = 80;
+    this.hangarLight.shadow.camera.bottom = -80;
+    this.hangarLight.shadow.bias = -0.003;
+    this.hangarLight.shadow.radius = 2;
+    this.hangarLight.visible = false; 
+    this.hangarLight.target.position.set(150, 0, -150);
     scene.add(this.hangarLight);
+    scene.add(this.hangarLight.target);
   }
 
   enterHangar() {
     if (!this.isInHangar) {
       console.log("Jogador entrou no hangar - mudando iluminação");
       this.isInHangar = true;
-      // diminui drasticamente a luz principal
-      this.mainLight.intensity = 0.3;
-      // liga a luz do hangar
+      this.mainLight.visible = false;
+      this.mainLight.intensity = 0; 
+      this.mainLight.castShadow = false;
       this.hangarLight.visible = true;
-      // reduz a luz ambiente
       ambientLight.intensity = 0.2;
     }
   }
@@ -92,11 +104,11 @@ class LightingController {
     if (this.isInHangar) {
       console.log("Jogador saiu do hangar - restaurando iluminação");
       this.isInHangar = false;
-      // restaura a luz principal
+  
+      this.mainLight.visible = true;
       this.mainLight.intensity = this.originalIntensity;
-      // desliga a luz do hangar
+      this.mainLight.castShadow = true;
       this.hangarLight.visible = false;
-      // restaura a luz ambiente
       ambientLight.intensity = 0.5;
     }
   }
