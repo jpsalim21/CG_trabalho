@@ -84,7 +84,7 @@ export class Zombieman extends ZombieBase {
             this.actions.runRight = this.spriteMixer.Action(this.actionSprite, 100, 0, 6, 3, 6);
             this.actions.runRD = this.spriteMixer.Action(this.actionSprite, 100, 0, 7, 3, 7);
 
-            this.actions.Die = this.spriteMixer.Action(this.actionSprite, 150, 7, 0, 7, 5);
+            this.actions.Die = this.spriteMixer.Action(this.actionSprite, 150, 7, 0, 7, 3);
             
             this.actions.Die.hideWhenFinished = false;
             this.actions.Die.clampWhenFinished = true;
@@ -692,14 +692,17 @@ export class Zombieman extends ZombieBase {
             }, 100);
             
             setTimeout(() => {
-                if (this.actionSprite) {
-                    this.actionSprite.visible = true;
+                if (this.actionSprite && !this.actionSprite.parent) {
+                    this.scene.add(this.actionSprite); // Adiciona o sprite novamente à cena
                 }
             }, 2000);
         }
 
         if (typeof GameController !== 'undefined' && GameController.instance) {
             GameController.instance.inimigoMorreu(this);
+            if (this.actionSprite && !this.actionSprite.parent) {
+                this.scene.add(this.actionSprite); // Adiciona o sprite novamente à cena
+            }
         }
     }
 
@@ -707,12 +710,6 @@ export class Zombieman extends ZombieBase {
     atualizarBarraVida() {
         let porcentagemVida = this.vida / this.maxVida;
         this.sprite.scale.set(1.5 * porcentagemVida, 0.2, 1);
-    }
-
-    fadeAndDestroy() {
-        if (this.actionSprite) {
-            this.actionSprite.visible = true;
-        }
     }
 
     destructor() {
@@ -723,14 +720,6 @@ export class Zombieman extends ZombieBase {
         this.bulletPool = null;
         this.clock = null;
         this.player = null;
-        
-        if (this.actionSprite) {
-            this.actionSprite.visible = true;
-            
-            if (!this.actionSprite.parent) {
-                this.scene.add(this.actionSprite);
-            }
-        }
     }
 
 }
