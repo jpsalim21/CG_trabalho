@@ -3,6 +3,7 @@ import { InimigoBase } from './inimigoBase.js';
 import { loadGLB } from '../Mesh/extractor.js';
 import { InimigoLostSoul } from './inimigoLostSoul.js';
 import { getParedes, getChao } from "../cenario/cenario.js";
+import { SoundController } from "../controller/soundcontroller.js";
 
 class PainElemental extends InimigoBase {
     constructor(scene, player, observer, velocidade = 10, pos = new THREE.Vector3(0, 10, 0)) {
@@ -10,6 +11,7 @@ class PainElemental extends InimigoBase {
         this.velocidade = velocidade;
 
         this.rodando = true;
+        this.soundController = new SoundController(player.getCamera());
 
         this.rayWall = new THREE.Raycaster();
         this.rayWall.far = 0.5;
@@ -78,6 +80,7 @@ class PainElemental extends InimigoBase {
         if (bullet && this.rodando) { // verifica se ainda está rodando
             bullet.reset(); // faz a bala desaparecer ao colidir
             this.tomarDano(10);
+            this.soundController.play('painInjured');
         }
     }
     
@@ -149,6 +152,7 @@ class PainElemental extends InimigoBase {
             lostSoul.object.position.copy(globalPosition);
             lostSoul.startState = lostSoul.enterAttack.bind(lostSoul);
             this.municao--;
+            this.soundController.play('painAttack');
         }
     }
 
@@ -156,6 +160,7 @@ class PainElemental extends InimigoBase {
         this.updateFunction = this.moving.bind(this);
         this.timeOnState = 0;
         this.clockIdle.start();
+        this.soundController.play('painSight');
     }
 
     moving(delta){

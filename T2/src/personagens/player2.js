@@ -56,6 +56,15 @@ class PlayerController extends EventDispatcher {
         this.clock = new THREE.Clock();
 
         this.chaingunSoundTime = 0;
+
+        // recuo da arma
+        this.launcherRecoil = {
+            active: false,
+            time: 0,
+            duration: 0.25, 
+            amount: 0.18, 
+            angleAmount: 0.15 
+        };
      
         // cria a arma "lançador"
         this.getLauncher();
@@ -143,7 +152,7 @@ class PlayerController extends EventDispatcher {
 		this.maxPolarAngle = Math.PI; 
 
         this.speed = 40;
-        this.pulo = 40;
+        this.pulo = 30;
         this.velVertical = 0;
         this.alturaChao = 0.1;
         this.grounded = false;
@@ -202,6 +211,9 @@ class PlayerController extends EventDispatcher {
             let launcher = await loadOBJ('./assets/rocketlauncher/wephomura6.obj', "./assets/rocketlauncher/", "texhomu_11.png");
             launcher.scale.set(0.5, 0.5, 0.5);
             launcher.position.set(0, -1.3, 0);
+            launcher.userData = launcher.userData || {};
+            launcher.userData.originalPosition = launcher.position.clone();
+            launcher.userData.originalRotation = launcher.rotation.clone();
             this.camera.add(launcher);
             this.weapons[2] = {
                 object: launcher,
@@ -351,6 +363,31 @@ class PlayerController extends EventDispatcher {
                 console.log("Chaingun parou de atirar - voltando para idle");
             }
         }
+        if (this.launcherRecoil.active && this.weapons[2] && this.weapons[2].object) {
+            const r = this.launcherRecoil;
+            r.time += delta;
+            const t = Math.min(1, r.time / r.duration);
+            
+            const offset = Math.sin(t * Math.PI) * r.amount;
+            const angleOffset = Math.sin(t * Math.PI) * r.angleAmount;
+            const launcherObj = this.weapons[2].object;
+
+            const origY = (launcherObj.userData && launcherObj.userData.originalPosition) ? launcherObj.userData.originalPosition.y : launcherObj.position.y - offset;
+           
+            launcherObj.position.y = origY - offset;
+            if (launcherObj.userData && launcherObj.userData.originalRotation) {
+                launcherObj.rotation.x = launcherObj.userData.originalRotation.x + angleOffset; 
+            } else {
+                launcherObj.rotation.x = angleOffset;
+            }
+            if (t >= 1) {
+                
+                if (launcherObj.userData && launcherObj.userData.originalPosition) launcherObj.position.copy(launcherObj.userData.originalPosition);
+                if (launcherObj.userData && launcherObj.userData.originalRotation) launcherObj.rotation.copy(launcherObj.userData.originalRotation);
+                r.active = false;
+                r.time = 0;
+            }
+        }
     }
     // Função de animação
     render() {
@@ -407,16 +444,23 @@ class PlayerController extends EventDispatcher {
         this.rayMira.set(camPos, direcao);
         let intersects = this.rayMira.intersectObjects(objetos);
         
-        const posicao = this.weapons[2].object.getWorldPosition(new THREE.Vector3()); 
+        const posicao = this.weapons[2].object.getWorldPosition(new THREE.Vector3());
+        const spawnOffset = 10.2; 
+        const spawnPos = posicao.clone().add(direcao.clone().multiplyScalar(spawnOffset)); 
         
         let alvo;
         
         if (intersects.length > 0) {
             alvo = intersects[0].point; // pega o ponto de interseção mais próximo
         } else {
-            alvo = posicao.clone().add(direcao.multiplyScalar(500)); // se não houver interseção, define um alvo distante
+            alvo = spawnPos.clone().add(direcao.clone().multiplyScalar(500)); // alvo distante
         }
-        this.arma.atirar(posicao, alvo);
+        this.arma.atirar(spawnPos, alvo);
+
+        if (this.weapons[2] && this.weapons[2].object) {
+            this.launcherRecoil.active = true;
+            this.launcherRecoil.time = 0;
+        }
     }
 
     fireChaingun(delta) {

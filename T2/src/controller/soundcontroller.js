@@ -66,8 +66,8 @@ class SoundController {
 
     play(name) {
         const sound = this.sounds[name];
-        if(sound.isPlaying){
-            sound.stop(); 
+        if(name == 'chaingun' && sound.isPlaying){
+            sound.stop();
         }
         if (sound && !sound.isPlaying) {
             sound.play();
@@ -83,10 +83,8 @@ class SoundController {
         
         if (this.backgroundPlaying) {
             bg.pause();
-            console.log("Música pausada");
         } else {
             bg.play();
-            console.log("Música retomada");
         }
         this.backgroundPlaying = !this.backgroundPlaying;
     }

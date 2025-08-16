@@ -16,8 +16,8 @@ class AreaTrigger {
             new THREE.Vector3(position.x - size.x / 2, position.y - size.y / 2, position.z - size.z / 2),
             new THREE.Vector3(position.x + size.x / 2, position.y + size.y / 2, position.z + size.z / 2)
         );
-        this.bbHelper = new THREE.Box3Helper(this.bb, new THREE.Color(0xff0000));
-        this.scene.add(this.bbHelper);
+        //this.bbHelper = new THREE.Box3Helper(this.bb, new THREE.Color(0xff0000));
+        //this.scene.add(this.bbHelper);
 
         this.render();
     }

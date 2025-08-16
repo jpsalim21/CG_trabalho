@@ -12,6 +12,7 @@ import { setMaterial, createAdvancedMaterial, createLavaMaterial } from "../Mesh
 import { OBJLoader } from '../../../build/jsm/loaders/OBJLoader.js'; 
 import { MTLLoader } from '../../../build/jsm/loaders/MTLLoader.js';
 import { createChessBoard } from "./area4.js";
+import { SoundController } from "../controller/soundcontroller.js";
 
 //texturas
 
@@ -62,7 +63,7 @@ const box2Material  = new THREE.MeshLambertMaterial({color:'rgb(155, 77, 77)'});
 const box3Material  = new THREE.MeshLambertMaterial({color:'rgb(77, 132, 155)'});
 const box4Material  = new THREE.MeshLambertMaterial({color:'rgb(132, 77, 155)'});
 const wallMaterial  = new THREE.MeshLambertMaterial({color:'rgb(255, 255, 255)'});
-const columnMaterial = new THREE.MeshLambertMaterial({color:'rgb(158, 158, 158)'});
+const columnMaterial = new THREE.MeshLambertMaterial({color:'rgba(128, 134, 127, 1)'});
 
 const hangarMaterial = [
         setMaterial('./assets/textures/tijolos.jpg', 0.1,1),
@@ -97,12 +98,14 @@ const rampGeometry = new THREE.PlaneGeometry(30, Math.sqrt(30 * 30 + 4 * 4));
 const wallGeometry = new THREE.PlaneGeometry(520, 50);
 const columnGeometry = new THREE.CylinderGeometry(2, 2, 20, 32, 10);
 const topGeometry = new THREE.BoxGeometry(100, 2, 6);
+const top2Geometry = new THREE.BoxGeometry(80, 2, 6);
+const top3Geometry = new THREE.BoxGeometry(65, 2, 6);
 
 const hangarWallGeometry = new THREE.BoxGeometry(100, 25, 2); 
 const hangarBackWallGeometry = new THREE.BoxGeometry(100, 25, 2); 
 const hangarRoofGeometry = new THREE.CylinderGeometry(49, 49, 100, 32, 1, false, Math.PI, Math.PI /2);
 const hangarRoofGeometry2 = new THREE.CylinderGeometry(49, 49, 100, 32, 1, false, Math.PI / 2, Math.PI /2);
-const hangarGateGeometry = new THREE.BoxGeometry(50, 25, 2); 
+const hangarGateGeometry = new THREE.BoxGeometry(49.95, 25, 2);
 const ceilingGeometry = new THREE.BoxGeometry(100, 0.5, 98);
 
 const chao = []; // array para armazenar os objetos do chão
@@ -119,6 +122,7 @@ let pilarChave = null;
 let elevador = null;
 
 function inicializaCenario(scene, player, renderer) {
+    let soundController = new SoundController(player.getCamera());
     // Cria o céu
     createSkybox(scene);
     // cria o chão
@@ -216,22 +220,45 @@ function createSkybox(scene){
 }
 
 function createArea1(scene, player){
+    //textures
+    let materialBox1 = [
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 16.6, 0.66),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 16.6, 0.66),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1, 16.6),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1, 16.6),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1.66, 0.66),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1.66, 0.66)];
+    let materialBox2 = [
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 16.6*0.7, 0.66),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 16.6*0.7, 0.66),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 3, 16.6*0.7),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 3, 16.6*0.7),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1.66*3, 0.66),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1.66*3, 0.66)];
+    let materialBox3 = [
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 16.6, 0.66),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 16.6, 0.66),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 6, 16.6),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 6, 16.6),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1.66*6, 0.66),
+        createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1.66*6, 0.66)];
+    let materialTop = setMaterial('./assets/textures/pedra.jpg', 5, 0.1);
 
-    let materialPedra = createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1.66, 0.66);
+    //let materialPedra = createAdvancedMaterial('../../../assets/textures/displacement/', 'rockWall.jpg', 'rockWall_Normal.jpg', '', '', '', 1.66, 0.66);
     const box1 = new THREE.Object3D();
-    const box11 = new THREE.Mesh(boxGeometry1, materialPedra);
+    const box11 = new THREE.Mesh(boxGeometry1, materialBox1);
     box11.position.set(-45, 2, 0);
     box11.castShadow = true;
     chao.push(box11);
     paredes.push(box11);
 
-    const box12 = new THREE.Mesh(boxGeometry2, box1Material);
+    const box12 = new THREE.Mesh(boxGeometry2, materialBox2);
     box12.position.set(-25, 2, -15);
     box12.castShadow = true;
     chao.push(box12);
     paredes.push(box12);
 
-    const box13 = new THREE.Mesh(boxGeometry3, box1Material);
+    const box13 = new THREE.Mesh(boxGeometry3, materialBox3);
     box13.position.set(20, 2, 0);
     box13.castShadow = true;
     chao.push(box13);
@@ -280,8 +307,7 @@ function createArea1(scene, player){
         box1.add(column1);
         paredes.push(column1);
     }
-    let columnTop = new THREE.Mesh(topGeometry, columnMaterial);
-    let column1Top = columnTop.clone();
+    let column1Top = new THREE.Mesh(topGeometry, materialTop);
     column1Top.position.set(0, 25, -48);
     column1Top.castShadow = true;
     box1.add(column1Top);
@@ -292,7 +318,7 @@ function createArea1(scene, player){
         box1.add(column2);
         paredes.push(column2);
     }
-    let column2Top = columnTop.clone();
+    let column2Top = new THREE.Mesh(top3Geometry, materialTop);
     column2Top.scale.set(0.55, 1, 1);
     column2Top.position.set(-47, 25, -20);
     column2Top.rotation.y = Math.PI / 2;
@@ -305,7 +331,7 @@ function createArea1(scene, player){
         box1.add(column3);
         paredes.push(column3);
     }
-    let column3Top = columnTop.clone();
+    let column3Top = new THREE.Mesh(top2Geometry, materialTop);
     column3Top.scale.set(0.65, 1, 1);
     column3Top.position.set(47, 25, -10);
     column3Top.rotation.y = Math.PI / -2;
@@ -615,7 +641,7 @@ function createArea3(scene, player, renderer){
 
         // Parede de trás
         const wallBack = new THREE.Mesh(hangarBackWallGeometry, hangarMaterial);
-        wallBack.position.set(0, 12.5, -49);
+        wallBack.position.set(0, 12.5, -49.01);
         wallBack.castShadow = true;
         wallBack.receiveShadow = true;
         hangar.add(wallBack);
@@ -697,14 +723,14 @@ function createArea3(scene, player, renderer){
 
         // Portão 
         const gateLeft = new THREE.Mesh(hangarGateGeometry, hangarGateMaterialClipped);
-        gateLeft.position.set(-24, 12.5, 48.5);
+        gateLeft.position.set(-25, 12.5, 48.5);
         gateLeft.castShadow = true;
         gateLeft.receiveShadow = true;
         hangar.add(gateLeft);
         paredes.push(gateLeft);
 
         const gateRight = new THREE.Mesh(hangarGateGeometry, hangarGateMaterialClipped);
-        gateRight.position.set(24, 12.5, 48.5);
+        gateRight.position.set(25, 12.5, 48.5);
         gateRight.castShadow = true;
         gateRight.receiveShadow = true;
         hangar.add(gateRight);
@@ -1106,7 +1132,7 @@ function createEscada(){
     // Cria as escadas
     const escada = new THREE.Object3D();
 
-    const degraus = 8;
+    const degraus = 10;
     const largura = 30;
     const alturaTotal = 4;
     const comprimento = 30;
@@ -1116,7 +1142,7 @@ function createEscada(){
     
     for (let i = 0; i < degraus; i++) {
       const geometry = new THREE.BoxGeometry(largura, alturaDegrau, profundidadeDegrau);
-      const degrau = new THREE.Mesh(geometry, planeMaterial); 
+      const degrau = new THREE.Mesh(geometry, columnMaterial); 
       
       degrau.position.x = 0;
       degrau.position.y = (i + 0.5) * alturaDegrau;
@@ -1125,6 +1151,24 @@ function createEscada(){
       
       escada.add(degrau);
     }
+
+    //laterais da escada
+    const espessuraCaixa = 6; 
+    const geometriaCaixa = new THREE.BoxGeometry(espessuraCaixa, alturaTotal, comprimento);
+    
+    const caixaEsquerda = new THREE.Mesh(geometriaCaixa, columnMaterial);
+    caixaEsquerda.position.set(-(largura/2 + espessuraCaixa/2), alturaTotal/2, comprimento/2);
+    caixaEsquerda.castShadow = true;
+    escada.add(caixaEsquerda);
+    chao.push(caixaEsquerda);
+    paredes.push(caixaEsquerda);
+
+    const caixaDireita = new THREE.Mesh(geometriaCaixa, columnMaterial);
+    caixaDireita.position.set(largura/2 + espessuraCaixa/2, alturaTotal/2, comprimento/2);
+    caixaDireita.castShadow = true;
+    escada.add(caixaDireita);
+    chao.push(caixaDireita);
+    paredes.push(caixaDireita);
 
     return escada;
 }
