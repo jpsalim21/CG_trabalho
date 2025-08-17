@@ -30,7 +30,7 @@ class InimigoBase {
         this.alturaSprite = 0.4;
 
         
-        scene.add(this.sprite);
+        //scene.add(this.sprite);
     }
 
     setup(){
