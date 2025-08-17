@@ -23,7 +23,7 @@ floorTexture.wrapS = THREE.RepeatWrapping;
 floorTexture.wrapT = THREE.RepeatWrapping;
 floorTexture.repeat.set(10, 10);
 
-const brickTexture = textureLoader.load('./assets/textures/stone.jpg');
+const brickTexture = textureLoader.load('./assets/textures/tijolos.jpg');
 brickTexture.wrapS = THREE.RepeatWrapping;
 brickTexture.wrapT = THREE.RepeatWrapping;
 brickTexture.repeat.set(4, 2);
@@ -32,6 +32,8 @@ const cementTexture = textureLoader.load('./assets/textures/darkcement.jpg');
 cementTexture.wrapS = THREE.RepeatWrapping;
 cementTexture.wrapT = THREE.RepeatWrapping;
 cementTexture.repeat.set(10, 10);
+cementTexture.colorSpace = THREE.SRGBColorSpace;
+cementTexture.receiveShadow = true;
 
 const asfaltoTexture = textureLoader.load('./assets/textures/asfalto.jpg');
 asfaltoTexture.wrapS = THREE.RepeatWrapping;
@@ -57,11 +59,7 @@ telhadoTexture.repeat.set(10, 10);
 
 //materiais
 const material = new THREE.MeshLambertMaterial({color:'rgb(37, 72, 45)'});
-const planeMaterial = new THREE.MeshLambertMaterial({color:'rgb(58, 7, 7)'});
-const box1Material = new THREE.MeshLambertMaterial({color: 'rgb(77, 155, 132)'});
 const box2Material  = new THREE.MeshLambertMaterial({color:'rgb(155, 77, 77)'});
-const box3Material  = new THREE.MeshLambertMaterial({color:'rgb(77, 132, 155)'});
-const box4Material  = new THREE.MeshLambertMaterial({color:'rgb(132, 77, 155)'});
 const wallMaterial  = new THREE.MeshLambertMaterial({color:'rgb(255, 255, 255)'});
 const columnMaterial = new THREE.MeshLambertMaterial({color:'rgba(128, 134, 127, 1)'});
 
@@ -88,9 +86,6 @@ const boxGeometry1 = new THREE.BoxGeometry(10, 4, 100);
 const boxGeometry2 = new THREE.BoxGeometry(30, 4, 70);
 const boxGeometry3 = new THREE.BoxGeometry(60, 4, 100);
 const boxGeometryArea3 = new THREE.BoxGeometry(100, 0.1, 100);
-const boxGeometry7 = new THREE.BoxGeometry(135, 4, 100);
-const boxGeometry8 = new THREE.BoxGeometry(30, 4, 70);
-const boxGeometryA4 = new THREE.BoxGeometry(180, 4, 100, 100, 1, 50);
 const boxGeometry9 = new THREE.BoxGeometry(50, 4, 100);
 const boxGeometry10 = new THREE.BoxGeometry(10, 4, 90);
 const boxGeometry11 = new THREE.BoxGeometry(40, 4, 100);
@@ -98,15 +93,14 @@ const rampGeometry = new THREE.PlaneGeometry(30, Math.sqrt(30 * 30 + 4 * 4));
 const wallGeometry = new THREE.PlaneGeometry(520, 50);
 const columnGeometry = new THREE.CylinderGeometry(2, 2, 20, 32, 10);
 const topGeometry = new THREE.BoxGeometry(100, 2, 6);
-const top2Geometry = new THREE.BoxGeometry(80, 2, 6);
-const top3Geometry = new THREE.BoxGeometry(65, 2, 6);
+const top2Geometry = new THREE.BoxGeometry(105, 2, 6);
+const top3Geometry = new THREE.BoxGeometry(95, 2, 6);
 
 const hangarWallGeometry = new THREE.BoxGeometry(100, 25, 2); 
 const hangarBackWallGeometry = new THREE.BoxGeometry(100, 25, 2); 
 const hangarRoofGeometry = new THREE.CylinderGeometry(49, 49, 100, 32, 1, false, Math.PI, Math.PI /2);
 const hangarRoofGeometry2 = new THREE.CylinderGeometry(49, 49, 100, 32, 1, false, Math.PI / 2, Math.PI /2);
 const hangarGateGeometry = new THREE.BoxGeometry(49.95, 25, 2);
-const ceilingGeometry = new THREE.BoxGeometry(100, 0.5, 98);
 
 const chao = []; // array para armazenar os objetos do chão
 const paredes = []; // array para armazenar as paredes
@@ -352,7 +346,7 @@ function createArea1(scene, player){
     }
     let column3Top = new THREE.Mesh(top2Geometry, materialTop);
     column3Top.scale.set(0.65, 1, 1);
-    column3Top.position.set(47, 25, -10);
+    column3Top.position.set(47, 25, -12);
     column3Top.rotation.y = Math.PI / -2;
     column3Top.castShadow = true;
     box1.add(column3Top);
@@ -819,17 +813,6 @@ function createArea3(scene, player, renderer){
             }
         };
 
-        
-        // O trigger será verificado através de outro sistema
-        /*
-        const originalRender = gateTrigger.update;
-        function renderTrigger() {
-            originalRender.call(gateTrigger);
-            requestAnimationFrame(renderTrigger);
-        }
-        renderTrigger();
-        */
-
         // Solução alternativa: Adicionar os triggers ao array de objetos que são verificados regularmente
         if (!window.gameUpdateCallbacks) {
             window.gameUpdateCallbacks = [];
@@ -848,9 +831,6 @@ function createArea3(scene, player, renderer){
     function openHangarGate(gateLeft, gateRight, renderer) {
         console.log("Função openHangarGate chamada!");
         const duration = 15000; 
-
-    
-        const gateWidth = hangarGateGeometry.parameters.width; 
     
         const targetPositionLeft = -70; 
         const targetPositionRight = 70;
@@ -1052,58 +1032,6 @@ function createArea3(scene, player, renderer){
             
         }
     }
-}
-
-function createArea4(scene, player){
-    const box4 = new THREE.Object3D();
-
-    let materialTeste = createLavaMaterial(10, 10, {emissiveIntensity: 3.0, displacementScale: 0.8});
-    let materials = [
-        box4Material,
-        box4Material,
-        materialTeste,
-        box4Material,
-        box4Material,
-        box4Material
-    ]
-
-    const box41 = new THREE.Mesh(boxGeometryA4, materials);
-    box41.position.set(0, 2, 150);
-    box41.castShadow = true;
-    box4.add(box41);
-    chao.push(box41);
-    paredes.push(box41);
-    /*
-    const box42 = new THREE.Mesh(boxGeometry8, box4Material);
-    box42.position.set(0, 2, 165);
-    box42.castShadow = true;
-    box4.add(box42);
-    chao.push(box42);
-    paredes.push(box42);
-    
-    const box43 = new THREE.Mesh(boxGeometry7, box4Material);
-    box43.position.set(82.5, 2, 150);
-    box43.castShadow = true;
-    box4.add(box43);
-    chao.push(box43);
-    paredes.push(box43); */
-    
-    const escada4 = createEscada();
-    escada4.position.set(0, 0, 70);
-    box4.add(escada4);
-
-    
-    // Cria as rampas
-
-
-    const ramp4 = new THREE.Mesh(rampGeometry, wallMaterial);
-    ramp4.rotation.y = Math.PI;
-    ramp4.rotation.x = Math.atan(30/4);
-    ramp4.position.set(0, 2, 85); 
-    ramp4.visible = false;
-    box4.add(ramp4);
-    chao.push(ramp4);
-    return box4;
 }
 
 function addInimigos(scene, player) {
