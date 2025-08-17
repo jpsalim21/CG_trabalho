@@ -72,7 +72,7 @@ class PlayerController extends EventDispatcher {
         //cria chaingun
         this.spriteMixer = SpriteMixer();
         const loader = new TextureLoader();
-        loader.load('./assets/textures/chaingun.png', (texture) => {
+        loader.load('./T2/assets/textures/chaingun.png', (texture) => {
             const chaingunSprite = this.spriteMixer.ActionSprite(texture, 3, 1);
             chaingunSprite.position.set(0, -0.5 , -2.0);
             chaingunSprite.scale.set(0.8, 0.8, 0.8);
