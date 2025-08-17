@@ -66,7 +66,7 @@ class SoundController {
 
     play(name) {
         const sound = this.sounds[name];
-        if(name == 'chaingun' && sound.isPlaying){
+        if((name == 'chaingun' || name == 'rocketlauncher') && sound.isPlaying){
             sound.stop();
         }
         if (sound && !sound.isPlaying) {

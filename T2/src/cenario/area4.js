@@ -7,6 +7,15 @@ import { PainElemental } from '../personagens/inimigoPainElemental.js';
 import { Cacodemon } from '../personagens/inimigoCacodemon.js';
 import { AreaTrigger } from './areaTrigger.js';
 
+let painElemental;
+let cacodemons = [];
+let areaTrigger;
+let portal;
+let portalOpen = false;
+let gameEnded = false;
+let victoryScreen;
+let restartButton;
+
 const boxGeometry = new THREE.BoxGeometry(200, 4, 200, 50, 1, 50);
 
 const baseGeo = new THREE.CylinderGeometry(3, 3, 2);
@@ -74,6 +83,16 @@ function createChessBoard(scene, player, chave){
     addChao(porta.mesh);
 
     criaBases(scene);
+
+    // tela de vitória
+    victoryScreen = document.getElementById("victory-screen");
+    restartButton = document.getElementById("restart-btn");
+        
+    // botão de reinício
+    restartButton.addEventListener("click", () => {
+        player.reiniciarJogo();
+    }, false);
+
     adicionarInimigos(scene, player);
 }
 
@@ -263,14 +282,76 @@ function criaBases(scene){
 }
 
 function adicionarInimigos(scene, player){
-    let areaTrigger = new AreaTrigger(scene, new THREE.Vector3(0, 2, 150), new THREE.Vector3(200, 10, 200), player);
+    areaTrigger = new AreaTrigger(scene, new THREE.Vector3(0, 2, 150), new THREE.Vector3(200, 10, 200), player);
 
-    let painElemental = new PainElemental(scene, player, areaTrigger, 10, new THREE.Vector3(0, 10, 200));
+    painElemental = new PainElemental(scene, player, areaTrigger, 10, new THREE.Vector3(0, 10, 200));
+    
+    cacodemons.push(new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(20, 10, 160)));
+    cacodemons.push(new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(70, 10, 140)));
+    cacodemons.push(new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(-70, 10, 120)));
+    cacodemons.push(new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(-40, 10, 120)));
 
-    let cacodemon1 = new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(20, 10, 160));
-    let cacodemon2 = new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(70, 10, 140));
-    let cacodemon3 = new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(-70, 10, 120));
-    let cacodemon4 = new Cacodemon(scene, player, areaTrigger, 10, new THREE.Vector3(-40, 10, 120));
+    // Verificar inimigos periodicamente
+    setInterval(verificarInimigos, 1000, scene, player);
+}
+
+function verificarInimigos(scene, player) {
+    if (portalOpen || gameEnded) return;
+
+    let painDerrotados = !painElemental || painElemental.vida <= 0;
+    let cacodemonsDerrotados = cacodemons.every(c => !c || c.vida <= 0);
+    painDerrotados = true;
+    if (painDerrotados && cacodemonsDerrotados) {
+        criaPortal(scene, player);
+        portalOpen = true;
+        showTemporaryMessage("Todos os inimigos derrotados! O portal de saída foi aberto.", 5000);
+    }
+}
+
+function criaPortal(scene, player) {
+    const portalPos = new THREE.Vector3(0, 9, 245);
+    const portalGeometry = new THREE.BoxGeometry(15, 10, 1);
+    const portalMaterial = new THREE.MeshBasicMaterial({ 
+        color: 0x000000,
+        transparent: true,
+        opacity: 0.8,
+        side: THREE.DoubleSide
+    });
+    
+    portal = new THREE.Mesh(portalGeometry, portalMaterial);
+    portal.position.copy(portalPos);
+    
+    const edges = new THREE.EdgesGeometry(portalGeometry);
+    const line = new THREE.LineSegments(
+        edges,
+        new THREE.LineBasicMaterial({ color: 0x00ffff, linewidth: 2 })
+    );
+    portal.add(line);
+    scene.add(portal);
+    
+    // trigger pra quando o jogador entrar
+    const portalTrigger = {
+        bb: new THREE.Box3(
+            new THREE.Vector3(portalPos.x - 7.5, portalPos.y - 5, portalPos.z - 0.5),
+            new THREE.Vector3(portalPos.x + 7.5, portalPos.y + 5, portalPos.z + 0.5)
+        ),
+        update: function() {
+            if (this.bb.intersectsBox(player.bb) && !gameEnded) {
+                gameEnded = true;
+
+                player.disableControls();
+                player.mira.style.display = "none";
+                player.blocker.style.display = "none"
+                player.instructions.style.display = "none";
+                victoryScreen.style.display = "flex";
+            }
+        }
+    };
+    
+    if (!window.gameUpdateCallbacks) {
+        window.gameUpdateCallbacks = [];
+    }
+    window.gameUpdateCallbacks.push(() => portalTrigger.update());
 }
 
 export { createChessBoard };

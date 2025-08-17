@@ -599,22 +599,26 @@ class PlayerController extends EventDispatcher {
     morrer() {
         console.log("Player morreu!");
         
-        // Desativa controles
-        this.isLocked = false;
-        this.unlock();
-        this.teclas = [false, false, false, false];
-        this.atirar = false;
+        this.disableControls();
         
         // Mostra a tela de morte
         this.mira.style.display = "none";
         this.blocker.style.display = "none";
+        this.instructions.style.display = "none";
         this.deathScreen.style.display = "flex";
         this.unlock();
     }
 
+    disableControls() {
+        this.isLocked = false;
+        this.unlock(); 
+        this.teclas = [false, false, false, false]; // W, A, S, D
+        this.atirar = false;
+    }
+
     reiniciarJogo() {
         // Esconde a tela de morte
-         this.deathScreen.style.display = "none";
+        this.deathScreen.style.display = "none";
         
         // Recarrega a página 
         window.location.reload();
