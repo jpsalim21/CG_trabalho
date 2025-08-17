@@ -217,7 +217,7 @@ class PlayerController extends EventDispatcher {
 
      async getLauncher(){
         try {
-            let launcher = await loadOBJ('./assets/rocketlauncher/wephomura6.obj', "./assets/rocketlauncher/", "texhomu_11.png");
+            let launcher = await loadOBJ('./T2/assets/rocketlauncher/wephomura6.obj', "./T2/assets/rocketlauncher/", "texhomu_11.png");
             launcher.scale.set(0.5, 0.5, 0.5);
             launcher.position.set(0, -1.3, 0);
             launcher.userData = launcher.userData || {};

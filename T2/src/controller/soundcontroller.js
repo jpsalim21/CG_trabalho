@@ -20,36 +20,36 @@ class SoundController {
 
         const soundFiles = {
             // Sistema
-            background: '../0_assetsT3/sounds/doom.mp3',
-            plataformaMovendo: '../0_assetsT3/sounds/plataformaMovendo.wav',
-            portaAbrindo: '../0_assetsT3/sounds/doorOpening.wav',
+            background: './0_assetsT3/sounds/doom.mp3',
+            plataformaMovendo: './0_assetsT3/sounds/plataformaMovendo.wav',
+            portaAbrindo: './0_assetsT3/sounds/doorOpening.wav',
 
             // Player
-            playerInjured: '../0_assetsT3/sounds/playerInjured.wav',
-            chaingun: '../0_assetsT3/sounds/chaingunFiring.wav',
-            rocketlauncher: '../0_assetsT3/sounds/rocketFiring.wav',
-            chave: '../0_assetsT3/sounds/chave.wav',
+            playerInjured: './0_assetsT3/sounds/playerInjured.wav',
+            chaingun: './0_assetsT3/sounds/chaingunFiring.wav',
+            rocketlauncher: './0_assetsT3/sounds/rocketFiring.wav',
+            chave: './0_assetsT3/sounds/chave.wav',
 
             // Cacodemon
-            cacodemonAttack: '../0_assetsT3/sounds/cacoDemon/cacodemonAttack.wav',
-            cacodemonDeath: '../0_assetsT3/sounds/cacoDemon/cacodemonDeath.wav',
-            cacodemonInjured: '../0_assetsT3/sounds/cacoDemon/cacodemonInjured.wav',
-            cacodemonNearby: '../0_assetsT3/sounds/cacoDemon/cacodemonNearby.wav',
-            cacodemonSight: '../0_assetsT3/sounds/cacoDemon/cacodemonSight.wav',
+            cacodemonAttack: './0_assetsT3/sounds/cacoDemon/cacodemonAttack.wav',
+            cacodemonDeath: './0_assetsT3/sounds/cacoDemon/cacodemonDeath.wav',
+            cacodemonInjured: './0_assetsT3/sounds/cacoDemon/cacodemonInjured.wav',
+            cacodemonNearby: './0_assetsT3/sounds/cacoDemon/cacodemonNearby.wav',
+            cacodemonSight: './0_assetsT3/sounds/cacoDemon/cacodemonSight.wav',
 
             // Lost Soul
-            lostsoulAttack: '../0_assetsT3/sounds/lostSoul/lost_soul_attack.wav',
-            lostsoulInjured: '../0_assetsT3/sounds/lostSoul/injured.wav',
+            lostsoulAttack: './0_assetsT3/sounds/lostSoul/lost_soul_attack.wav',
+            lostsoulInjured: './0_assetsT3/sounds/lostSoul/injured.wav',
 
             // Pain Elemental
-            painAttack: '../0_assetsT3/sounds/painElemental/painAttack.wav',
-            painInjured: '../0_assetsT3/sounds/painElemental/injured.wav',
-            painSight: '../0_assetsT3/sounds/painElemental/painSight.wav',
+            painAttack: './0_assetsT3/sounds/painElemental/painAttack.wav',
+            painInjured: './0_assetsT3/sounds/painElemental/injured.wav',
+            painSight: './0_assetsT3/sounds/painElemental/painSight.wav',
 
             // Soldier
-            soldierAttack: '../0_assetsT3/sounds/soldier/soldierAttack.wav',
-            soldierInjured: '../0_assetsT3/sounds/soldier/injured.wav',
-            soldierSight: '../0_assetsT3/sounds/soldier/soldierSight.wav'
+            soldierAttack: './0_assetsT3/sounds/soldier/soldierAttack.wav',
+            soldierInjured: './0_assetsT3/sounds/soldier/injured.wav',
+            soldierSight: './0_assetsT3/sounds/soldier/soldierSight.wav'
         };
 
         for (let key in soundFiles) {

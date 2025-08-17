@@ -16,12 +16,12 @@ class Elevador {
         this.scene = scene;
         this.player = player;
 
-        this.mesh = new THREE.Mesh(geometry, setMaterial('./assets/textures/metalelevador.jpg', 1, 2));
+        this.mesh = new THREE.Mesh(geometry, setMaterial('./T2/assets/textures/metalelevador.jpg', 1, 2));
         position.y -= 10.1;
 
         this.mesh.position.copy(position);
 
-        let elevadorchao = new THREE.Mesh(new THREE.BoxGeometry(10, 0.1, 10),  setMaterial('./assets/textures/metalelevador.jpg', 1, 2));
+        let elevadorchao = new THREE.Mesh(new THREE.BoxGeometry(10, 0.1, 10),  setMaterial('./T2/assets/textures/metalelevador.jpg', 1, 2));
         elevadorchao.position.set(5, 0, -106);
         elevadorchao.receiveShadow = true;
         scene.add(elevadorchao);

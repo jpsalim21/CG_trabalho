@@ -42,7 +42,7 @@ class PainElemental extends InimigoBase {
 
     async loadModel(){
         try {
-            this.mesh = await loadGLB('../../../0_assetsT3/objects/pain/painElemental.glb', '../../../0_assetsT3/objects/pain/textures/', 'pain_elemental_toy_normal.png');
+            this.mesh = await loadGLB('./0_assetsT3/objects/pain/painElemental.glb', './0_assetsT3/objects/pain/textures/', 'pain_elemental_toy_normal.png');
             this.bb = new THREE.Box3().setFromObject(this.mesh);
             this.setup();
             console.log("Object pos world", this.object.getWorldPosition(new THREE.Vector3()));

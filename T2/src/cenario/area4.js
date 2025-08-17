@@ -47,13 +47,13 @@ let blackPawnsPositions = [
 function createChessBoard(scene, player, chave){
     const texLoader = new THREE.TextureLoader();
 
-    const tabuleiroMaterial = setMaterial('./assets/xadrez/xadrez2.png', 4, 4);
-    const materialLado = setMaterial('./assets/textures/metalparede.jpg', 8, 1);
+    const tabuleiroMaterial = setMaterial('./T2/assets/xadrez/xadrez2.png', 4, 4);
+    const materialLado = setMaterial('./T2/assets/textures/metalparede.jpg', 8, 1);
     tabuleiroMaterial.colorSpace = THREE.SRGBColorSpace;
-    tabuleiroMaterial.normalMap = texLoader.load('./assets/xadrez/xadreznormal.jpg');
+    tabuleiroMaterial.normalMap = texLoader.load('./T2/assets/xadrez/xadreznormal.jpg');
     tabuleiroMaterial.normalMap.wrapS = tabuleiroMaterial.normalMap.wrapT = THREE.RepeatWrapping;
     tabuleiroMaterial.normalMap.repeat.set(4/3, 4/3);
-    tabuleiroMaterial.displacementMap = texLoader.load('./assets/xadrez/height.png');
+    tabuleiroMaterial.displacementMap = texLoader.load('./T2/assets/xadrez/height.png');
     tabuleiroMaterial.displacementScale = 1.0;
     tabuleiroMaterial.displacementMap.wrapS = tabuleiroMaterial.displacementMap.wrapT = THREE.RepeatWrapping;
     tabuleiroMaterial.displacementMap.repeat.set(4/3, 4/3);
@@ -99,10 +99,10 @@ function createChessBoard(scene, player, chave){
 async function loadPieces(pai){
     const pieceNames = ['King', 'Queen', 'Bishop', 'Knight', 'Rook', 'Pawn'];
     for (const name of pieceNames) {
-        piecesMeshBlack[name] = await loadChessPiece(`./assets/xadrez/${name}.glb`, 'rgba(60, 60, 60, 1)');
+        piecesMeshBlack[name] = await loadChessPiece(`./T2/assets/xadrez/${name}.glb`, 'rgba(60, 60, 60, 1)');
         piecesMeshBlack[name].scale.set(2, 2, 2);
         piecesMeshBlack[name].castShadow = true;
-        piecesMeshWhite[name] = await loadChessPiece(`./assets/xadrez/${name}.glb`, 'rgba(200, 200, 200, 1)');
+        piecesMeshWhite[name] = await loadChessPiece(`./T2/assets/xadrez/${name}.glb`, 'rgba(200, 200, 200, 1)');
         piecesMeshWhite[name].scale.set(2, 2, 2);
         piecesMeshWhite[name].castShadow = true;
     }
@@ -243,12 +243,12 @@ function arrangePieces(pai){
 
 function criaBases(scene){
     const texLoader = new THREE.TextureLoader();
-    let materialLava = setMaterial('./assets/LavaTexture/basecolor.png', 2, 2);
+    let materialLava = setMaterial('./T2/assets/LavaTexture/basecolor.png', 2, 2);
     materialLava.colorSpace = THREE.SRGBColorSpace;
-    materialLava.normalMap = texLoader.load('./assets/LavaTexture/normal.png');
-    materialLava.emissiveMap = texLoader.load('./assets/LavaTexture/emissive.png');
+    materialLava.normalMap = texLoader.load('./T2/assets/LavaTexture/normal.png');
+    materialLava.emissiveMap = texLoader.load('./T2/assets/LavaTexture/emissive.png');
     materialLava.emissiveIntensity = 4;
-    const materialLado = setMaterial('../../../assets/textures/displacement/rockWall.jpg', 8, 1);
+    const materialLado = setMaterial('./assets/textures/displacement/rockWall.jpg', 8, 1);
     let base = new THREE.Mesh(baseGeo, [materialLado, materialLava, materialLava]);
     base.position.set(0, 5, 200);
     scene.add(base);

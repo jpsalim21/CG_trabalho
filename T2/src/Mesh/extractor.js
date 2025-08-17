@@ -162,7 +162,7 @@ function createAdvancedMaterial(texturePath, diffuse, normal, emission, displace
 
 // Adicione esta função ao seu extractor.js
 function createLavaMaterial(repeatU = 1, repeatV = 1, options = {}) {
-    const texturePath = "./assets/LavaTexture/";
+    const texturePath = "./T2/assets/LavaTexture/";
     const {
         metalness = 0.1, // Lava geralmente não é metálica
         roughness = 0.8, // Lava tem superfície irregular

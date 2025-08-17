@@ -13,7 +13,7 @@ export class Zombieman extends ZombieBase {
         super(scene, 30, 10, player, observer);
         this.soundController = new SoundController(player.getCamera());
 
-        this.spritePath = './assets/zombieman.png';
+        this.spritePath = './T2/assets/zombieman.png';
         this.spriteMixer = null;
         this.actions = {};
         this.actionSprite = null;

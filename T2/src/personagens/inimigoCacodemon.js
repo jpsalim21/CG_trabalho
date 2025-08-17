@@ -7,7 +7,7 @@ import { GameController } from '../controller/gamecontroller.js';
 import { loadGLTF } from '../Mesh/extractor.js';
 import { SoundController } from "../controller/soundcontroller.js";
 
-const path = './assets/cacodemon.glb';
+const path = './T2/assets/cacodemon.glb';
 const GRAVIDADE = 25;
 
 class Cacodemon extends InimigoBase {

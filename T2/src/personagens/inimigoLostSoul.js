@@ -8,7 +8,7 @@ import { loadOBJ } from "../Mesh/extractor.js";
 import { SoundController } from "../controller/soundcontroller.js";
 
 
-const path = "./assets/skullMelhor.obj";
+const path = "./T2/assets/skullMelhor.obj";
 const texturePath = "./assets/skul/";
 
 
