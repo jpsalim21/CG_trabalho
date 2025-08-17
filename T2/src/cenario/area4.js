@@ -300,7 +300,7 @@ function verificarInimigos(scene, player) {
 
     let painDerrotados = !painElemental || painElemental.vida <= 0;
     let cacodemonsDerrotados = cacodemons.every(c => !c || c.vida <= 0);
-    painDerrotados = true;
+
     if (painDerrotados && cacodemonsDerrotados) {
         criaPortal(scene, player);
         portalOpen = true;
